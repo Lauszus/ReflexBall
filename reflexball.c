@@ -5,7 +5,7 @@
 
 Ball ball;
 Striker striker;
-Brick bricks[BRICKS_MAX];
+Brick bricks[BRICK_TABLE_HEIGHT][BRICK_TABLE_WIDTH];
 unsigned char brickTable[BRICK_TABLE_HEIGHT][BRICK_TABLE_WIDTH];
 
 unsigned long gameTimer;
@@ -97,63 +97,133 @@ void drawBrick(Brick *brick) {
 	}
 }
 
+unsigned long counterX = 0, counterY = 0;
+
 void drawBallxy(unsigned char x, unsigned char y) {
-	unsigned char i, j, deflectedX = 0, deflectedY = 0;
+	unsigned char i, j, decreasedLife = 0, dontDeflectX = 0, dontDeflectY = 0, deflectedX = 0, deflectedY = 0, cornerHit = 0;
 	char distance; // Distance from center to ball position on striker
 	int angle;
 	//printBallCoor();
 	//gotoxy(10,10);
 	//printf("x: %d y: %d strikerX: %d strikerY: %d",x,y,striker.x,striker.y);
 	if ((x > x1 && x+ball.width < x2 && y > y1 && y+ball.height-1 < y2-1) || !gameStarted) {
-		for (i=0;i<BRICKS_MAX;i++) {
-			if (!bricks[i].lives) // Skip if lives == 0
-				continue;
+		for (i=0;i<BRICK_TABLE_HEIGHT;i++) {
+			for (j=0;j<BRICK_TABLE_WIDTH;j++) {
+				if (!bricks[i][j].lives) // Skip if lives == 0
+					continue;
+				dontDeflectX = 0;
+				dontDeflectY = 0;
+				decreasedLife = 0;				
 
-			// Check if the ball hit a brick
-			if (y <= bricks[i].y+bricks[i].height-1 && y+ball.height-1 >= bricks[i].y && x+ball.width-1 >= bricks[i].x && x <= bricks[i].x+bricks[i].width-1) {
-				// Check if the ball hit the top or the bottom of the brick
-				if (y == bricks[i].y+bricks[i].height-1 || y+ball.height-1 == bricks[i].y) { // && x+ball.width > bricks[i].x && x < bricks[i].x+bricks[i].width
-					bricks[i].lives--;
-					drawBrick(&bricks[i]);
-					/*
-					if (y == bricks[i].y+bricks[i].height-1) { // Bottom of brick
-						if (x+ball.width-1 == bricks[i].x) { // Bottom left corner
-							if (!(ball.vector.x & 0x80000000)) { // Positive
-								if (bricks[i+1].lives)
+				// Check if the ball hit a brick
+				if (y <= bricks[i][j].y+bricks[i][j].height-1 && y+ball.height-1 >= bricks[i][j].y && x+ball.width-1 >= bricks[i][j].x && x <= bricks[i][j].x+bricks[i][j].width-1) {
+
+					// TODO: Skal det hele ikke være <= og >= ? og en af brikkerne dør ikke altid i et corner
+					
+					// Check if the ball hit the top or the bottom of the brick
+					if (y <= bricks[i][j].y+bricks[i][j].height-1 && y+ball.height-1 >= bricks[i][j].y) { // && x+ball.width > bricks[i][j].x && x < bricks[i][j].x+bricks[i][j].width
+						bricks[i][j].lives--;
+						decreasedLife = 1;
+						drawBrick(&bricks[i][j]);
+						
+			  		    if (!deflectedY) {
+							if (y+ball.height-1 == bricks[i][j].y) { // Top of brick
+								if (x+ball.width-1 == bricks[i][j].x || x == bricks[i][j].x+bricks[i][j].width-1) { // Top left or right corner
+									if (i > 0) { // Make sure that there can actually be a brick above it
+										if (bricks[i-1][j].lives) // Check if brick above is alive
+											dontDeflectY = 1; // Don't deflect it
+									}
+								}
+							} else if (y == bricks[i][j].y+bricks[i][j].height-1) { // Bottom of brick
+								if (x+ball.width-1 == bricks[i][j].x || x == bricks[i][j].x+bricks[i][j].width-1) { // Bottom left or right corner
+									if (i+1 < BRICK_TABLE_HEIGHT) { // Make sure that there can actually be a brick underneath it
+										if (bricks[i+1][j].lives) // Check if brick below is alive
+											dontDeflectY = 1; // Don't deflect it
+									}
+								}
+							} else if (y == bricks[i][j].y) {
+								dontDeflectY = 1;
+								cornerHit = 0;
 							}
-						} else if (x == bricks[i].x+bricks[i].width-1) { // Bottom right corner
-							if (ball.vector.x & 0x80000000) // Negative
-								
+							
+							if (!dontDeflectY && !cornerHit) {
+								deflectedY = 1;
+								ball.vector.y = -ball.vector.y;
+								ball.y += 2*ball.vector.y;
+							} else if (dontDeflectY) {
+								gotoxy(10,4);
+								printf("dontDeflectY: %d",counterY++);
+							}
+						}													
+					}
+					// Check if the ball hit one of the sides of the brick
+					if (x+ball.width-1 == bricks[i][j].x || x == bricks[i][j].x+bricks[i][j].width-1) { // y < bricks[i][j].y+bricks[i][j].height && y+ball.height > bricks[i][j].y && x+ball.width >= bricks[i][j].x && x < bricks[i][j].x+bricks[i][j].width					
+						if (!decreasedLife) { // Make sure it is has not already lost a life
+							bricks[i][j].lives--;
+							drawBrick(&bricks[i][j]);
 						}
-					} else if (y+ball.height-1 == bricks[i].y) { // Top of brick'
-						if (x+ball.width-1 == bricks[i].x) { // Top left corner
 
-						} else if (x == bricks[i].x+bricks[i].width-1) { // Top right corner
+						if (!deflectedX) {
+							if (x+ball.width-1 == bricks[i][j].x) { // Left side of brick
+								if (y+ball.height-1 == bricks[i][j].y || y == bricks[i][j].y+bricks[i][j].height-1) { // Top or bottom left corner
+									if (j > 0 && bricks[i][j-1].lives) {
+										if (dontDeflectY)
+											cornerHit = 1; // We hit a corner with two live bricks around it
+									//if (j > 0) { // Make sure that there can actually be a brick to the left of it
+										//if (bricks[i][j-1].lives/* || deflectedY*/) // Check if brick to the left is alive or if y-axis is already deflected											
+									//}
+										else
+											dontDeflectX = 1; // Don't deflect it
+									} //else if (dontDeflectY)
+										//cornerHit = 1;
+								} else if (y == bricks[i][j].y) {
+									dontDeflectX = 0;
+									cornerHit = 0;
+								}
+							} else if (x == bricks[i][j].x+bricks[i][j].width-1) { // Right side of brick
+								if (y+ball.height-1 == bricks[i][j].y || y == bricks[i][j].y+bricks[i][j].height-1) { // Top or bottom right corner
+									if (j+1 < BRICK_TABLE_WIDTH && bricks[i][j+1].lives) {
+										if (dontDeflectY)
+											cornerHit = 1; // We hit a corner with two live bricks around it
+									//if (j+1 < BRICK_TABLE_WIDTH) { // Make sure that there can actually be a brick to the right of it
+										//if (bricks[i][j+1].lives/* || deflectedY*/) // Check if brick to the right is alive or if y-axis is already deflected											
+										else
+											dontDeflectX = 1; // Don't deflect it											
+									//}
+									} //else if (dontDeflectY)
+										//cornerHit = 1;
+								} else if (y == bricks[i][j].y) {
+									dontDeflectX = 0;
+									cornerHit = 0;
+								}
+							} else if (y == bricks[i][j].y) {
+								dontDeflectX = 0;
+								cornerHit = 0;
+							}
 
+							if (!dontDeflectX && !cornerHit) {
+								deflectedX = 1;
+								ball.vector.x = -ball.vector.x;
+								ball.x += 2*ball.vector.x;
+							} else if (dontDeflectX) {
+								gotoxy(10,2);
+								printf("dontDeflectX: %d",counterX++);
+							}						
 						}						
-					}
-					*/
-					if (!deflectedY) { // Don't deflect the ball if it has already been deflected by a brick						
-						deflectedY = 1;						
-						ball.vector.y = -ball.vector.y;
-						ball.y += 2*ball.vector.y;
-					}				
-				}
-				// Check if the ball hit one of the sides of the brick
-				if (x+ball.width-1 == bricks[i].x || x == bricks[i].x+bricks[i].width-1) { // y < bricks[i].y+bricks[i].height && y+ball.height > bricks[i].y && x+ball.width >= bricks[i].x && x < bricks[i].x+bricks[i].width					
-					if (!deflectedY) { // Make sure it is not already dead
-						bricks[i].lives--;
-						drawBrick(&bricks[i]);
-					}					
-
-					if (!deflectedX) { // Don't deflect the ball if it has already been deflected by a brick
-						deflectedX = 1;
-						ball.vector.x = -ball.vector.x;
-						ball.x += 2*ball.vector.x;
-					}
-				}
+					}							
+				}				
 			}
 		}
+	
+		if (cornerHit) {
+			gotoxy(10,20);
+			printf("CornerHit: %d",counterX++);
+			ball.vector.y = -ball.vector.y;
+			ball.y += 2*ball.vector.y;
+			ball.vector.x = -ball.vector.x;
+			ball.x += 2*ball.vector.x;
+		}
+
 		gotoxyBall(ball.x,ball.y);
 	}
 	else if (y+ball.height-1 > striker.y) { // If you are below the striker then player must be dead	
@@ -297,26 +367,21 @@ void stopGame() {
 }
 
 void initBricks() {
-	unsigned char i, j, k = 0;
-
-	for (i=0;i<BRICKS_MAX;i++) {
-		bricks[i].width = 14;
-		bricks[i].height = 2;
-	}
+	unsigned char i, j;
 
 	for (i=0;i<BRICK_TABLE_HEIGHT;i++) {
 		for (j=0;j<BRICK_TABLE_WIDTH;j++) {
-			brickTable[i][j] = 4; // TODO: Lav baner
+			brickTable[i][j] = 2; // TODO: Lav baner
 
-			bricks[k].lives = brickTable[i][j];
-			bricks[k].x = x1+40/*6*/ + (bricks[k].width+1)*j;
-			bricks[k].y = y1+10 + (bricks[k].height+1)*i;
-			k++;
-		}		
+			bricks[i][j].width = 14;
+			bricks[i][j].height = 2;
+
+			bricks[i][j].lives = brickTable[i][j];
+			bricks[i][j].x = x1+40/*6*/ + (bricks[i][j].width+1)*j;
+			bricks[i][j].y = y1+10 + (bricks[i][j].height+1)*i;
+			drawBrick(&bricks[i][j]);
+		}
 	}
-
-	for (i=0;i<BRICKS_MAX;i++)
-		drawBrick(&bricks[i]);
 }
 
 void startGame() {
@@ -337,7 +402,7 @@ void startGame() {
 		startAngle = (millis() & 0x7F) - 192; // Calculate a "random" angle from 0-127 (0-89.3 deg) and then subtract 192 (135 deg)
 
 		gotoxy(10,6);
-		printf("Start angle: %d",(startAngle*360)/512);
+		printf("Start angle: %02d",(startAngle*360)/512);
 		
 		rotate(&ball.vector, startAngle); 
 		

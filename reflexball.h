@@ -7,7 +7,7 @@
 #define STRIKER_MAX_WIDTH	30 // This has to be even
 #define STRIKER_MAX_ANGLE	64 // 360 deg = 512
 #define NLIVES				3
-#define DEFAULT_DIFFICULTY	100 // 40
+#define DEFAULT_DIFFICULTY	80 // 40
 #define MAX_DIFFICULTY		20 // If speed gets under this value the UART can no longer keep up
 #define BALL_WIDTH			4 // The modulus of this number should be even
 #define BALL_HEIGHT			2
@@ -15,8 +15,6 @@
 
 #define BRICK_TABLE_WIDTH	7 // 14
 #define BRICK_TABLE_HEIGHT	20
-#define BRICKS_MAX			BRICK_TABLE_WIDTH*BRICK_TABLE_HEIGHT
-
 
 
 typedef struct {

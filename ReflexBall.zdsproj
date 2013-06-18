@@ -317,6 +317,8 @@
 <watch-element expression="angle" />
 <watch-element expression="strikerZones" />
 <watch-element expression="brickTable" />
+<watch-element expression="dontDeflectX" />
+<watch-element expression="dontDeflectY" />
 </watch-elements>
 
 <!-- breakpoint information -->
