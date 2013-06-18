@@ -1,0 +1,272 @@
+ZiLOG Z8 Encore! Macro Assembler Version 2.42 (05021601) 17-Jun-13     10:52:17     page:   1
+
+
+PC     Object              I  Line    Source 
+                           A     1    ;  zsldevinit.asm
+                           A     2    ;  Implementation file for opening peripheral d
+                           A     3    ; 
+                           A     4    ;  This file contains implementation for openin
+                           A     5    ;  peripheral devices required by ZiLOG Standar
+                           A     6    ;  Encore! microcontrollers.
+                           A     7    ;
+                           A     8    ;  Copyright (C) 1999-2004 by  ZiLOG, Inc.
+                           A     9    ;  All Rights Reserved.
+                           A    10    ;
+                           A    11    
+                           A    12    	segment	CODE
+                           A    13    
+                           A    14    
+                           A    15    ;----------------------------------------------
+                           A    16    	XDEF _open_periphdevice
+                           A    17    	XDEF __open_periphdevice
+                           A    18    ;----------------------------------------------
+000000                     A    19    _open_periphdevice:
+000000                     A    20    __open_periphdevice:
+                           A    21    
+                           A    22    
+                           A    23    .ifdef _ZSL_DEVICE_PORTA
+                           A    24    	XREF _open_PortA
+                           A    25    
+                           A    26        call _open_PortA					; initi
+                           A    27    .endif
+                           A    28    
+                           A    29    .ifdef _ZSL_DEVICE_PORTB
+                           A    30    	XREF _open_PortB
+                           A    31    
+                           A    32        call _open_PortB					; initi
+                           A    33    .endif
+                           A    34    
+                           A    35    .ifdef _ZSL_DEVICE_PORTC
+                           A    36    	XREF _open_PortC
+                           A    37    
+                           A    38        call _open_PortC					; initi
+                           A    39    .endif
+                           A    40    
+                           A    41    .ifdef _ZSL_DEVICE_PORTD
+                           A    42    	XREF _open_PortD
+                           A    43    
+                           A    44        call _open_PortD					; initi
+                           A    45    .endif
+                           A    46    
+                           A    47    .ifdef _ZSL_DEVICE_PORTE
+                           A    48    	XREF _open_PortE
+                           A    49    
+                           A    50        call _open_PortE					; initi
+                           A    51    .endif
+                           A    52    
+ZiLOG Z8 Encore! Macro Assembler Version 2.42 (05021601) 17-Jun-13     10:52:17     page:   2
+
+
+PC     Object              I  Line    Source L:\PHQFBI~D\ROIZBJ~K\zsldevinit.asm
+                           A    53    .ifdef _ZSL_DEVICE_PORTF
+                           A    54    	XREF _open_PortF
+                           A    55    
+                           A    56        call _open_PortF					; initi
+                           A    57    .endif
+                           A    58    
+                           A    59    .ifdef _ZSL_DEVICE_PORTG
+                           A    60    	XREF _open_PortG
+                           A    61    
+                           A    62        call _open_PortG					; initi
+                           A    63    .endif
+                           A    64    
+                           A    65    .ifdef _ZSL_DEVICE_PORTH
+                           A    66    	XREF _open_PortH
+                           A    67    
+                           A    68        call _open_PortH					; initi
+                           A    69    .endif
+                           A    70    
+                           A    71    
+                           A    72    .ifdef _ZSL_DEVICE_UART0
+                           A    73    	XREF _open_UART0
+                           A    74    
+                           A    75    	call _open_UART0				; initializ
+                           A    76    .endif
+                           A    77    
+                           A    78    
+                           A    79    
+                           A    80    .ifdef _ZSL_DEVICE_UART1
+                           A    81    	XREF _open_UART1
+                           A    82    
+                           A    83    	call _open_UART1				; initializ
+                           A    84    .endif
+                           A    85    
+                           A    86    
+000000 AF                  A    87    	ret
+                           A    88    
+                           A    89    
+                           A    90    ;----------------------------------------------
+                           A    91    	XDEF _close_periphdevice
+                           A    92    	XDEF __close_periphdevice
+                           A    93    ;----------------------------------------------
+000001                     A    94    _close_periphdevice:
+000001                     A    95    __close_periphdevice:
+                           A    96    
+                           A    97    
+                           A    98    
+                           A    99    .ifdef _ZSL_DEVICE_PORTA
+                           A   100    	XREF _close_PortA
+                           A   101    
+                           A   102        call _close_PortA					; close
+                           A   103    .endif
+                           A   104    
+ZiLOG Z8 Encore! Macro Assembler Version 2.42 (05021601) 17-Jun-13     10:52:17     page:   3
+
+
+PC     Object              I  Line    Source L:\PHQFBI~D\ROIZBJ~K\zsldevinit.asm
+                           A   105    .ifdef _ZSL_DEVICE_PORTB
+                           A   106    	XREF _close_PortB
+                           A   107    
+                           A   108        call _close_PortB					; close
+                           A   109    .endif
+                           A   110    
+                           A   111    .ifdef _ZSL_DEVICE_PORTC
+                           A   112    	XREF _close_PortC
+                           A   113    
+                           A   114    	call _close_PortC				; close Por
+                           A   115    .endif
+                           A   116    
+                           A   117    .ifdef _ZSL_DEVICE_PORTD
+                           A   118    	XREF _close_PortD
+                           A   119    
+                           A   120        call _close_PortD					; close
+                           A   121    .endif
+                           A   122    
+                           A   123    .ifdef _ZSL_DEVICE_PORTE
+                           A   124    	XREF _close_PortE
+                           A   125    
+                           A   126        call _close_PortE					; close
+                           A   127    .endif
+                           A   128    
+                           A   129    .ifdef _ZSL_DEVICE_PORTF
+                           A   130    	XREF _close_PortF
+                           A   131    
+                           A   132        call _close_PortF					; close
+                           A   133    .endif
+                           A   134    
+                           A   135    .ifdef _ZSL_DEVICE_PORTG
+                           A   136    	XREF _close_PortG
+                           A   137    
+                           A   138        call _close_PortG					; close
+                           A   139    .endif
+                           A   140    
+                           A   141    .ifdef _ZSL_DEVICE_PORTH
+                           A   142    	XREF _close_PortH
+                           A   143    
+                           A   144        call _close_PortH					; close
+                           A   145    .endif
+                           A   146    
+                           A   147    .ifdef _ZSL_DEVICE_UART0
+                           A   148    	XREF _close_UART0
+                           A   149    
+                           A   150    	call _close_UART0				; close UAR
+                           A   151    .endif
+                           A   152    
+                           A   153    .ifdef _ZSL_DEVICE_UART1
+                           A   154    	XREF _close_UART1
+                           A   155    
+                           A   156    	call _close_UART1				; close UAR
+ZiLOG Z8 Encore! Macro Assembler Version 2.42 (05021601) 17-Jun-13     10:52:17     page:   4
+
+
+PC     Object              I  Line    Source L:\PHQFBI~D\ROIZBJ~K\zsldevinit.asm
+                           A   157    .endif
+                           A   158    
+000001 AF                  A   159    	ret
+                           A   160    
+                           A   161    
+                           A   162    ;----------------------------------------------
+                           A   163    .ifdef _ZSL_PORT_USED
+                           A   164    	include "gpio.inc"
+                           A   165    
+                           A   166    .ifdef _MODEL_LARGE
+                           A   167    	segment far_data
+                           A   168    .endif
+                           A   169    .ifdef _MODEL_SMALL
+                           A   170    	segment near_data
+                           A   171    .endif
+                           A   172    
+                           A   173    .ifdef _ZSL_DEVICE_PORTA
+                           A   174    	XDEF _portamask
+                           A   175    _portamask:
+                           A   176    	db PORTAMASK
+                           A   177    .endif
+                           A   178    .ifdef _ZSL_DEVICE_PORTB
+                           A   179    	XDEF _portbmask
+                           A   180    _portbmask:
+                           A   181    	db PORTBMASK
+                           A   182    .endif
+                           A   183    .ifdef _ZSL_DEVICE_PORTC
+                           A   184    	XDEF _portcmask
+                           A   185    _portcmask:
+                           A   186    	db PORTCMASK
+                           A   187    .endif
+                           A   188    .ifdef _ZSL_DEVICE_PORTD
+                           A   189    	XDEF _portdmask
+                           A   190    _portdmask:
+                           A   191    	db PORTDMASK
+                           A   192    .endif
+                           A   193    .ifdef _ZSL_DEVICE_PORTE
+                           A   194    	XDEF _portemask
+                           A   195    _portemask:
+                           A   196    	db PORTEMASK
+                           A   197    .endif
+                           A   198    .ifdef _ZSL_DEVICE_PORTF
+                           A   199    	XDEF _portfmask
+                           A   200    _portfmask:
+                           A   201    	db PORTFMASK
+                           A   202    .endif
+                           A   203    .ifdef _ZSL_DEVICE_PORTG
+                           A   204    	XDEF _portgmask
+                           A   205    _portgmask:
+                           A   206    	db PORTGMASK
+                           A   207    .endif
+                           A   208    .ifdef _ZSL_DEVICE_PORTH
+ZiLOG Z8 Encore! Macro Assembler Version 2.42 (05021601) 17-Jun-13     10:52:17     page:   5
+
+
+PC     Object              I  Line    Source L:\PHQFBI~D\ROIZBJ~K\zsldevinit.asm
+                           A   209    	XDEF _porthmask
+                           A   210    _porthmask:
+                           A   211    	db PORTHMASK
+                           A   212    .endif
+                           A   213    
+                           A   214    
+                           A   215    .endif ;if PORT used
+                           A   216    
+                           A   217    ;----------------------------------------------
+                           A   218    .ifdef _MODEL_LARGE
+                           A   219    	segment far_data
+                           A   220    .endif
+                           A   221    .ifdef _MODEL_SMALL
+                           A   222    	segment near_data
+                           A   223    .endif
+                           A   224    
+                           A   225    	XDEF _g_simulate
+                           A   226    	XDEF _g_clock0
+                           A   227    	XDEF _g_clock1
+                           A   228    	XREF _zsl_g_clock_xdefine
+                           A   229    
+000000                     A   230    _g_simulate:
+                           A   231    .ifdef _SIMULATE
+                           A   232    	db 1
+                           A   233    .else
+000000 00                  A   234    	db 0
+                           A   235    .endif
+                           A   236    
+000001                     A   237    _g_clock0:
+000001                     A   238    _g_clock1:							; The clock
+000001 00                  A   239    	db _zsl_g_clock_xdefine>>24
+000002 00                  A   240    	db _zsl_g_clock_xdefine>>16
+000003 00                  A   241    	db _zsl_g_clock_xdefine>>8
+000004 00                  A   242    	db _zsl_g_clock_xdefine
+                           A   243    
+                           A   244    
+                           A   245    
+                           A   246    ; End of File
+                           A   247    
+
+
+Errors: 0
+Warnings: 0
+Lines Assembled: 248
