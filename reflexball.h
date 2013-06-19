@@ -13,7 +13,7 @@
 #define BALL_HEIGHT			2
 #define STEP_INTERVAL		2
 
-#define BRICK_TABLE_WIDTH	7 // 14
+#define BRICK_TABLE_WIDTH	14
 #define BRICK_TABLE_HEIGHT	20
 
 

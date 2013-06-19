@@ -2,39 +2,50 @@
 #include <sio.h>             // special encore serial i/o routines
 #include "reflexball.h"
 #include "time.h"
+#include "levels.h"
+#include "LED.h"
 
 Ball ball;
 Striker striker;
 Brick bricks[BRICK_TABLE_HEIGHT][BRICK_TABLE_WIDTH];
-unsigned char brickTable[BRICK_TABLE_HEIGHT][BRICK_TABLE_WIDTH];
+unsigned char strikerAngle[STRIKER_MAX_WIDTH/2-1+BALL_WIDTH/2-1];
 
 unsigned long gameTimer;
-unsigned char gameStarted = 0, x1, y1, x2, y2, alive, lives;
+unsigned char gameStarted = 0, x1, y1, x2, y2, alive;
+
 unsigned int score;
+unsigned char lives, level;
 
-unsigned strikerAngle[STRIKER_MAX_WIDTH/2-1+BALL_WIDTH/2-1];
-
-/*
+void printLevel() {
+	gotoxy(x2-35,y2);
+	printf("Level: %d", level+1);
+}
 void printLives() {
-	//const unsigned char heart = 3;
-	gotoxy(x2+3,y1+1);
-	printf("Lives:    %d", lives);
+	gotoxy(x2-25,y2);
+	printf("Lives: %d", lives);
 }
 void printScore() {
 	const unsigned char dollar = 36;
-	gotoxy(x2+3,y1+2);
+	char buf[5];
+
+	gotoxy(x2-15,y2);
 	printf("Score: %04d %c", score, dollar);
+	
+	sprintf(buf,"%04d",score);
+	LEDsetString(buf);
 }
-*/
+
 void printTextCenter(char* string) {
 	gotoxy((x2-x1)/2+x1-strlen(string)/2,(y2-y1)/2+y1);
 	printf("%s",string);
 }
 
 void dead() {
-	if(--lives == 0)
+	if(--lives == 0) {
 		printTextCenter("Game Over!");
-	//printLives();
+		level = 0;
+	}
+	printLives();
 	alive = 0;
 	stopGame();
 }
@@ -114,8 +125,8 @@ void drawBallxy(unsigned char x, unsigned char y) {
 
 				// Check if the ball hit a brick
 				if (y <= bricks[i][j].y+bricks[i][j].height-1 && y+ball.height-1 >= bricks[i][j].y && x+ball.width-1 >= bricks[i][j].x && x <= bricks[i][j].x+bricks[i][j].width-1) {
-
-					// TODO: Skal det hele ikke være <= og >= ? og en af brikkerne dør ikke altid i et corner
+					score++;
+					printScore();
 					
 					// Check if the ball hit the top or the bottom of the brick
 					if (y <= bricks[i][j].y+bricks[i][j].height-1 && y+ball.height-1 >= bricks[i][j].y) {												
@@ -211,29 +222,36 @@ void drawBallxy(unsigned char x, unsigned char y) {
 
 		gotoxyBall(ball.x,ball.y);
 	}
-	else if (y+ball.height-1 > striker.y) { // If you are below the striker then player must be dead	
+	else if ((y+ball.height-1 > striker.y) || (y+ball.height-1 == striker.y && (x+ball.width <= striker.x || x >= striker.x+striker.width))) { // If you are below the striker then player must be dead	
 		dead();
 		gotoxy(x,y);
-	}		
+	}
 	else {
 		if (x <= x1 || x+ball.width >= x2) {
 			ball.vector.x = -ball.vector.x;
 			ball.x += 2*ball.vector.x;
 		}		
-		if ((y <= y1) || (y+ball.height-1 == striker.y && x+ball.width > striker.x && x < striker.x+striker.width)) {						
+		if ((y <= y1) || (y+ball.height-1 == striker.y && x+ball.width > striker.x && x < striker.x+striker.width)) {
 			if (y+ball.height-1 == striker.y) { // Check if we hit the striker
 				score++;
+				printScore();
 	
 				distance = x+ball.width-1 - striker.x;
 
 				if (distance < striker.width/2-1+BALL_WIDTH/2-1) // The ball hit the left side
 					angle = strikerAngle[(((striker.width/2-1)+(BALL_WIDTH/2-1))-1)-distance];
 				else if (distance > striker.width/2+1+BALL_WIDTH/2-1) // The ball hit the right side
-				 	angle = -strikerAngle[distance-(((striker.width/2+1)+(BALL_WIDTH/2-1))+1)];
+				 	angle = -(int)strikerAngle[distance-(((striker.width/2+1)+(BALL_WIDTH/2-1))+1)]; // IMPORTANT: remember to cast to int before the minus sign
 				else
 					angle = 0;
 
 				if (angle != 0) {
+					gotoxy(10,20);
+					printf("                  ");
+					gotoxy(10,20);
+					printf("Rotating: %d", angle);
+
+
 					ball.vector.x >>= 1; // We need to set this back again before rotating
 					rotate(&ball.vector,angle);
 
@@ -256,7 +274,7 @@ void drawBallxy(unsigned char x, unsigned char y) {
 						printFix(ball.vector.x,4);
 					}
 
-					ball.vector.x <<= 1; // The x vector needs to be twice as large do to the y-axis being twice as high on the screen
+					ball.vector.x <<= 1; // The x vector needs to be twice as large due to the y-axis being twice as high on the screen
 				}
 				gotoxy(10,10);
 				printf("%02d %02d",distance,angle);
@@ -293,12 +311,9 @@ void drawStriker() {
 
 void ballPosStriker() {
 	clearBigBall();
-	setBallPos(striker.x+striker.width/2-2,striker.y-2);
+	setBallPos(striker.x+striker.width/2-ball.width/2,striker.y-ball.height);
 	drawBall();
-}
-
-void hideCursor() {
-	gotoxy(300,300); // Put the cursor in the bottom right
+	drawStriker(); // Redraw striker in case the ball clears part of the stikers
 }
 
 void moveStriker(char dir) {
@@ -324,7 +339,6 @@ void moveStriker(char dir) {
 				startGame();
 		}
 	}
-	hideCursor();
 }
 
 void initStriker(unsigned char x, unsigned y, unsigned char width) {
@@ -356,13 +370,11 @@ void initBricks() {
 
 	for (i=0;i<BRICK_TABLE_HEIGHT;i++) {
 		for (j=0;j<BRICK_TABLE_WIDTH;j++) {
-			brickTable[i][j] = 2; // TODO: Lav baner
-
 			bricks[i][j].width = 14;
 			bricks[i][j].height = 2;
 
-			bricks[i][j].lives = brickTable[i][j];
-			bricks[i][j].x = x1+40/*6*/ + (bricks[i][j].width+1)*j;
+			bricks[i][j].lives = levels[level][i][j];
+			bricks[i][j].x = x1+6 + (bricks[i][j].width+1)*j;
 			bricks[i][j].y = y1+10 + (bricks[i][j].height+1)*i;
 			drawBrick(&bricks[i][j]);
 		}
@@ -377,9 +389,11 @@ void startGame() {
 			printTextCenter("          "); // Clear GameOver!
 			initBricks(); // Draw bricks once again
 			lives = NLIVES;			
-			//printLives();
+			printLives();
 			score = 0;
-			//printScore();
+			printScore();
+			level = 0;
+			printLevel();
 		}
 		ballPosStriker();		
 	} else {
@@ -412,7 +426,6 @@ void updateGame() {
 			gameTimer = millis();
 			drawBall();
 		}
-		hideCursor();
 		//gotoxy(10,14);
 		//printf("Speed %d",DEFAULT_DIFFICULTY-score);
 	}	
@@ -426,7 +439,7 @@ void initBall() {
 }
 
 void initReflexBall(unsigned char newX1, unsigned char newY1, unsigned char newX2, unsigned char newY2, char style) {
-	unsigned char leftTop, rightTop, leftBot, rightBot, verSide, horSide, leftCross, rightCross;
+	unsigned char leftTop, rightTop, leftBot, rightBot, verSide, horSide, leftCross, rightCross;	
 
 	x1 = newX1;
 	y1 = newY1;
@@ -465,9 +478,11 @@ void initReflexBall(unsigned char newX1, unsigned char newY1, unsigned char newX
 	gameStarted = 0;
 
 	lives = NLIVES;
-	//printLives();
+	printLives();
 	score = 0;
-	//printScore();
+	printScore();
+	level = 0;
+	printLevel();
 
 	initBricks();
 }

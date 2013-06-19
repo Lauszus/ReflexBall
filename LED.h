@@ -10,12 +10,15 @@
 #define PRE64	(6 << 3);
 #define PRE128	(7 << 3);
 
-#define LED_MAX_STR_LEN	50
-#define SPACES			4
-#define BUFFER_LENGTH	LED_MAX_STR_LEN+SPACES
+//#define STORE_STRING_IN_ROM
 
 void LEDinit();
-void LEDsetString(char rom* string);
-void LEDupdate();
+//void LEDupdate();
+
+#ifdef STORE_STRING_IN_ROM
+void LEDsetString(char rom *string);
+#else
+void LEDsetString(char *string);
+#endif
 
 #endif

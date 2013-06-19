@@ -12,6 +12,6 @@
 #define SIN_SIZE 512
 
 // === LUT DECLARATIONS ===
-extern const signed short SIN[512];
+extern const signed short rom SIN[512];
 
 #endif	// LUT_H

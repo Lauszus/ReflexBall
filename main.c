@@ -2,25 +2,19 @@
 #include <sio.h>             // special encore serial i/o routines
 #include "reflexball.h"
 #include "ansi.h"
-/*#include "LED.h"
-#include "math.h"*/
+#include "LED.h"
 #include "time.h"
 
 //char rom LEDtext[] = "Gruppe 15 er awesome! ß£";
 //char rom LEDtext[] = "Ê¯Â∆ÿ≈µß£";
-/*
-unsigned char serialAvailable() {
-	return U0STAT0 & 0x80;
-}
+//char rom LEDtext[] = "Hej med dig!";
+//char rom LEDtext[] = "    Gruppe 15 £";
+char rom LEDtext[] = "££ ££ ";
 
-char serialRead() {
-	return U0RXD;
-}
-*/
 void main() {
 	int input;
 	initTimers();
-	//LEDinit();
+	LEDinit();
 	//LEDsetString(LEDtext);
 	init_uart(_UART0,_DEFFREQ,BAUD_115200);
 	color(2,4);

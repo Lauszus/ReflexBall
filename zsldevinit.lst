@@ -1,4 +1,4 @@
-ZiLOG Z8 Encore! Macro Assembler Version 2.42 (05021601) 17-Jun-13     10:52:17     page:   1
+ZiLOG Z8 Encore! Macro Assembler Version 2.42 (05021601) 19-Jun-13     13:52:27     page:   1
 
 
 PC     Object              I  Line    Source 
@@ -54,7 +54,7 @@ PC     Object              I  Line    Source
                            A    50        call _open_PortE					; initi
                            A    51    .endif
                            A    52    
-ZiLOG Z8 Encore! Macro Assembler Version 2.42 (05021601) 17-Jun-13     10:52:17     page:   2
+ZiLOG Z8 Encore! Macro Assembler Version 2.42 (05021601) 19-Jun-13     13:52:27     page:   2
 
 
 PC     Object              I  Line    Source L:\PHQFBI~D\ROIZBJ~K\zsldevinit.asm
@@ -110,7 +110,7 @@ PC     Object              I  Line    Source L:\PHQFBI~D\ROIZBJ~K\zsldevinit.asm
                            A   102        call _close_PortA					; close
                            A   103    .endif
                            A   104    
-ZiLOG Z8 Encore! Macro Assembler Version 2.42 (05021601) 17-Jun-13     10:52:17     page:   3
+ZiLOG Z8 Encore! Macro Assembler Version 2.42 (05021601) 19-Jun-13     13:52:27     page:   3
 
 
 PC     Object              I  Line    Source L:\PHQFBI~D\ROIZBJ~K\zsldevinit.asm
@@ -166,7 +166,7 @@ PC     Object              I  Line    Source L:\PHQFBI~D\ROIZBJ~K\zsldevinit.asm
                            A   154    	XREF _close_UART1
                            A   155    
                            A   156    	call _close_UART1				; close UAR
-ZiLOG Z8 Encore! Macro Assembler Version 2.42 (05021601) 17-Jun-13     10:52:17     page:   4
+ZiLOG Z8 Encore! Macro Assembler Version 2.42 (05021601) 19-Jun-13     13:52:27     page:   4
 
 
 PC     Object              I  Line    Source L:\PHQFBI~D\ROIZBJ~K\zsldevinit.asm
@@ -222,7 +222,7 @@ PC     Object              I  Line    Source L:\PHQFBI~D\ROIZBJ~K\zsldevinit.asm
                            A   206    	db PORTGMASK
                            A   207    .endif
                            A   208    .ifdef _ZSL_DEVICE_PORTH
-ZiLOG Z8 Encore! Macro Assembler Version 2.42 (05021601) 17-Jun-13     10:52:17     page:   5
+ZiLOG Z8 Encore! Macro Assembler Version 2.42 (05021601) 19-Jun-13     13:52:27     page:   5
 
 
 PC     Object              I  Line    Source L:\PHQFBI~D\ROIZBJ~K\zsldevinit.asm

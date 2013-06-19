@@ -132,6 +132,7 @@ L:\PHQFBI~D\ROIZBJ~K\LED.obj :  \
             C:\PROGRA~1\ZiLOG\ZDSII_~1.3\include\zilog\uart.h  \
             C:\PROGRA~1\ZiLOG\ZDSII_~1.3\include\zilog\uartdefs.h  \
             L:\PHQFBI~D\ROIZBJ~K\LED.h  \
+            L:\PHQFBI~D\ROIZBJ~K\ansi.h  \
             L:\PHQFBI~D\ROIZBJ~K\charset.h
 	 $(CC)  $(CFLAGS) L:\PHQFBI~D\ROIZBJ~K\LED.c
 
@@ -154,6 +155,7 @@ L:\PHQFBI~D\ROIZBJ~K\main.obj :  \
             C:\PROGRA~1\ZiLOG\ZDSII_~1.3\include\zilog\SIO.H  \
             C:\PROGRA~1\ZiLOG\ZDSII_~1.3\include\zilog\uart.h  \
             C:\PROGRA~1\ZiLOG\ZDSII_~1.3\include\zilog\uartdefs.h  \
+            L:\PHQFBI~D\ROIZBJ~K\LED.h  \
             L:\PHQFBI~D\ROIZBJ~K\ansi.h  \
             L:\PHQFBI~D\ROIZBJ~K\math.h  \
             L:\PHQFBI~D\ROIZBJ~K\ROIZBJ~K.H  \
@@ -192,7 +194,9 @@ L:\PHQFBI~D\ROIZBJ~K\reflexball.obj :  \
             C:\PROGRA~1\ZiLOG\ZDSII_~1.3\include\zilog\SIO.H  \
             C:\PROGRA~1\ZiLOG\ZDSII_~1.3\include\zilog\uart.h  \
             C:\PROGRA~1\ZiLOG\ZDSII_~1.3\include\zilog\uartdefs.h  \
+            L:\PHQFBI~D\ROIZBJ~K\LED.h  \
             L:\PHQFBI~D\ROIZBJ~K\ansi.h  \
+            L:\PHQFBI~D\ROIZBJ~K\levels.h  \
             L:\PHQFBI~D\ROIZBJ~K\math.h  \
             L:\PHQFBI~D\ROIZBJ~K\ROIZBJ~K.H  \
             L:\PHQFBI~D\ROIZBJ~K\time.h
