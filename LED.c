@@ -73,6 +73,8 @@ void LEDsetString(char *string) {
 #endif
 	unsigned char i, j;
 
+	DI(); // Disbable all interrupts
+
 #ifdef STORE_STRING_IN_ROM
 	stringLength = strlen_rom(string);
 #else
@@ -94,7 +96,11 @@ void LEDsetString(char *string) {
 	for (i = stringLength; i < 4; i++) {
 		for (j = 0; j < 5; j++)
 			videoBuffer[i][j] = character_data[' '-0x20][j];
-	}		
+	}
+
+	digit = column = delayCounter = index = 0;
+
+	EI(); // Enable all interrupts
 }
 
 void moveVideoBuffer() {

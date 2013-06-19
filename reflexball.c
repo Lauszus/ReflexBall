@@ -43,6 +43,7 @@ void printTextCenter(char* string) {
 void dead() {
 	if(--lives == 0) {
 		printTextCenter("Game Over!");
+		LEDsetString("    Game Over!");
 		level = 0;
 	}
 	printLives();
