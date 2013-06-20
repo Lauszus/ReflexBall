@@ -124,8 +124,10 @@ void drawBrick(Brick *brick) {
 				brickStyle = 177;
 			else if (brick->lives == 3)
 				brickStyle = 178;
-			else // 4 lives
-				brickStyle = 219;				
+			else if (brick->lives == 4)
+				brickStyle = 219;
+			else // Invisible
+				brickStyle = ' ';
 			printf("%c",brickStyle);			
 		}
 	}
@@ -346,8 +348,7 @@ void ballPosStriker() {
 	drawStriker(); // Redraw striker in case the ball clears part of the stikers
 }
 
-void moveStriker(char dir) {
-	char step = STEP_INTERVAL;
+void moveStriker(char dir, char step) {
 	unsigned char absStep = step;
 	if (!lives) // If no lives left then return
 		return;	
@@ -430,7 +431,7 @@ void startGame() {
 			printLevel();
 		}
 		ballPosStriker();		
-	} else {
+	} else { // TODO: Replace with: else if (!gameStarted) {
 		initVector(&ball.vector,1,0);
 		startAngle = (millis() & 0x7F) - 192; // Calculate a "random" angle from 0-127 (0-89.3 deg) and then subtract 192 (135 deg)
 
@@ -452,7 +453,7 @@ void startGame() {
 }
 
 void updateGame() {
-	int speed = (int)DEFAULT_DIFFICULTY-score;
+	int speed = (int)DEFAULT_DIFFICULTY-score/10;;
 	if (speed < MAX_DIFFICULTY)
 		speed = MAX_DIFFICULTY;
 	if (millis() - gameTimer > speed) {
@@ -460,8 +461,6 @@ void updateGame() {
 			gameTimer = millis();
 			drawBall();
 		}
-		//gotoxy(10,14);
-		//printf("Speed %d",DEFAULT_DIFFICULTY-score);
 	}	
 }
 
@@ -472,14 +471,20 @@ void initBall() {
 	initVector(&ball.vector,0,0);
 }
 void drawLevel() {
-	initStriker((x2-x1)/2+x1,y2-1,10); // The width of the striker should always be even
+	unsigned char i;
+
+	gotoxy(striker.x,striker.y);
+	for (i=0;i<striker.width;i++)
+		printf(" "); // Clear old striker
+	initStriker((x2-x1)/2+x1,y2-1,20); // The width of the striker should always be even
+
 	initBall(); // Initialize to striker position
 
 	ballPosStriker();
 	alive = 1;
 	gameStarted = 0;
 	
-	printLives();	
+	printLives();
 	printScore();	
 	printLevel();
 
@@ -530,7 +535,7 @@ void initReflexBall(unsigned char newX1, unsigned char newY1, unsigned char newX
 	drawTopBot(x1,x2,leftTop,rightTop,horSide);	   
 	drawSides(x1,y1,x2,y2,verSide);
 
-	level = 0;
+	level = 3;
 	score = 0;
 	lives = NLIVES;
 	drawLevel();

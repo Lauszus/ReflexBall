@@ -7,11 +7,10 @@
 #define STRIKER_MAX_WIDTH	30 // This has to be even
 #define STRIKER_MAX_ANGLE	64 // 360 deg = 512
 #define NLIVES				3
-#define DEFAULT_DIFFICULTY	80 // 40
-#define MAX_DIFFICULTY		20 // If speed gets under this value the UART can no longer keep up
+#define DEFAULT_DIFFICULTY	40
+#define MAX_DIFFICULTY		30 // If speed gets under this value the UART can no longer keep up
 #define BALL_WIDTH			4 // The modulus of this number should be even
 #define BALL_HEIGHT			2
-#define STEP_INTERVAL		2
 
 #define BRICK_TABLE_WIDTH	14
 #define BRICK_TABLE_HEIGHT	20
@@ -37,7 +36,7 @@ void initReflexBall(unsigned char x1, unsigned char y1, unsigned char x2, unsign
 void startGame();
 void updateGame();
 void stopGame();
-void moveStriker(char dir);
+void moveStriker(char dir, char step);
 void levelUp();
 void drawLevel();
 

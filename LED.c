@@ -100,7 +100,7 @@ void LEDsetString(char *string) {
 	}
 	for (i = stringLength; i < 4; i++) {
 		for (j = 0; j < 5; j++)
-			videoBuffer[i][j] = character_data[' '-0x20][j]; // Fill out the rest of the string with spaces if the string is less that four characters
+			videoBuffer[i][j] = character_data[' '-0x20][j]; // Fill out the rest of the string with spaces if the string is less than four characters
 	}
 
 	digit = column = delayCounter = index = 0; // Reset all values used for multiplexing
