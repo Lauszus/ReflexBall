@@ -21,4 +21,6 @@ void LEDsetString(char rom *string);
 void LEDsetString(char *string);
 #endif
 
+void LEDRunOnce(char *firstString, char* secondString);
+
 #endif

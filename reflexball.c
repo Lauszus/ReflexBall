@@ -9,30 +9,49 @@ Ball ball;
 Striker striker;
 Brick bricks[BRICK_TABLE_HEIGHT][BRICK_TABLE_WIDTH];
 unsigned char strikerAngle[STRIKER_MAX_WIDTH/2-1+BALL_WIDTH/2-1];
+unsigned int bricksLives; // Stores the total number of lives of the bricks
 
 unsigned long gameTimer;
 unsigned char gameStarted = 0, x1, y1, x2, y2, alive;
 
 unsigned int score;
 unsigned char lives, level;
+volatile char runOnceBuf[50], ledBuf[50]; // We need this global buffer as the LED code creates a pointer to the memory location
 
 void printLevel() {
 	gotoxy(x2-35,y2);
 	printf("Level: %d", level+1);
 }
-void printLives() {
+void printLives() {	
 	gotoxy(x2-25,y2);
-	printf("Lives: %d", lives);
+	printf("Lives: %d", lives);	
 }
 void printScore() {
-	const unsigned char dollar = 36;
-	char buf[5];
-
 	gotoxy(x2-15,y2);
-	printf("Score: %04d %c", score, dollar);
+	printf("Score: %04d$", score);
+}
+
+void showScoreLED() {
+	sprintf(ledBuf,"%04d",score);
+	LEDsetString(ledBuf);
+}
+void scrollLiveInGameLED() {
+	sprintf(ledBuf,"%04d",score);
+	sprintf(runOnceBuf,"%s$ Lives:%d£ %s ", ledBuf, lives, ledBuf); // We have to put a space behind as the LED routine aborts when it loaded the last character in the 5th digit
 	
-	sprintf(buf,"%04d",score);
-	LEDsetString(buf);
+	LEDRunOnce(runOnceBuf,ledBuf);
+}
+void scrollLevelUp() {
+	sprintf(ledBuf,"%04d", score);
+	sprintf(runOnceBuf,"%s$ Level up!§ Level:%d Lives:%d£ %s ", ledBuf, level+1, lives, ledBuf); // We have to put a space behind as the LED routine aborts when it loaded the last character in the 5th digit
+	
+	LEDRunOnce(runOnceBuf,ledBuf);
+}
+void scrollAll() {
+	sprintf(ledBuf,"%04d",score);
+	sprintf(runOnceBuf,"%s$ Level:%d Lives:%d£ %s ", ledBuf, level+1, lives, ledBuf); // We have to put a space behind as the LED routine aborts when it loaded the last character in the 5th digit
+	
+	LEDRunOnce(runOnceBuf,ledBuf);
 }
 
 void printTextCenter(char* string) {
@@ -43,10 +62,13 @@ void printTextCenter(char* string) {
 void dead() {
 	if(--lives == 0) {
 		printTextCenter("Game Over!");
-		LEDsetString("    Game Over!");
-		level = 0;
+		sprintf(ledBuf,"%04d$ Game Over! Score:", score);
+		LEDsetString(ledBuf);
+	} else {
+		scrollLiveInGameLED();
+		printLives();
 	}
-	printLives();
+
 	alive = 0;
 	stopGame();
 }
@@ -128,6 +150,7 @@ void drawBallxy(unsigned char x, unsigned char y) {
 				if (y <= bricks[i][j].y+bricks[i][j].height-1 && y+ball.height-1 >= bricks[i][j].y && x+ball.width-1 >= bricks[i][j].x && x <= bricks[i][j].x+bricks[i][j].width-1) {
 					score++;
 					printScore();
+					showScoreLED();
 					
 					// Check if the ball hit the top or the bottom of the brick
 					if (y <= bricks[i][j].y+bricks[i][j].height-1 && y+ball.height-1 >= bricks[i][j].y) {												
@@ -207,7 +230,12 @@ void drawBallxy(unsigned char x, unsigned char y) {
 						}						
 					}
 					bricks[i][j].lives--;
+					bricksLives--;				
 					drawBrick(&bricks[i][j]);
+					if (!bricksLives) {
+						levelUp();
+						return;
+					}
 				}			
 			}
 		}
@@ -236,6 +264,7 @@ void drawBallxy(unsigned char x, unsigned char y) {
 			if (y+ball.height-1 == striker.y) { // Check if we hit the striker
 				score++;
 				printScore();
+				showScoreLED();
 	
 				distance = x+ball.width-1 - striker.x;
 
@@ -285,7 +314,7 @@ void drawBallxy(unsigned char x, unsigned char y) {
 		}
 		gotoxyBall(ball.x,ball.y);
 	}
-	drawBigBall();
+	drawBigBall();	
 }
 
 void setBallPos(unsigned char x, unsigned char y) {
@@ -369,12 +398,15 @@ void stopGame() {
 void initBricks() {
 	unsigned char i, j;
 
+	bricksLives = 0; // Reset
+
 	for (i=0;i<BRICK_TABLE_HEIGHT;i++) {
 		for (j=0;j<BRICK_TABLE_WIDTH;j++) {
 			bricks[i][j].width = 14;
 			bricks[i][j].height = 2;
 
 			bricks[i][j].lives = levels[level][i][j];
+			bricksLives += bricks[i][j].lives;
 			bricks[i][j].x = x1+6 + (bricks[i][j].width+1)*j;
 			bricks[i][j].y = y1+10 + (bricks[i][j].height+1)*i;
 			drawBrick(&bricks[i][j]);
@@ -386,14 +418,15 @@ void startGame() {
 	int startAngle;
 	if (!alive) {
 		alive = 1;
-		if (lives == 0) {
-			printTextCenter("          "); // Clear GameOver!
-			initBricks(); // Draw bricks once again
-			lives = NLIVES;			
-			printLives();
+		if (lives == 0) {						
 			score = 0;
-			printScore();
-			level = 0;
+			showScoreLED();
+			initReflexBall(x1,y1,x2,y2,1);
+			printTextCenter("          "); // Clear GameOver!
+
+			gameTimer = 0;
+			printLives();
+			printScore();			
 			printLevel();
 		}
 		ballPosStriker();		
@@ -419,7 +452,7 @@ void startGame() {
 }
 
 void updateGame() {
-	unsigned char speed = DEFAULT_DIFFICULTY-score;
+	int speed = (int)DEFAULT_DIFFICULTY-score;
 	if (speed < MAX_DIFFICULTY)
 		speed = MAX_DIFFICULTY;
 	if (millis() - gameTimer > speed) {
@@ -437,6 +470,32 @@ void initBall() {
 	ball.width = BALL_WIDTH; // This has to be even
 	ball.height = BALL_HEIGHT;
 	initVector(&ball.vector,0,0);
+}
+void drawLevel() {
+	initStriker((x2-x1)/2+x1,y2-1,10); // The width of the striker should always be even
+	initBall(); // Initialize to striker position
+
+	ballPosStriker();
+	alive = 1;
+	gameStarted = 0;
+	
+	printLives();	
+	printScore();	
+	printLevel();
+
+	gameTimer = 0;
+
+	initBricks();
+}
+
+void levelUp() {
+	level++;	
+	if (level >= sizeof(levels)/sizeof(levels[0])) // Make sure we do not exceed the maximum level - TODO: Bo$$ Level
+		level = 0;
+	lives += 2;
+	
+	scrollLevelUp();
+	drawLevel();
 }
 
 void initReflexBall(unsigned char newX1, unsigned char newY1, unsigned char newX2, unsigned char newY2, char style) {
@@ -471,19 +530,9 @@ void initReflexBall(unsigned char newX1, unsigned char newY1, unsigned char newX
 	drawTopBot(x1,x2,leftTop,rightTop,horSide);	   
 	drawSides(x1,y1,x2,y2,verSide);
 
-	initStriker((x2-x1)/2+x1,y2-1,10); // The width of the striker should always be even
-	initBall(); // Initialize to striker position
-
-	ballPosStriker();
-	alive = 1;
-	gameStarted = 0;
-
-	lives = NLIVES;
-	printLives();
-	score = 0;
-	printScore();
 	level = 0;
-	printLevel();
-
-	initBricks();
+	score = 0;
+	lives = NLIVES;
+	drawLevel();
+	scrollAll();
 }

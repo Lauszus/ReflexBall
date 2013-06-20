@@ -8,6 +8,9 @@ unsigned char digit = 0, column = 0, delayCounter = 0, index = 0, stringLength =
 //unsigned char newData = 0;
 char videoBuffer[5][6];
 
+
+volatile char runOnce, *pSecondString;
+
 #ifdef STORE_STRING_IN_ROM
 char rom *pString; // Pointer to string in rom
 #else
@@ -71,9 +74,11 @@ void LEDsetString(char rom *string) {
 #else
 void LEDsetString(char *string) {
 #endif
-	unsigned char i, j;
+	unsigned char i, j;	
 
 	DI(); // Disbable all interrupts
+
+	runOnce = 0; // Reset flag
 
 #ifdef STORE_STRING_IN_ROM
 	stringLength = strlen_rom(string);
@@ -95,12 +100,18 @@ void LEDsetString(char *string) {
 	}
 	for (i = stringLength; i < 4; i++) {
 		for (j = 0; j < 5; j++)
-			videoBuffer[i][j] = character_data[' '-0x20][j];
+			videoBuffer[i][j] = character_data[' '-0x20][j]; // Fill out the rest of the string with spaces if the string is less that four characters
 	}
 
-	digit = column = delayCounter = index = 0;
+	digit = column = delayCounter = index = 0; // Reset all values used for multiplexing
 
 	EI(); // Enable all interrupts
+}
+
+void LEDRunOnce(char *firstString, char* secondString) {	
+	LEDsetString(firstString);
+	runOnce = 1;
+	pSecondString = secondString; // We will save the location of the second string
 }
 
 void moveVideoBuffer() {
@@ -116,7 +127,11 @@ void moveVideoBuffer() {
 	}
 	pString++;
 	if (*pString == '\0') {
-		pString -= stringLength;
+		if (runOnce) { // This wil actually abort when it loads the last character in the 5th digit, so you have to put a space in end of the sentence
+			runOnce = 0;
+			LEDsetString(pSecondString);
+		} else
+			pString -= stringLength;
 	}
 }
 
@@ -133,7 +148,7 @@ void LEDupdate() { // This function is called inside the interrupt
 			digit = 0;
 			if (++column == 6) {
 				column = 0;				
-				if (++delayCounter == 6 && stringLength > 4) {
+				if (++delayCounter == 5 && stringLength > 4) { // We don't have to scroll the text if there is less than four characters
 					delayCounter = 0;				
 					if (++index > 5) {
 						index = 0;

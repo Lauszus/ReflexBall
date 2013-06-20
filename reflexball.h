@@ -38,5 +38,7 @@ void startGame();
 void updateGame();
 void stopGame();
 void moveStriker(char dir);
+void levelUp();
+void drawLevel();
 
 #endif
