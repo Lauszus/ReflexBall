@@ -36,7 +36,7 @@ void initReflexBall(unsigned char x1, unsigned char y1, unsigned char x2, unsign
 void startGame();
 void updateGame();
 void stopGame();
-void moveStriker(char dir, char step);
+void moveStriker(char dir);
 void levelUp();
 void drawLevel();
 

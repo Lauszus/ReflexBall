@@ -83,20 +83,35 @@ void gotoxyBall(long x, long y) {
 	gotoxy(getTerminalCoordinate(x),getTerminalCoordinate(y));
 }
 
+
+void clearBigBall(long x, long y) {
+	gotoxyBall(x,y);
+	printf("    ");
+	gotoxyBall(x,y + (1 << FIX14_SHIFT));
+	printf("    ");
+}
+
+char drawCounter = 0;
+char drawCounterMax = 1;
+
+long lastX, lastY;
+
 void drawBigBall() {
 	unsigned char i, top = 238, bottom = 95, slash = '/', backSlash = '\\';
+
+	if (++drawCounter != drawCounterMax && gameStarted && alive) // Skip this drawing only if the game is running
+		return;
+	drawCounter = 0;
+
+	clearBigBall(lastX,lastY);
+
+	lastX = ball.x;
+	lastY = ball.y;
 
 	gotoxyBall(ball.x,ball.y);
 	printf("%c%c%c%c",slash,top,top,backSlash);
 	gotoxyBall(ball.x,ball.y + (1 << FIX14_SHIFT));
 	printf("%c%c%c%c",backSlash,bottom,bottom,slash);
-}
-
-void clearBigBall() {
-	gotoxyBall(ball.x,ball.y);
-	printf("    ");
-	gotoxyBall(ball.x,ball.y + (1 << FIX14_SHIFT));
-	printf("    ");
 }
 
 void printBallCoor() {
@@ -228,16 +243,20 @@ void drawBallxy(unsigned char x, unsigned char y) {
 							} else if (dontDeflectX) {
 								gotoxy(10,2);
 								printf("dontDeflectX: %d",dontCounter++);
-							}						
+							}
 						}						
 					}
 					bricks[i][j].lives--;
 					bricksLives--;				
 					drawBrick(&bricks[i][j]);
+					drawCounter = drawCounterMax-1; // Make sure it draws the ball in this iteration
 					if (!bricksLives) {
 						levelUp();
 						return;
 					}
+					ball.vector.x >>= 1; // We need to set this back again before rotating
+					rotate(&ball.vector, millis() & 0x3); // Slightly rotate the ball from 0-3, to make the game more exciting
+					ball.vector.x <<= 1; // The x vector needs to be twice as large due to the y-axis being twice as high on the screen
 				}			
 			}
 		}
@@ -250,8 +269,8 @@ void drawBallxy(unsigned char x, unsigned char y) {
 			ball.vector.x = -ball.vector.x;
 			ball.x += 2*ball.vector.x;
 		}
-
-		gotoxyBall(ball.x,ball.y);
+		
+		gotoxyBall(ball.x,ball.y);		
 	}
 	else if ((y+ball.height-1 > striker.y) || (y+ball.height-1 == striker.y && (x+ball.width <= striker.x || x >= striker.x+striker.width))) { // If you are below the striker then player must be dead	
 		dead();
@@ -261,6 +280,7 @@ void drawBallxy(unsigned char x, unsigned char y) {
 		if (x <= x1 || x+ball.width >= x2) {
 			ball.vector.x = -ball.vector.x;
 			ball.x += 2*ball.vector.x;
+			drawCounter = drawCounterMax-1; // Make sure it draws the ball in this iteration
 		}		
 		if ((y <= y1) || (y+ball.height-1 == striker.y && x+ball.width > striker.x && x < striker.x+striker.width)) {
 			if (y+ball.height-1 == striker.y) { // Check if we hit the striker
@@ -313,6 +333,7 @@ void drawBallxy(unsigned char x, unsigned char y) {
 			}
 			ball.vector.y = -ball.vector.y;
 			ball.y += 2*ball.vector.y;
+			drawCounter = drawCounterMax-1; // Make sure it draws the ball in this iteration
 		}
 		gotoxyBall(ball.x,ball.y);
 	}
@@ -325,7 +346,7 @@ void setBallPos(unsigned char x, unsigned char y) {
 }
 
 void drawBall() {
-	clearBigBall();
+	//clearBigBall();
 	if (alive && gameStarted) {
 		ball.x += ball.vector.x;
 		ball.y += ball.vector.y;
@@ -342,33 +363,40 @@ void drawStriker() {
 }
 
 void ballPosStriker() {
-	clearBigBall();
+	clearBigBall(ball.x,ball.y);
 	setBallPos(striker.x+striker.width/2-ball.width/2,striker.y-ball.height);
 	drawBall();
 	drawStriker(); // Redraw striker in case the ball clears part of the stikers
 }
 
-void moveStriker(char dir, char step) {
-	unsigned char absStep = step;
+void moveStriker(char dir) {
+	char absDir = dir;
 	if (!lives) // If no lives left then return
 		return;	
 	if (dir < 0)
-		step = -step;
+		absDir = -dir;
 
-	if (striker.x + step > x1 && striker.x+striker.width-absStep + step < x2) {
-		striker.x += step;
-		drawStriker();
-		if (step < 0) // Negative
-			gotoxy(striker.x+striker.width,striker.y);
-		else
-			gotoxy(striker.x-absStep,striker.y);
-		for (; absStep > 0; absStep--)
-			printf(" "); // Clear old char
-		if (!gameStarted) {
-			ballPosStriker();
-			if (!alive)
-				startGame();
-		}
+	if (striker.x + dir <= x1)
+		striker.x = x1+1;
+	else if (striker.x+striker.width-1 + dir >= x2)
+		striker.x = x2-striker.width;
+	else
+		striker.x += dir;
+
+	if (dir < 0) // Negative
+		gotoxy(striker.x+striker.width,striker.y);
+	else
+		gotoxy(striker.x-absDir,striker.y);
+
+	for (; absDir > 0; absDir--)
+		printf(" "); // Clear old char
+
+	drawStriker();
+
+	if (!gameStarted) {
+		ballPosStriker();
+		if (!alive)
+			startGame();
 	}
 }
 
@@ -452,16 +480,20 @@ void startGame() {
 	}
 }
 
-void updateGame() {
-	int speed = (int)DEFAULT_DIFFICULTY-score/10;;
-	if (speed < MAX_DIFFICULTY)
-		speed = MAX_DIFFICULTY;
-	if (millis() - gameTimer > speed) {
-		if (gameStarted) {
-			gameTimer = millis();
-			drawBall();
-		}
-	}	
+void updateGame() {	
+	int speed = DEFAULT_DIFFICULTY-score/2;
+	if (speed < MAX_DIFFICULTY) {
+		//speed = MAX_DIFFICULTY;
+		if (speed < 0)
+			speed = 0;
+		drawCounterMax = 2;
+	} else
+		drawCounterMax = 1;
+
+	if (millis() - gameTimer > speed && gameStarted) {
+		gameTimer = millis();
+		drawBall();
+	}
 }
 
 void initBall() {

@@ -19,6 +19,8 @@
 <file filter-key="">.\reflexball.c</file>
 <file filter-key="">.\reflexball.h</file>
 <file filter-key="">.\levels.h</file>
+<file filter-key="">.\gameport.c</file>
+<file filter-key="">.\gameport.h</file>
 </files>
 
 <!-- configuration information -->
