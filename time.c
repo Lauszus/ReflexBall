@@ -78,10 +78,10 @@ unsigned char readButtons() {
 	return ((inF >> 1) | ((inF & 0x1) << 1) | (inD << 2));
 }
 
-unsigned char readkey() {
+unsigned char readkey() { // Read button with debounce
 	unsigned char output = readButtons();
-	delay_ms(50);
-	output &= readButtons();
+	delay_ms(50); // Wait 50ms
+	output &= readButtons(); // Check if it is still high
 	return output;
 }
 

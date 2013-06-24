@@ -20,7 +20,8 @@
 <file filter-key="">.\reflexball.h</file>
 <file filter-key="">.\levels.h</file>
 <file filter-key="">.\gameport.c</file>
-<file filter-key="">.\gameport.h</file>
+<file filter-key="">.\startScreen.c</file>
+<file filter-key="">.\startScreen.h</file>
 </files>
 
 <!-- configuration information -->

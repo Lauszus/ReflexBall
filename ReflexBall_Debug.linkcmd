@@ -71,6 +71,7 @@ define __user_frequency = 18432000
  .\math.obj, \
  .\reflexball.obj, \
  .\gameport.obj, \
+ .\startScreen.obj, \
  C:\PROGRA~1\ZiLOG\ZDSII_~1.3\lib\std\crtrevaaLDD.lib, \
  C:\PROGRA~1\ZiLOG\ZDSII_~1.3\lib\std\fpdumyL.obj, \
  C:\PROGRA~1\ZiLOG\ZDSII_~1.3\lib\zilog\zslLYD.lib

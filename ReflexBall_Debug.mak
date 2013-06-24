@@ -58,6 +58,8 @@ clean:
             del L:\PHQFBI~D\ROIZBJ~K\reflexball.obj
 	@if exist L:\PHQFBI~D\ROIZBJ~K\gameport.obj  \
             del L:\PHQFBI~D\ROIZBJ~K\gameport.obj
+	@if exist L:\PHQFBI~D\ROIZBJ~K\startScreen.obj  \
+            del L:\PHQFBI~D\ROIZBJ~K\startScreen.obj
 
 rebuildall: clean Debug
 
@@ -74,7 +76,8 @@ OBJS =  \
             L:\PHQFBI~D\ROIZBJ~K\main.obj  \
             L:\PHQFBI~D\ROIZBJ~K\math.obj  \
             L:\PHQFBI~D\ROIZBJ~K\reflexball.obj  \
-            L:\PHQFBI~D\ROIZBJ~K\gameport.obj
+            L:\PHQFBI~D\ROIZBJ~K\gameport.obj  \
+            L:\PHQFBI~D\ROIZBJ~K\startScreen.obj
 
 ReflexBall: $(OBJS)
 	 $(LINK)  @L:\PHQFBI~D\ROIZBJ~K\ReflexBall_Debug.linkcmd
@@ -163,6 +166,7 @@ L:\PHQFBI~D\ROIZBJ~K\main.obj :  \
             L:\PHQFBI~D\ROIZBJ~K\gameport.h  \
             L:\PHQFBI~D\ROIZBJ~K\math.h  \
             L:\PHQFBI~D\ROIZBJ~K\ROIZBJ~K.H  \
+            L:\PHQFBI~D\ROIZBJ~K\SBD22I~Z.H  \
             L:\PHQFBI~D\ROIZBJ~K\time.h
 	 $(CC)  $(CFLAGS) L:\PHQFBI~D\ROIZBJ~K\main.c
 
@@ -222,4 +226,25 @@ L:\PHQFBI~D\ROIZBJ~K\gameport.obj :  \
             C:\PROGRA~1\ZiLOG\ZDSII_~1.3\include\zilog\uartdefs.h  \
             L:\PHQFBI~D\ROIZBJ~K\ansi.h
 	 $(CC)  $(CFLAGS) L:\PHQFBI~D\ROIZBJ~K\gameport.c
+
+L:\PHQFBI~D\ROIZBJ~K\startScreen.obj :  \
+            L:\PHQFBI~D\ROIZBJ~K\startScreen.c  \
+            C:\PROGRA~1\ZiLOG\ZDSII_~1.3\include\std\FORMAT.H  \
+            C:\PROGRA~1\ZiLOG\ZDSII_~1.3\include\std\STDARG.H  \
+            C:\PROGRA~1\ZiLOG\ZDSII_~1.3\include\std\STDIO.H  \
+            C:\PROGRA~1\ZiLOG\ZDSII_~1.3\include\std\FORMAT.H  \
+            C:\PROGRA~1\ZiLOG\ZDSII_~1.3\include\std\STDARG.H  \
+            C:\PROGRA~1\ZiLOG\ZDSII_~1.3\include\zilog\defines.h  \
+            C:\PROGRA~1\ZiLOG\ZDSII_~1.3\include\zilog\dmadefs.h  \
+            C:\PROGRA~1\ZiLOG\ZDSII_~1.3\include\zilog\ez8.h  \
+            C:\PROGRA~1\ZiLOG\ZDSII_~1.3\include\zilog\gpio.h  \
+            C:\PROGRA~1\ZiLOG\ZDSII_~1.3\include\zilog\SIO.H  \
+            C:\PROGRA~1\ZiLOG\ZDSII_~1.3\include\zilog\uart.h  \
+            C:\PROGRA~1\ZiLOG\ZDSII_~1.3\include\zilog\uartdefs.h  \
+            L:\PHQFBI~D\ROIZBJ~K\LED.h  \
+            L:\PHQFBI~D\ROIZBJ~K\ansi.h  \
+            L:\PHQFBI~D\ROIZBJ~K\math.h  \
+            L:\PHQFBI~D\ROIZBJ~K\ROIZBJ~K.H  \
+            L:\PHQFBI~D\ROIZBJ~K\SBD22I~Z.H
+	 $(CC)  $(CFLAGS) L:\PHQFBI~D\ROIZBJ~K\startScreen.c
 
