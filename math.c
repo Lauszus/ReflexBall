@@ -35,8 +35,7 @@ void printFix(long input, unsigned char decimal) {
 }
 
 long sin(int val) {
-	val -= val & 0xFFFFFE00;
-	return SIN[val]; // & 0x1FF
+	return SIN[val & 0x1FF];
 }
 
 long cos(int val) {
