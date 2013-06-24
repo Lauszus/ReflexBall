@@ -5,7 +5,6 @@
 #include "ansi.h"
 
 unsigned char digit = 0, column = 0, delayCounter = 0, index = 0, stringLength = 0;
-//unsigned char newData = 0;
 char videoBuffer[5][6];
 
 
@@ -34,13 +33,6 @@ void clockLed(unsigned char digit) {
 		PEOUT &= ~(1 << 6);
 		PEOUT |= (1 << 6);
 	}
-}
-
-unsigned char strlen_rom(char rom* string) {
-	unsigned char length = 0;
-	while(*string++ != '\0')
-		length++;
-	return length;
 }
 
 unsigned char convertChar(char input) { // Convert to some of our own characters
@@ -100,7 +92,7 @@ void LEDsetString(char *string) {
 	}
 	for (i = stringLength; i < 4; i++) {
 		for (j = 0; j < 5; j++)
-			videoBuffer[i][j] = character_data[' '-0x20][j]; // Fill out the rest of the string with spaces if the string is less than four characters
+			videoBuffer[i][j] = character_data[' '-0x20][j]; // Fill out the rest of the string with spaces if the string is less than five characters
 	}
 
 	digit = column = delayCounter = index = 0; // Reset all values used for multiplexing
@@ -108,7 +100,7 @@ void LEDsetString(char *string) {
 	EI(); // Enable all interrupts
 }
 
-void LEDRunOnce(char *firstString, char* secondString) {	
+void LEDRunOnce(char *firstString, char* secondString) { // Used to sroll the first string once and then show the second string afterwards	
 	LEDsetString(firstString);
 	runOnce = 1;
 	pSecondString = secondString; // We will save the location of the second string
@@ -120,13 +112,13 @@ void moveVideoBuffer() {
 	for (i=0; i < 5; i++) {
 		for (j=0;j<5;j++) {
 			if (i < 4)
-				videoBuffer[i][j] = videoBuffer[i+1][j];
+				videoBuffer[i][j] = videoBuffer[i+1][j]; // Shift all one to the left
 			else
-				videoBuffer[4][j] = character_data[convertChar(*pString)-0x20][j];
+				videoBuffer[4][j] = character_data[convertChar(*pString)-0x20][j]; // Read the next character in the string
 		}
 	}
 	pString++;
-	if (*pString == '\0') {
+	if (*pString == '\0') { // Check if we have reached the end of the string
 		if (runOnce) { // This wil actually abort when it loads the last character in the 5th digit, so you have to put a space in end of the sentence
 			runOnce = 0;
 			LEDsetString(pSecondString);
@@ -136,33 +128,28 @@ void moveVideoBuffer() {
 }
 
 void LEDupdate() { // This function is called inside the interrupt
-	//if (newData) {
-		//newData = 0;
-		PGOUT = (PGOUT & 0x80) | *(&videoBuffer[0][0] + digit*6 + column + index);
-		PEOUT |= 0x1F;
-		PEOUT &= ~(1 << (4-column));
-
-		clockLed(digit);
-		
-		if (++digit == 4) {
-			digit = 0;
-			if (++column == 6) {
-				column = 0;				
-				if (++delayCounter == 5 && stringLength > 4) { // We don't have to scroll the text if there is less than four characters
-					delayCounter = 0;				
-					if (++index > 5) {
-						index = 0;
-						moveVideoBuffer();
-					}
+	PGOUT = (PGOUT & (1 << 7)) | *(&videoBuffer[0][0] + digit*6 + column + index);
+	PEOUT |= 0x1F; // Set all cathodes high
+	PEOUT &= ~(1 << (4-column)); // Set one cathodes low decided by column
+	
+	clockLed(digit);
+	if (++digit == 4) {
+		digit = 0;
+		if (++column == 5) {
+			column = 0;
+			if (++delayCounter == SCROLL_SPEED && stringLength > 4) { // We don't have to scroll the text if there is less than five characters
+				delayCounter = 0;				
+				if (++index > 5) {
+					index = 0;
+					moveVideoBuffer();
 				}
 			}
 		}
-	//}
+	}
 }
 
 #pragma interrupt
 void timer2int() {
-	//newData = 1;
 	LEDupdate();
 }
 

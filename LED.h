@@ -10,6 +10,8 @@
 #define PRE64	(6 << 3);
 #define PRE128	(7 << 3);
 
+#define SCROLL_SPEED	5
+
 //#define STORE_STRING_IN_ROM
 
 void LEDinit();
