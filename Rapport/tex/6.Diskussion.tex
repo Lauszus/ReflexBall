@@ -1,0 +1,27 @@
+\newpage
+\chapter{Diskussion}
+In this section we briefly discuss some of the design choises we have made as well as some expansions we have included in design and finally ideas for further improvements.\\
+
+Below some of the minor modifications we have made in comparison with the design given in the assignment is shown.
+
+\begin{itemize}
+\item the release\_can signal has been removed from the code as it doesn't have any real function and therefore, in our opinion, only serves to make the code more confusing. In a practical situation it would be a very quick operation to re-add the release\_can signal.
+
+\item Added coin1 signal which as the name implies is a coin value of 1. we felt this was a logic expansion as most people have 1kr. coins in their purse. As coin1 is placed on one of the buttons on the Basys Board, Reset is instead put on a switch.
+\end{itemize}
+
+In our design of the vending machine we have included the following bigger modifications (expansions).
+
+\begin{itemize}
+\item Decimal display instead of Hexadecimal display. This is done for both the price and sum outputs displayed on the LEDs. The conversion from a bit-vector to decimal is done with a BCD in the display\_driver.
+
+\item Blink on the display when the alarm signal is asserted. This will cause all both sum and price to blink on a 3Hz clock. The 3Hz clock is made by clock dividing the 763Hz clock display in the clock\_manager.
+
+\item Product names on LED display. When a product is chosen it's name is being displayed for approximately 2 seconds on the LEDs. All others operations can still be done while the product is displayed.
+
+\item Different products to choose from. This includes the 3 products being cola, aqua and hash. These products have different prices which are set when a product is chosen. Choosing a new product will not reset the sum (the total coin amount inserted).
+\end{itemize}
+
+Having designed the circuit with the expansions that we wanted, there is especially one idea that we had to leave unimplemented.\\
+
+When designing the machine we felt one aspect missing was making the machine able to repay the left-over coin amount when a product is purchased with a cash\_out signal. A good way to implement this would be to integer divide the left-over amount with 5 then divide the left-over from this division with 2 and finally divide with 1. In this way it is known how many 5-coins, how many 2-coins and how many 1-coins should be payed back to the user. We find that paying the customers back with these coin amounts makes sense as the machine is running on them and therefore seldomly runs out of them. We have chosen not to implement this an expansion however, as we have no place to send these coin values to. We could of course try to display the cash\_out as sentences on the display, telling the customer how many coins of which amounts was returned, but then again it is hard to write on the seven-segment displays as many letters (like M) cannot be displayed on them properly.
