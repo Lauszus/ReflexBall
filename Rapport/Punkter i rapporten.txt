@@ -1,0 +1,44 @@
+Structure
+	- Basics
+		? Keyboard input
+		? Bevægelig bold og striker (med clear)
+		? Reflex-logik på kanter og hjørner
+		? Game start og game over
+		
+	- Advanced
+		? Liv
+		? Score
+		? Hastighed
+		? Random startvinkel
+		? Striker zones (maksvinkel hardcoded)
+		? Kompensere for forskel i x- og y-længde af karaktererne i terminalen
+		? Internt 18.14 koordinatsystem
+		
+	- Brikker
+		? Tegne brikker
+			§ Baner der let kan gemmes i et array i ROM'en
+			§ Levels i ROM
+		? Tjekke om man rammer brikker
+			§ Højre/venstre og oppe/nede
+			§ Kanter?
+		? Trække liv fra brikkerne
+		? Lave deflect på baggrund af om der er brikker omkring brikken
+			§ Forklare tilfældene med at ramme to brikker af gangen
+			§ Forklare tilfældene med at ramme flere hjørner
+		? Briklogik korrigeret fordi der bevæges 2 karakterer i x-retningen
+	
+		
+	- Display
+		? Videobuffer
+		? Opdatere LED i interrupt
+		
+	- Styring med rat
+		? Gameport breakout board
+		? Gameport driver
+		? ADC-converter
+		? (Kalibreringsrutine og linearitet)
+		? Manuel kalibrering
+	
+	- Rettelser og tuning
+		? Random vinkel den bliver roteret hver gang den reflekteres for at bolden ikke bliver fanget i mønstre
+		? Justeret hastighed og lavet så den ku tegner bolden hver anden gang
