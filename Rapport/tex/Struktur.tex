@@ -2,7 +2,7 @@
 \section{Basics}
 Da vi skulle planlægge projektet valgte vi efter en brainstorm at dele projektet op i en mængde delmål vi ville have implementeret. Delmålene i kategorien basics var dem vi skulle implementere for at have et fungerende spil. Vi fandt frem til at det ville være følgende funktionaliteter:
 \begin{itemize}
-\item Keyboard input
+\item \textbf{Keyboard input}
 \item Bevægelig bold og striker (med clear)
 \item Reflex-logik på kanter og hjørner
 \item Game start og game over
@@ -27,10 +27,46 @@ Hvordan implementerede vi keyboardinput?
 \end{itemize}
 
 \section{Brikker}
-
 \begin{itemize}
-
+\item Tegne brikker
+\begin{itemize}
+\item Baner der let kan gemmes i et array i ROM'en
+\item Levels i ROM
 \end{itemize}
+\item Tjekke om man rammer brikker
+\begin{itemize}
+\item Højre/venstre og oppe/nede
+\item Kanter?
+\end{itemize}
+\item Trække liv fra brikkerne
+\item Lave deflect på baggrund af om der er brikker omkring brikken
+\begin{itemize}
+\item Forklare tilfældene med at ramme to brikker af gangen
+\item Forklare tilfældene med at ramme flere hjørner
+\end{itemize}
+\item Briklogik korrigeret fordi der bevæges 2 karakterer i x-retningen
+\end{itemize}
+
+		
+
 \section{Display}
+\begin{itemize}
+\item Videobuffer
+\item Opdatere LED i interrupt
+\end{itemize}
+
 \section{Styring med rat}
+\begin{itemize}
+\item Gameport breakout board
+\item Gameport driver
+\item ADC-converter
+\item (Kalibreringsrutine og linearitet)
+\item Manuel kalibrering
+\end{itemize}
+
+
 \section{Rettelser og fintuning}
+\begin{itemize}
+\item Random vinkel den bliver roteret hver gang den reflekteres for at bolden ikke bliver fanget i mønstre
+\item Justeret hastighed og lavet så den kun tegner bolden hver anden gang
+\end{itemize}
