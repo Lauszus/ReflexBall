@@ -27,8 +27,8 @@ unsigned char getGameportButtons() {
 char readSteeringWheel() {
 	int val = readADC(1);
 
-	gotoxy(50,10);
-	printf("Val: %04d",val);
+	//gotoxy(50,10);
+	//printf("Val: %04d",val);
 
 	// The driving wheel is not linear therefor this table is needed
 	if (val > 1000)

@@ -57,12 +57,8 @@ void timer1int() {
 	mscounter++;
 }
 
-void delay_ms(unsigned long time) {
-	T1CTL &= ~(1 << 7); // TEN - disable timer
-	T1H = 0;
-	T1L = 1;
+void delay_ms(unsigned long time) { // This not that acurate, but good enough for our needs
 	delayTimer = time;
-	T1CTL |= (1 << 7); // TEN - enable timer
 	while(delayTimer);
 }
 

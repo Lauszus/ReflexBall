@@ -2,7 +2,7 @@
 #include <sio.h>             // special encore serial i/o routines
 #include "ansi.h"
 
-void fgcolor(int foreground) {
+void fgcolor(unsigned char foreground) {
 /*  Value      foreground     Value     foreground
     ------------------------------------------------
       0        Black            8       Dark Gray
@@ -22,7 +22,7 @@ void fgcolor(int foreground) {
   printf("%c[%d;%dm", ESC, type, foreground+30);
 }
 
-void bgcolor(int background) {
+void bgcolor(unsigned char background) {
 /* IMPORTANT:   When you first use this function you cannot get back to true white background in HyperTerminal.
    Why is that? Because ANSI does not support true white background (ANSI white is gray to most human eyes).
                 The designers of HyperTerminal, however, preferred black text on white background, which is why
@@ -44,7 +44,7 @@ void bgcolor(int background) {
   printf("%c[%dm", ESC, background+40);
 }
 
-void color(int foreground, int background) { // combination of fgcolor() and bgcolor() - uses less bandwidth
+void color(unsigned char foreground, unsigned char background) { // combination of fgcolor() and bgcolor() - uses less bandwidth
   int type = 22;             // normal text
 	if (foreground > 7) {
 	  type = 1;                // bold text
@@ -65,7 +65,7 @@ void clreol() {
 	printf("%c[K", ESC);	
 }
 
-void gotoxy(int x, int y) {
+void gotoxy(unsigned char x, unsigned char y) {
 	printf("%c[%d;%dH", ESC, y, x);
 }
 
@@ -101,26 +101,29 @@ unsigned char strlen(char* string) {
 	return length;
 }
 
-void drawTopBot(int x1, int x2, unsigned char left, unsigned char right, unsigned char side) {
+void drawTopBot(unsigned char x, unsigned char y, unsigned char width, unsigned char left, unsigned char right, unsigned char side) {
 	int i;
+	gotoxy(x,y);
 	printf("%c",left);
-	for (i=x1+1;i<x2;i++)
+	for (i=0;i<width;i++)
 		printf("%c",side);
-	printf("%c\n",right);
+	printf("%c",right);
 }
 
-void drawSides(int x1, int y1, int x2, int y2, unsigned char side) {
+void drawSides(unsigned char x1, unsigned char y1, unsigned char x2, unsigned char y2, unsigned char side) {
 	int i, j;
 	for (i=y1+1;i<y2;i++) {
 		gotoxy(x1,i);
 		printf("%c",side);
-		for (j=x1+1;j<x2;j++)
-			printf(" ");
+		gotoxy(x2,i);
 		printf("%c",side);
+		//for (j=x1+1;j<x2;j++)
+			//printf(" ");
+		//printf("%c",side);
 	}
 }
 
-void drawBanner(int x1, int y1, unsigned char left, unsigned char right, char* title) {
+void drawBanner(unsigned char x1, unsigned char y1, unsigned char left, unsigned char right, char* title) {
 	gotoxy(x1+1,y1);
 	printf("%c",left);
 	reverse(1);
@@ -137,7 +140,7 @@ void getSavedCursor() {
 	printf("%c[u", ESC);
 }
 
-void window(int x1, int y1, int x2, int y2, char* title, char style) {
+void window(unsigned char x1, unsigned char y1, unsigned char x2, unsigned char y2, char* title, char style) {
 	char* bannerTitle = title;
 	unsigned char leftTop, rightTop, leftBot, rightBot, verSide, horSide, leftCross, rightCross;
 
@@ -161,11 +164,9 @@ void window(int x1, int y1, int x2, int y2, char* title, char style) {
 		rightCross = 195;
 	}
 	
-	gotoxy(x1,y1);
-	drawTopBot(x1,x2,leftTop,rightTop,horSide);
+	drawTopBot(x1,y1,x2-x1-1,leftTop,rightTop,horSide);
 	drawSides(x1,y1,x2,y2,verSide);
-	gotoxy(x1,y2);
-	drawTopBot(x1,x2,leftBot,rightBot,horSide);
+	drawTopBot(x1,y2,x2-x1-1,leftBot,rightBot,horSide);
 	
 	if (strlen(title) >  x2-x1-7)
 		bannerTitle = "Err";

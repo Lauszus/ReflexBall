@@ -32,7 +32,7 @@ typedef struct {
 	unsigned char width, height;
 } Brick;
 
-void initReflexBall(unsigned char x1, unsigned char y1, unsigned char x2, unsigned char y2, char style);
+void initReflexBall(unsigned char newX1, unsigned char newY1, unsigned char newX2, unsigned char newY2, char style);
 void startGame();
 void updateGame();
 void stopGame();

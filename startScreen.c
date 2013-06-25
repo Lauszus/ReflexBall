@@ -1,65 +1,23 @@
 #include <eZ8.h>             // special encore constants, macros and flash routines
 #include <sio.h>             // special encore serial i/o routines
 #include "startScreen.h"
-#include "reflexball.h"
 #include "ansi.h"
 #include "LED.h"
+#include "time.h"
+#include "gameport.h"
+#include "ascii.h"
 
-rom const char titleAscii[11][127] = {
-	"                                                                               )                           (                ) ",
-	"                                                                            ( /(         (                 )\\ )          ( /( ", 
-	"                                                                           )\\) )(        ))\\       (      (()/(      (   )\\())",
-	"                                                                          ((_) ()\\    ((()(_)(   ( )\\      /(_))     )\\ ((_)\\ ",
-	"                                                                          (_()_((_)    )\\ __ )\\  )((_)    (__))     ((_)  ((_)",
-	"                                                                          /\"      \\    (_)\"\"\\())((_) |    |\"  |     |\"  \\/\"  |",
-	"__________        _____.__                __________        .__  .__     |:        |    /    \\_) ||  |    ||  |      \\   \\  / ",
-	"\\______   \\ _____/ ____\\  |   ____ ___  __\\______   \\_____  |  | |  |    |_____/   )   /\' /\\  \\  |:  |    |:  |       \\\\  \\/  ",
-	" |       _// __ \\   __\\|  | _/ __ \\\\  \\/  /|    |  _/\\__  \\ |  | |  |     //      /   //  __\'  \\  \\  |___  \\  |___    /   /   ",
-	" |    |   \\  ___/|  |  |  |_\\  ___/ >    < |    |   \\ / __ \\|  |_|  |__  |:  __   \\  /   /  \\\\  \\( \\_|:  \\( \\_|:  \\  /   /    ",
-	" |____|_  /\\___  >__|  |____/\\___  >__/\\_ \\|______  /(____  /____/____/  |__|  \\___)(___/    \\___)\\_______)\\_______)|___/     ",
-};
+const unsigned char ballMenuYPos[4] = { 40, 48, 55, 64 };
+const unsigned char ballXPos = 85;
+unsigned char ballY, lastBallY;
 
-rom const char menuAscii[10][78] = {
-	"                  /$$      /$$ /$$$$$$$$ /$$   /$$ /$$   /$$                 ",
-	"                 | $$$    /$$$| $$_____/| $$$ | $$| $$  | $$                 ",
-	"                 | $$$$  /$$$$| $$      | $$$$| $$| $$  | $$                 ",
-	"                 | $$ $$/$$ $$| $$$$$   | $$ $$ $$| $$  | $$                 ",
-	"                 | $$  $$$| $$| $$__/   | $$  $$$$| $$  | $$                 ",
-	"                 | $$\\  $ | $$| $$      | $$\\  $$$| $$  | $$                 ",
-	"                 | $$ \\/  | $$| $$$$$$$$| $$ \\  $$|  $$$$$$/                 ",
-	"                 |__/     |__/|________/|__/  \\__/ \\______/                  ",
-	" /$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$",
-	"|___________________________________________________________________________/",
-};
+unsigned char menuState;
+unsigned long timer;
+unsigned char oldButtonsWheel, oldButtonsBoard;
 
-rom const char easyAscii[8][24] = {
-	" ______                ",
- 	"|  ____|               ",
- 	"| |__   __ _ ___ _   _ ",
- 	"|  __| / _` / __| | | |",
- 	"| |___| (_| \\__ \\ |_| |",
- 	"|______\\__,_|___/\\__, |",
-    "                  __/ |",
-    "                 |___/ ",
-};
+unsigned char xMin, yMin, xMax, yMax;
 
-rom const char mediumAscii[6][38] = {
-	" __  __          _ _                 ",
-	"|  \\/  |        | (_)                ",
-	"| \\  / | ___  __| |_ _   _ _ __ ___  ",
-	"| |\\/| |/ _ \\/ _` | | | | | \'_ ` _ \\ ",
-	"| |  | |  __/ (_| | | |_| | | | | | |",
-	"|_|  |_|\\___|\\__,_|_|\\__,_|_| |_| |_|",
-};
-
-rom const char hardAscii[6][25] = {
-	" _    _               _ ",
-	"| |  | |             | |",
-	"| |__| | __ _ _ __ __| |",
-	"|  __  |/ _` | \'__/ _` |",
-	"| |  | | (_| | | | (_| |",
-	"|_|  |_|\\__,_|_|  \\__,_|",
-};
+const char *startString = "Press any key to continue";
 
 unsigned char strlen_rom(rom const char *string) {
 	unsigned char length = 0;
@@ -92,16 +50,164 @@ void printAsciiXY(rom const char *str, unsigned char size, unsigned char x, unsi
 		str++;
 	}
 	moveCursor(BACK,length);
-	saveCursor();
 }
 
-void printMenu(unsigned char x1, unsigned char y1, unsigned char x2, unsigned char y2, char style) {
-	printAsciiXY(titleAscii[0],sizeof(titleAscii)/sizeof(titleAscii[0]),(x1+x2)/2-strlen_rom(titleAscii[0])/2,y1+5);
+void clearMenuBall(unsigned char x, unsigned char y) {
+	gotoxy(x,y);
+	printf("    ");
+	gotoxy(x,y+1);
+	printf("    ");
+}
 
-	window((x1+x2)/2-60, (y1+y2)/2-20, (x1+x2)/2+60, (y1+y2)/2+20, "ReflexBall Rally", style);
-	printAsciiXY(menuAscii[0],sizeof(menuAscii)/sizeof(menuAscii[0]),(x1+x2)/2-strlen_rom(menuAscii[0])/2,(y1+y2)/2-15);
+void drawMenuBall(unsigned char x, unsigned char y) {
+	const unsigned char top = 238, bottom = 95, slash = '/', backSlash = '\\';
 
-	moveCursor(FORWARD,strlen_rom(menuAscii[0])/2-strlen_rom(easyAscii[0])/2);
+	clearMenuBall(ballXPos,lastBallY);
+
+	lastBallY = y;
+
+	gotoxy(x,y);
+	printf("%c%c%c%c",slash,top,top,backSlash);
+	gotoxy(x,y+1);
+	printf("%c%c%c%c",backSlash,bottom,bottom,slash);
+}
+
+void moveBall(char dir) {	
+	if (ballY + dir >= sizeof(ballMenuYPos) || ballY + dir < 0)
+		return;
+
+	ballY += dir;
+	drawMenuBall(ballXPos,ballMenuYPos[ballY]);
+}
+
+void showGameOver() {
+	clrscr();
+	printAsciiXY(gameOverAscii[0],sizeof(gameOverAscii)/sizeof(gameOverAscii[0]),(xMin+xMax)/2-strlen_rom(gameOverAscii[0])/2,(yMin+yMax)/2-(sizeof(gameOverAscii)/sizeof(gameOverAscii[0]))/2-5);
+	moveCursor(DOWN,1);
+	
+	switch (millis() & 0x7) { // Pseudo random number from 0-7
+		case 0:
+			if (strlen_rom(gameOverAscii[0]) > strlen_rom(amigoAscii[0]))
+				moveCursor(FORWARD,strlen_rom(gameOverAscii[0])/2-strlen_rom(amigoAscii[0])/2);	
+			else
+				moveCursor(BACK,strlen_rom(amigoAscii[0])/2-strlen_rom(gameOverAscii[0])/2);
+			saveCursor();
+			printAscii(amigoAscii[0],sizeof(amigoAscii)/sizeof(amigoAscii[0]));
+			break;
+		case 1:
+			if (strlen_rom(gameOverAscii[0]) > strlen_rom(driveAscii[0]))
+				moveCursor(FORWARD,strlen_rom(gameOverAscii[0])/2-strlen_rom(driveAscii[0])/2);	
+			else
+				moveCursor(BACK,strlen_rom(driveAscii[0])/2-strlen_rom(gameOverAscii[0])/2);
+			saveCursor();
+			printAscii(driveAscii[0],sizeof(driveAscii)/sizeof(driveAscii[0])); // Center text below "Game Over!"
+			break;
+		case 2:
+			if (strlen_rom(gameOverAscii[0]) > strlen_rom(havNoBallsAscii[0]))
+				moveCursor(FORWARD,strlen_rom(gameOverAscii[0])/2-strlen_rom(havNoBallsAscii[0])/2);	
+			else
+				moveCursor(BACK,strlen_rom(havNoBallsAscii[0])/2-strlen_rom(gameOverAscii[0])/2);
+			saveCursor();
+			printAscii(havNoBallsAscii[0],sizeof(havNoBallsAscii)/sizeof(havNoBallsAscii[0])); // Center text below "Game Over!"
+			break;
+		case 3:
+			if (strlen_rom(gameOverAscii[0]) > strlen_rom(openEyesAscii[0]))
+				moveCursor(FORWARD,strlen_rom(gameOverAscii[0])/2-strlen_rom(openEyesAscii[0])/2);
+			else
+				moveCursor(BACK,strlen_rom(openEyesAscii[0])/2-strlen_rom(gameOverAscii[0])/2);
+			saveCursor();
+			printAscii(openEyesAscii[0],sizeof(openEyesAscii)/sizeof(openEyesAscii[0])); // Center text below "Game Over!"
+			break;
+		case 4:
+			if (strlen_rom(gameOverAscii[0]) > strlen_rom(patienceAscii[0]))
+				moveCursor(FORWARD,strlen_rom(gameOverAscii[0])/2-strlen_rom(patienceAscii[0])/2);	
+			else
+				moveCursor(BACK,strlen_rom(patienceAscii[0])/2-strlen_rom(gameOverAscii[0])/2);
+			saveCursor();
+			printAscii(patienceAscii[0],sizeof(patienceAscii)/sizeof(patienceAscii[0])); // Center text below "Game Over!"
+			break;
+		case 5:
+			if (strlen_rom(gameOverAscii[0]) > strlen_rom(notPassAscii[0]))
+				moveCursor(FORWARD,strlen_rom(gameOverAscii[0])/2-strlen_rom(notPassAscii[0])/2);	
+			else
+				moveCursor(BACK,strlen_rom(notPassAscii[0])/2-strlen_rom(gameOverAscii[0])/2);
+			saveCursor();
+			printAscii(notPassAscii[0],sizeof(notPassAscii)/sizeof(notPassAscii[0])); // Center text below "Game Over!"
+			break;
+		case 6:
+			if (strlen_rom(gameOverAscii[0]) > strlen_rom(thereIsNoBallAscii[0]))
+				moveCursor(FORWARD,strlen_rom(gameOverAscii[0])/2-strlen_rom(thereIsNoBallAscii[0])/2);	
+			else
+				moveCursor(BACK,strlen_rom(thereIsNoBallAscii[0])/2-strlen_rom(gameOverAscii[0])/2);
+			saveCursor();
+			printAscii(thereIsNoBallAscii[0],sizeof(thereIsNoBallAscii)/sizeof(thereIsNoBallAscii[0])); // Center text below "Game Over!"
+			break;
+		case 7:
+			if (strlen_rom(gameOverAscii[0]) > strlen_rom(deadAscii[0]))
+				moveCursor(FORWARD,strlen_rom(gameOverAscii[0])/2-strlen_rom(deadAscii[0])/2);	
+			else
+				moveCursor(BACK,strlen_rom(deadAscii[0])/2-strlen_rom(gameOverAscii[0])/2);
+			saveCursor();
+			printAscii(deadAscii[0],sizeof(deadAscii)/sizeof(deadAscii[0])); // Center text below "Game Over!"
+			break;
+	}
+}
+
+void initStartMenu(unsigned char newX1, unsigned char newY1, unsigned char newX2, unsigned char newY2) {
+	xMin = newX1;
+	yMin = newY1;
+	xMax = newX2;
+	yMax = newY2;
+	
+	blink(1);
+	gotoxy((xMin+xMax)/2-strlen(startString)/2,(yMin+yMax)/2-10);
+	printf("%s",startString);
+	blink(0);	
+
+	printAsciiXY(wheelAscii[0],sizeof(wheelAscii)/sizeof(wheelAscii[0]),(xMin+xMax)/2-strlen_rom(wheelAscii[0])/2,yMax-sizeof(wheelAscii)/sizeof(wheelAscii[0])-15);
+	
+	gotoxy((xMin+xMax)/2-strlen_rom(titleAscii1[0])/2,(yMin+yMax)/2-25);
+	saveCursor();
+	
+	timer = 0;
+}
+
+unsigned char startMenu() {
+	if (millis() - timer > 200) {
+		timer = millis();		
+
+		switch (menuState) {
+			case 0:
+				printAscii(titleAscii1[0],sizeof(titleAscii1)/sizeof(titleAscii1[0]));
+				moveCursor(UP,sizeof(titleAscii1)/sizeof(titleAscii1[0]));
+				saveCursor();
+				menuState = 1;
+				break;
+			 case 1:
+				printAscii(titleAscii2[0],sizeof(titleAscii2)/sizeof(titleAscii2[0]));
+				moveCursor(UP,sizeof(titleAscii2)/sizeof(titleAscii2[0]));
+				saveCursor();
+				menuState = 0;
+				break;
+		}
+	}
+
+	if (getGameportButtons()) {
+ 		oldButtonsWheel = getGameportButtons(); // Update oldButtons value, so it doesn't skip the next menu
+ 	    return 1;
+ 	} else if (readButtons()) {
+		oldButtonsWheel = readButtons(); // Update oldButtons value, so it doesn't skip the next menu
+ 	    return 1;
+	} else if (kbhit())
+		return 1;
+
+	return 0;
+}
+
+void printMenu() {		
+	printAsciiXY(menuAscii[0],sizeof(menuAscii)/sizeof(menuAscii[0]),(xMin+xMax)/2-strlen_rom(menuAscii[0])/2,(yMin+yMax)/2-15);
+
+	moveCursor(FORWARD,strlen_rom(menuAscii[0])/2-strlen_rom(chuckAscii1[0])/2+10);
 	moveCursor(DOWN,1);
 	saveCursor();
 
@@ -110,4 +216,72 @@ void printMenu(unsigned char x1, unsigned char y1, unsigned char x2, unsigned ch
 	moveCursor(DOWN,1);
 	saveCursor();
 	printAscii(hardAscii[0],sizeof(hardAscii)/sizeof(hardAscii[0]));
+	moveCursor(DOWN,1);
+	saveCursor();
+	
+	menuState = 0;
+	timer = 0;
+
+	ballY = lastBallY = 0;
+	drawMenuBall(ballXPos,ballMenuYPos[ballY]);
+}
+
+unsigned char updateMenu() {
+	int input;
+	unsigned char buttons, buttonsClick;
+
+	switch (menuState) {
+		case 0:
+			if (millis() - timer > 200) {
+				timer = millis();
+				printAscii(chuckAscii1[0],sizeof(chuckAscii1)/sizeof(chuckAscii1[0]));
+				moveCursor(UP,sizeof(chuckAscii1)/sizeof(chuckAscii1[0]));
+				saveCursor();
+				menuState = 1;
+			}
+			break;
+		 case 1:
+			if (millis() - timer > 200) {
+				timer = millis();
+				printAscii(chuckAscii2[0],sizeof(chuckAscii2)/sizeof(chuckAscii2[0]));
+				moveCursor(UP,sizeof(chuckAscii2)/sizeof(chuckAscii2[0]));
+				saveCursor();
+				menuState = 0;
+			}
+			break;
+	}
+	buttons = getGameportButtons();
+	if (buttons != oldButtonsWheel) {
+		buttonsClick = buttons & ~oldButtonsWheel; // Only look at the buttons that have changed
+		oldButtonsWheel = buttons;
+
+		if (buttonsClick & 0x1) // Gear forward
+			moveBall(-1);
+		else if (buttonsClick & 0x4) // Gear backward
+			moveBall(1);
+		else if (buttonsClick & 0xA) // Either of the wheel buttons
+			return 1;
+	} else if (kbhit()) {
+		input = getch();
+		if (input == ' ') // Space
+			return 1;
+		else if (input == 65) // Up
+			moveBall(-1);
+		else if (input == 66) // Down
+			moveBall(1);
+	} else {
+		buttons = readButtons();
+		if (buttons != oldButtonsBoard) {
+			buttonsClick = buttons & ~oldButtonsBoard; // Only look at the buttons that have changed
+			oldButtonsBoard = buttons;
+
+			if (buttonsClick & 0x2) // Center
+				return 1;
+			else if (buttonsClick & 0x4) // Left
+				moveBall(-1);
+			else if (buttonsClick & 0x1) // Right
+				moveBall(1);
+		}
+	}
+	return 0;
 }

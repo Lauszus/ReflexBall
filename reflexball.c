@@ -4,6 +4,8 @@
 #include "time.h"
 #include "levels.h"
 #include "LED.h"
+#include "startScreen.h"
+#include "ascii.h"
 
 Ball ball;
 Striker striker;
@@ -12,11 +14,19 @@ unsigned char strikerAngle[STRIKER_MAX_WIDTH/2-1+BALL_WIDTH/2-1];
 unsigned int bricksLives; // Stores the total number of lives of the bricks
 
 unsigned long gameTimer;
-unsigned char gameStarted = 0, x1, y1, x2, y2, alive;
+unsigned char gameStarted = 0, alive;
+
+unsigned char x1, y1, x2, y2;
 
 unsigned int score;
 unsigned char lives, level;
 volatile char runOnceBuf[50], ledBuf[50]; // We need this global buffer as the LED code creates a pointer to the memory location
+
+char drawCounter = 0;
+char drawCounterMax = 1;
+char drawBallNow;
+
+long lastX, lastY;
 
 void printLevel() {
 	gotoxy(x2-35,y2);
@@ -53,15 +63,17 @@ void scrollAll() {
 	
 	LEDRunOnce(runOnceBuf,ledBuf);
 }
-
+/*
 void printTextCenter(char* string) {
 	gotoxy((x2-x1)/2+x1-strlen(string)/2,(y2-y1)/2+y1);
 	printf("%s",string);
 }
-
+*/
 void dead() {
 	if(--lives == 0) {
-		printTextCenter("Game Over!");
+		//printTextCenter("Game Over!");
+		delay_ms(1000); // Wait a bit before showing Game Over ASCII string
+		showGameOver();
 		sprintf(ledBuf,"%04d$ Game Over! Score:", score);
 		LEDsetString(ledBuf);
 	} else {
@@ -91,16 +103,10 @@ void clearBigBall(long x, long y) {
 	printf("    ");
 }
 
-char drawCounter = 0;
-char drawCounterMax = 1;
-char drawBallNow;
-
-long lastX, lastY;
-
 void drawBigBall() {
 	const unsigned char top = 238, bottom = 95, slash = '/', backSlash = '\\';
 
-	if (++drawCounter != drawCounterMax && gameStarted && alive && !drawBallNow) // Skip this drawing only if the game is running
+	if ((++drawCounter != drawCounterMax && !drawBallNow) || !alive) // Check if we should skip the draweing in this iteration or if the game is not running
 		return;
 	drawCounter = 0;
 	drawBallNow = 0;
@@ -179,15 +185,15 @@ void drawBallxy(unsigned char x, unsigned char y) {
 								if (y+ball.height-1 >= bricks[i][j].y && y <= bricks[i][j].y) { // Top left or right corner on brick
 									if (i > 0 && bricks[i-1][j].lives) { // Make sure that there can actually be a brick above it
 										dontDeflectY = 1; // Don't deflect it
-										gotoxy(x2-20,2);
-										printf("Alive above! %04d",dontCounter++);
+										//gotoxy(x2-20,2);
+										//printf("Alive above! %04d",dontCounter++);
 									}
 								}
 								if (y <= bricks[i][j].y+bricks[i][j].height-1 && y+ball.height-1 >= bricks[i][j].y+bricks[i][j].height-1) { // Bottom left or right corner on brick
 									if (i+1 < BRICK_TABLE_HEIGHT && bricks[i+1][j].lives) { // Make sure that there can actually be a brick underneath it
 										dontDeflectY = 1; // Don't deflect it
-										gotoxy(x2-20,2);
-										printf("Alive below! %04d",dontCounter++);
+										//gotoxy(x2-20,2);
+										//printf("Alive below! %04d",dontCounter++);
 									}
 								}
 							} else if (y == bricks[i][j].y)
@@ -196,28 +202,28 @@ void drawBallxy(unsigned char x, unsigned char y) {
 							if (y+ball.height-1 >= bricks[i][j].y && y <= bricks[i][j].y) { // Top of brick
 								if (ball.vector.y & 0x80000000) { // Negative
 									dontDeflectY = 1; // Don't deflect it
-									gotoxy(x2-20,6);
-									printf("Top negative! %04d",dontCounter++);
+									//gotoxy(x2-20,6);
+									//printf("Top negative! %04d",dontCounter++);
 								}
 							}
 							if (y <= bricks[i][j].y+bricks[i][j].height-1 && y+ball.height-1 >= bricks[i][j].y+bricks[i][j].height-1) { // Bottom of brick
-								gotoxy(x2-20,6);
-								printf("Bottom ");
+								//gotoxy(x2-20,6);
+								//printf("Bottom ");
 								if (!(ball.vector.y & 0x80000000)) { // Positive
 									dontDeflectY = 1; // Don't deflect it
-									printf("positive! %04d",dontCounter++);
-								} else
-									printf("negative! %04d",dontCounter++);
+									//printf("positive! %04d",dontCounter++);
+								} /*else
+									printf("negative! %04d",dontCounter++);*/
 							}
 							
 							if (!dontDeflectY) {
 								deflectedY = 1;
 								ball.vector.y = -ball.vector.y;
 								ball.y += 2*ball.vector.y;
-							} else if (dontDeflectY) {
+							} /*else if (dontDeflectY) {
 								gotoxy(10,4);
 								printf("dontDeflectY: %d",dontCounter++);
-							}
+							}*/
 						}
 					}
 					// Check if the ball hit one of the sides of the brick
@@ -227,15 +233,15 @@ void drawBallxy(unsigned char x, unsigned char y) {
 								if (x+ball.width-1 == bricks[i][j].x || x+ball.width-2 == bricks[i][j].x) { // Top or bottom left side
 									if (j > 0 && bricks[i][j-1].lives) { // Check if there is one alive to the left of the brick
 										dontDeflectX = 1; // Don't deflect it
-										gotoxy(x2-20,4);
-										printf("Alive left! %04d",dontCounter++);
+										//gotoxy(x2-20,4);
+										//printf("Alive left! %04d",dontCounter++);
 									}
 								}
 								if (x == bricks[i][j].x+bricks[i][j].width-1 || x == bricks[i][j].x+bricks[i][j].width-2) { // Top or bottom right side
 									if (j+1 < BRICK_TABLE_WIDTH && bricks[i][j+1].lives) { // Check if there is one alive to the right of the brick
 										dontDeflectX = 1; // Don't deflect it
-										gotoxy(x2-20,4);
-										printf("Alive right! %04d",dontCounter++);
+										//gotoxy(x2-20,4);
+										//printf("Alive right! %04d",dontCounter++);
 									}
 								}
 							}
@@ -243,15 +249,15 @@ void drawBallxy(unsigned char x, unsigned char y) {
 							if (x+ball.width-1 == bricks[i][j].x || x+ball.width-2 == bricks[i][j].x) { // Left side
 								if (ball.vector.x & 0x80000000) { // Negative
 									dontDeflectX = 1; // Don't deflect it
-									gotoxy(x2-20,8);
-									printf("Left negative! %04d",dontCounter++);
+									//gotoxy(x2-20,8);
+									//printf("Left negative! %04d",dontCounter++);
 								}
 							}
 							if (x == bricks[i][j].x+bricks[i][j].width-1 || x == bricks[i][j].x+bricks[i][j].width-2) { // Right side
 								if (!(ball.vector.x & 0x80000000)) { // Positive
 									dontDeflectX = 1; // Don't deflect it
-									gotoxy(x2-20,8);
-									printf("Right positive! %04d",dontCounter++);
+									//gotoxy(x2-20,8);
+									//printf("Right positive! %04d",dontCounter++);
 								}
 							}
 	
@@ -259,14 +265,14 @@ void drawBallxy(unsigned char x, unsigned char y) {
 								if (y < bricks[i][j].y) { // Top
 									if (!(ball.vector.y & 0x80000000) && !(i > 0 && bricks[i-1][j].lives)) { // Check if it is positive and make sure there is no brick above
 										dontDeflectX = 1; // Don't deflect it
-										gotoxy(x2-20,14);
-										printf("Top none above! %04d",dontCounter++);
+										//gotoxy(x2-20,14);
+										//printf("Top none above! %04d",dontCounter++);
 									}
 								} else { // Bottom
 									if (ball.vector.y & 0x80000000 && !(i+1 < BRICK_TABLE_HEIGHT && bricks[i+1][j].lives)) { // Check if it is negative and make sure there is no brick below
 										dontDeflectX = 1; // Don't deflect it
-										gotoxy(x2-20,14);
-										printf("Bottom none below! %04d",dontCounter++);
+										//gotoxy(x2-20,14);
+										//printf("Bottom none below! %04d",dontCounter++);
 									}
 								}								
 							}
@@ -275,13 +281,15 @@ void drawBallxy(unsigned char x, unsigned char y) {
 								deflectedX = 1;
 								ball.vector.x = -ball.vector.x;
 								ball.x += 2*ball.vector.x;
-							} else if (dontDeflectX) {
+							} /*else if (dontDeflectX) {
 								gotoxy(10,2);
 								printf("dontDeflectX: %d",dontCounter++);
-							}
+							}*/
 						}						
 					}
 					bricks[i][j].lives--;
+					//if (!bricks[i][j].lives)
+						//score++;
 					bricksLives--;				
 					drawBrick(&bricks[i][j]);
 					if (!bricksLives) {
@@ -290,8 +298,8 @@ void drawBallxy(unsigned char x, unsigned char y) {
 					}
 					ball.vector.x >>= 1; // We need to set this back again before rotating
 					angle = (int)(millis() & 0x7) - 3; // Pseudo random number from -3 to 4
-					gotoxy(x1+10,y2-10);
-					printf("Angle: %02d", angle);
+					//gotoxy(x1+10,y2-10);
+					//printf("Angle: %02d", angle);
 					rotate(&ball.vector, angle); // Slightly rotate the ball from -3 to 4, to make the game more exciting
 					ball.vector.x <<= 1; // The x vector needs to be twice as large due to the y-axis being twice as high on the screen
 				}			
@@ -299,8 +307,8 @@ void drawBallxy(unsigned char x, unsigned char y) {
 		}
 	
 		if (dontDeflectX && dontDeflectY) {
-			gotoxy(x2-20,12);
-			printf("CornerHit: %d",dontCounter++);
+			//gotoxy(x2-20,12);
+			//printf("CornerHit: %d",dontCounter++);
 			ball.vector.y = -ball.vector.y;
 			ball.y += 2*ball.vector.y;
 			ball.vector.x = -ball.vector.x;
@@ -320,7 +328,7 @@ void drawBallxy(unsigned char x, unsigned char y) {
 		}		
 		if ((y <= y1) || (y+ball.height-1 == striker.y && x+ball.width > striker.x && x < striker.x+striker.width)) {
 			if (y+ball.height-1 == striker.y) { // Check if we hit the striker
-				score++;
+				//score++;
 				printScore();
 				showScoreLED();
 	
@@ -334,38 +342,37 @@ void drawBallxy(unsigned char x, unsigned char y) {
 					angle = 0;
 
 				if (angle != 0) {
-					gotoxy(10,20);
+					/*gotoxy(10,20);
 					printf("                  ");
 					gotoxy(10,20);
-					printf("Rotating: %d", angle);
+					printf("Rotating: %d", angle);*/
 
 
 					ball.vector.x >>= 1; // We need to set this back again before rotating
 					rotate(&ball.vector,angle);
 
 					if (((ball.vector.y >> 12) & 0x7) == 0) { // Check if below 1/4 or approximately 15 degrees
-						gotoxy(10,16);
-
+						/*gotoxy(10,16);
 						printf("BeforeY: ");
-						printFix(ball.vector.y,4);
+						printFix(ball.vector.y,4);*/
 						ball.vector.y = 1 << 12; // 1/4
-						printf(" AfterY: ");
-						printFix(ball.vector.y,4);
+						/*printf(" AfterY: ");
+						printFix(ball.vector.y,4);*/
 				
-						printf(" BeforeX: ");
-						printFix(ball.vector.x,4);
+						/*printf(" BeforeX: ");
+						printFix(ball.vector.x,4);*/
 						if (ball.vector.x & 0x80000000) // Negative
-							ball.vector.x = -15864; // -(cos(arcsin(1/4)) << 14)
+							ball.vector.x = -(long)15864; // -(cos(arcsin(1/4)) << 14)
 						else
 							ball.vector.x = 15864; // cos(arcsin(1/4)) << 14
-						printf(" AfterX: ");
-						printFix(ball.vector.x,4);
+						/*printf(" AfterX: ");
+						printFix(ball.vector.x,4);*/
 					}
 
 					ball.vector.x <<= 1; // The x vector needs to be twice as large due to the y-axis being twice as high on the screen
 				}
-				gotoxy(10,10);
-				printf("%02d %02d",distance,angle);
+				/*gotoxy(10,10);
+				printf("%02d %02d",distance,angle);*/
 			}
 			ball.vector.y = -ball.vector.y;
 			ball.y += 2*ball.vector.y;
@@ -452,10 +459,10 @@ void initStriker(unsigned char x, unsigned y, unsigned char width) {
 
 	dAngle = STRIKER_MAX_ANGLE/strikerZones; // Delta angle between striker characters
 
-	gotoxy(10,8);
+	//gotoxy(10,8);
 	for (i = 1; i <= strikerZones; i++) {
 		strikerAngle[i-1] = dAngle*i; // Fill in the array - the longer distance from the center, the larger angle it will be reflected with
-		printf("%d ", strikerAngle[i-1]);
+		//printf("%d ", strikerAngle[i-1]);
 	}
 }
 
@@ -476,7 +483,7 @@ void initBricks(char clear) {
 			bricks[i][j].lives = levels[level][i][j];
 			bricksLives += bricks[i][j].lives;
 			bricks[i][j].x = x1+6 + (bricks[i][j].width+1)*j;
-			bricks[i][j].y = y1+14 + (bricks[i][j].height+1)*i;
+			bricks[i][j].y = y1+3 + (bricks[i][j].height+1)*i;
 			if (bricks[i][j].lives || clear)
 				drawBrick(&bricks[i][j]);
 		}
@@ -491,7 +498,7 @@ void startGame() {
 			score = 0;
 			showScoreLED();
 			initReflexBall(x1,y1,x2,y2,1);
-			printTextCenter("          "); // Clear GameOver!
+			//printTextCenter("          "); // Clear GameOver!
 
 			gameTimer = 0;
 			printLives();
@@ -503,15 +510,15 @@ void startGame() {
 		initVector(&ball.vector,1,0);
 		startAngle = (millis() & 0x7F) - 192; // Calculate a "random" angle from 0-127 (0-89.3 deg) and then subtract 192 (135 deg)
 
-		gotoxy(10,6);
-		printf("Start angle: %02d",(startAngle*360)/512);
+		//gotoxy(10,6);
+		//printf("Start angle: %02d",(startAngle*360)/512);
 		
-		rotate(&ball.vector, startAngle); 
+		rotate(&ball.vector, startAngle);
 		
-		printf(" ");
+		/*printf(" ");
 		printFix(ball.vector.x,4);
 		printf(" ");
-		printFix(ball.vector.y,4);
+		printFix(ball.vector.y,4);*/
 
 		ball.vector.x <<= 1; // The x vector needs to be twice as large due to the y-axis being twice as high on the screen
 		gameTimer = 0;
@@ -550,11 +557,11 @@ void drawLevel(char clear) {
 	initStriker((x2-x1)/2+x1,y2-1,20); // The width of the striker should always be even
 
 	initBall(); // Initialize to striker position
-
-	ballPosStriker();
+	
 	alive = 1;
 	gameStarted = 0;
-	
+	ballPosStriker();
+
 	printLives();
 	printScore();	
 	printLevel();
@@ -566,7 +573,7 @@ void drawLevel(char clear) {
 
 void levelUp() {
 	level++;	
-	if (level >= sizeof(levels)/sizeof(levels[0])) // Make sure we do not exceed the maximum level - TODO: Bo$$ Level
+	if (level >= sizeof(levels)/sizeof(levels[0])) // Make sure we do not exceed the maximum level
 		level = 0;
 	lives += 2;
 	
@@ -575,7 +582,7 @@ void levelUp() {
 }
 
 void initReflexBall(unsigned char newX1, unsigned char newY1, unsigned char newX2, unsigned char newY2, char style) {
-	unsigned char leftTop, rightTop, leftBot, rightBot, verSide, horSide, leftCross, rightCross;	
+	unsigned char leftTop, rightTop, leftBot, rightBot, verSide, horSide, leftCross, rightCross;
 
 	x1 = newX1;
 	y1 = newY1;
@@ -602,14 +609,19 @@ void initReflexBall(unsigned char newX1, unsigned char newY1, unsigned char newX
 		rightCross = 195;
 	}
 
-	lastX = (long)((x1+x2)/2) << FIX14_SHIFT; // Set this to the center of the map, so it clears the ball correctly the first time
-	lastY = (long)((y1+y2)/2) << FIX14_SHIFT;
+	lastX = (long)((x1+x2)/2) << FIX14_SHIFT; // Sets the last ball coordinates to the bottom of the map, so it clears the ball correctly the first time
+	lastY = (long)(y2+4) << FIX14_SHIFT;
 
 	gotoxy(x1,y1);
-	drawTopBot(x1,x2,leftTop,rightTop,horSide);	   
-	drawSides(x1,y1,x2,y2,verSide);	
+	clrscr();
+	
+	// Put the title in the top of the screen - this is done when animateTitle() is called inside updateGame()
+	printAsciiXY(titleAscii1[0],sizeof(titleAscii1)/sizeof(titleAscii1[0]),(x1+x2)/2-strlen_rom(titleAscii1[0])/2,y1/2-(sizeof(titleAscii1)/sizeof(titleAscii1[0]))/2);
 
-	level = 2;
+	drawSides(x1,y1,x2,y2,verSide);	
+	drawTopBot(x1,y1,x2-x1-1,leftTop,rightTop,horSide);
+	
+	level = 0;
 	score = 0;
 	lives = NLIVES;
 	drawLevel(0);
