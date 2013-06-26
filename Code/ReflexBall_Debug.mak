@@ -58,10 +58,10 @@ clean:
             del L:\PHQFBI~D\ROIZBJ~K\reflexball.obj
 	@if exist L:\PHQFBI~D\ROIZBJ~K\gameport.obj  \
             del L:\PHQFBI~D\ROIZBJ~K\gameport.obj
-	@if exist L:\PHQFBI~D\ROIZBJ~K\startScreen.obj  \
-            del L:\PHQFBI~D\ROIZBJ~K\startScreen.obj
 	@if exist L:\PHQFBI~D\ROIZBJ~K\ascii.obj  \
             del L:\PHQFBI~D\ROIZBJ~K\ascii.obj
+	@if exist L:\PHQFBI~D\ROIZBJ~K\asciiDisplay.obj  \
+            del L:\PHQFBI~D\ROIZBJ~K\asciiDisplay.obj
 
 rebuildall: clean Debug
 
@@ -79,8 +79,8 @@ OBJS =  \
             L:\PHQFBI~D\ROIZBJ~K\math.obj  \
             L:\PHQFBI~D\ROIZBJ~K\reflexball.obj  \
             L:\PHQFBI~D\ROIZBJ~K\gameport.obj  \
-            L:\PHQFBI~D\ROIZBJ~K\startScreen.obj  \
-            L:\PHQFBI~D\ROIZBJ~K\ascii.obj
+            L:\PHQFBI~D\ROIZBJ~K\ascii.obj  \
+            L:\PHQFBI~D\ROIZBJ~K\asciiDisplay.obj
 
 ReflexBall: $(OBJS)
 	 $(LINK)  @L:\PHQFBI~D\ROIZBJ~K\ReflexBall_Debug.linkcmd
@@ -170,7 +170,7 @@ L:\PHQFBI~D\ROIZBJ~K\main.obj :  \
             L:\PHQFBI~D\ROIZBJ~K\gameport.h  \
             L:\PHQFBI~D\ROIZBJ~K\math.h  \
             L:\PHQFBI~D\ROIZBJ~K\ROIZBJ~K.H  \
-            L:\PHQFBI~D\ROIZBJ~K\SBD22I~Z.H  \
+            L:\PHQFBI~D\ROIZBJ~K\startScreen.h  \
             L:\PHQFBI~D\ROIZBJ~K\time.h
 	 $(CC)  $(CFLAGS) L:\PHQFBI~D\ROIZBJ~K\main.c
 
@@ -212,7 +212,7 @@ L:\PHQFBI~D\ROIZBJ~K\reflexball.obj :  \
             L:\PHQFBI~D\ROIZBJ~K\levels.h  \
             L:\PHQFBI~D\ROIZBJ~K\math.h  \
             L:\PHQFBI~D\ROIZBJ~K\ROIZBJ~K.H  \
-            L:\PHQFBI~D\ROIZBJ~K\SBD22I~Z.H  \
+            L:\PHQFBI~D\ROIZBJ~K\startScreen.h  \
             L:\PHQFBI~D\ROIZBJ~K\time.h
 	 $(CC)  $(CFLAGS) L:\PHQFBI~D\ROIZBJ~K\reflexball.c
 
@@ -234,8 +234,13 @@ L:\PHQFBI~D\ROIZBJ~K\gameport.obj :  \
             L:\PHQFBI~D\ROIZBJ~K\gameport.h
 	 $(CC)  $(CFLAGS) L:\PHQFBI~D\ROIZBJ~K\gameport.c
 
-L:\PHQFBI~D\ROIZBJ~K\startScreen.obj :  \
-            L:\PHQFBI~D\ROIZBJ~K\startScreen.c  \
+L:\PHQFBI~D\ROIZBJ~K\ascii.obj :  \
+            L:\PHQFBI~D\ROIZBJ~K\ascii.c  \
+            L:\PHQFBI~D\ROIZBJ~K\ascii.h
+	 $(CC)  $(CFLAGS) L:\PHQFBI~D\ROIZBJ~K\ascii.c
+
+L:\PHQFBI~D\ROIZBJ~K\asciiDisplay.obj :  \
+            L:\PHQFBI~D\ROIZBJ~K\asciiDisplay.c  \
             C:\PROGRA~1\ZiLOG\ZDSII_~1.3\include\std\FORMAT.H  \
             C:\PROGRA~1\ZiLOG\ZDSII_~1.3\include\std\STDARG.H  \
             C:\PROGRA~1\ZiLOG\ZDSII_~1.3\include\std\STDIO.H  \
@@ -251,15 +256,10 @@ L:\PHQFBI~D\ROIZBJ~K\startScreen.obj :  \
             L:\PHQFBI~D\ROIZBJ~K\LED.h  \
             L:\PHQFBI~D\ROIZBJ~K\ansi.h  \
             L:\PHQFBI~D\ROIZBJ~K\ascii.h  \
+            L:\PHQFBI~D\ROIZBJ~K\A52KFR~O.H  \
             L:\PHQFBI~D\ROIZBJ~K\gameport.h  \
             L:\PHQFBI~D\ROIZBJ~K\math.h  \
             L:\PHQFBI~D\ROIZBJ~K\ROIZBJ~K.H  \
-            L:\PHQFBI~D\ROIZBJ~K\SBD22I~Z.H  \
             L:\PHQFBI~D\ROIZBJ~K\time.h
-	 $(CC)  $(CFLAGS) L:\PHQFBI~D\ROIZBJ~K\startScreen.c
-
-L:\PHQFBI~D\ROIZBJ~K\ascii.obj :  \
-            L:\PHQFBI~D\ROIZBJ~K\ascii.c  \
-            L:\PHQFBI~D\ROIZBJ~K\ascii.h
-	 $(CC)  $(CFLAGS) L:\PHQFBI~D\ROIZBJ~K\ascii.c
+	 $(CC)  $(CFLAGS) L:\PHQFBI~D\ROIZBJ~K\asciiDisplay.c
 

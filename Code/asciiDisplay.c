@@ -1,6 +1,6 @@
 #include <eZ8.h>             // special encore constants, macros and flash routines
 #include <sio.h>             // special encore serial i/o routines
-#include "startScreen.h"
+#include "asciidisplay.h"
 #include "ansi.h"
 #include "LED.h"
 #include "time.h"

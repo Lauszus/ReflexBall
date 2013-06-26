@@ -1,5 +1,5 @@
-#ifndef _startscreen_h_
-#define _startscreen_h_
+#ifndef _asciidisplay_h_
+#define _asciidisplay_h_
 
 extern unsigned char x1, y1, x2, y2;
 
