@@ -579,12 +579,6 @@ void levelUp() {
 
 void initReflexBall(unsigned char newX1, unsigned char newY1, unsigned char newX2, unsigned char newY2, char style) {
 	unsigned char leftTop, rightTop, leftBot, rightBot, verSide, horSide, leftCross, rightCross;
-	/*
-	for (level=0;level<sizeof(levels)/sizeof(levels[0]);level++) {
-		clrscr();
-		drawLevel(1);
-		delay_ms(5000);
-	}*/
 
 	x1 = newX1;
 	y1 = newY1;
@@ -611,8 +605,8 @@ void initReflexBall(unsigned char newX1, unsigned char newY1, unsigned char newX
 		rightCross = 195;
 	}
 
-	lastX = (long)((x1+x2)/2) << FIX14_SHIFT; // Sets the last ball coordinates to the bottom of the map, so it clears the ball correctly the first time
-	lastY = (long)(y2+4) << FIX14_SHIFT;
+	lastX = (long)((x1+x2)/2) << FIX14_SHIFT; // Sets the last ball coordinates just above striker, so it clears the ball correctly the first time
+	lastY = (long)(y2-1-BALL_HEIGHT) << FIX14_SHIFT;
 
 	clrscr(); // Clear the screen
 	
@@ -623,7 +617,7 @@ void initReflexBall(unsigned char newX1, unsigned char newY1, unsigned char newX
 	drawTopBot(x1,y1,x2-x1-1,leftTop,rightTop,horSide);
 	
 	restartGame = 0;
-	level = 5 /*0*/;
+	level = 0;
 	score = 0;
 	levelScore = 0;
 	lives = NLIVES;

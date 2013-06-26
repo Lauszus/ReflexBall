@@ -118,11 +118,11 @@ Docking=True
 DockingStyle=61440
 ExStyle=780
 MDIChild=False
-MRUDockBottomPos=86
+MRUDockBottomPos=88
 MRUDockID=0
 MRUDockLeftPos=-1
 MRUDockRightPos=364
-MRUDockTopPos=56
+MRUDockTopPos=58
 MRUDockingState=0
 MRUFloatCX=0
 MRUFloatCY=0
@@ -140,7 +140,7 @@ Style=12212
 TypeID=14946
 Visible=False
 WindowName=Debug
-YPos=56
+YPos=58
 ptn_Child1=ToolBarInfoEx
 
 [WorkState_v1_1.DockState.Bar-11.ToolBarInfoEx]
@@ -189,11 +189,11 @@ Docking=True
 DockingStyle=61440
 ExStyle=780
 MDIChild=False
-MRUDockBottomPos=86
+MRUDockBottomPos=88
 MRUDockID=0
 MRUDockLeftPos=364
 MRUDockRightPos=590
-MRUDockTopPos=56
+MRUDockTopPos=58
 MRUDockingState=0
 MRUFloatCX=0
 MRUFloatCY=0
@@ -212,7 +212,7 @@ TypeID=14946
 Visible=False
 WindowName=Debug Windows
 XPos=364
-YPos=56
+YPos=58
 ptn_Child1=ToolBarInfoEx
 
 [WorkState_v1_1.DockState.Bar-13.ToolBarInfoEx]
@@ -530,8 +530,8 @@ ptn_Child1=ViewFrame-0
 DocPathName=.\main.c
 DocTemplateIndex=0
 DocumentString=IDE Document
-IsActiveChildFrame=True
-WindowPlacement=MCAAAAAACAAAAAAADAAAAAAAPPPPPPPPPPPPPPPPMPPPPPPPCOPPPPPPAAAAAAAAAAAAAAAAMLEAAAAAPFCAAAAA
+IsActiveChildFrame=False
+WindowPlacement=MCAAAAAAAAAAAAAABAAAAAAAPPPPPPPPPPPPPPPPMPPPPPPPCOPPPPPPAAAAAAAAAAAAAAAAMLEAAAAAPFCAAAAA
 
 [WorkState_v1_1.Frames.ChildFrames.Document-1]
 ptn_Child1=ViewFrame-0
@@ -650,8 +650,8 @@ ptn_Child1=ViewFrame-0
 DocPathName=.\reflexball.c
 DocTemplateIndex=0
 DocumentString=IDE Document
-IsActiveChildFrame=False
-WindowPlacement=MCAAAAAAAAAAAAAABAAAAAAAPPPPPPPPPPPPPPPPMPPPPPPPCOPPPPPPOGAAAAAABJAAAAAAABEAAAAAENCAAAAA
+IsActiveChildFrame=True
+WindowPlacement=MCAAAAAACAAAAAAADAAAAAAAPPPPPPPPPPPPPPPPMPPPPPPPCOPPPPPPOGAAAAAABJAAAAAAABEAAAAAENCAAAAA
 
 [WorkState_v1_1.Frames.ChildFrames.Document-20]
 ptn_Child1=ViewFrame-0
@@ -854,8 +854,8 @@ IsActiveChildFrame=False
 WindowPlacement=MCAAAAAAAAAAAAAABAAAAAAAPPPPPPPPPPPPPPPPMPPPPPPPCOPPPPPPCEAAAAAAHFAAAAAAMOEAAAAALJCAAAAA
 
 [WorkState_v1_1.Frames.MainFrame]
-Title=ReflexBall -- ZDS II - Z8 Encore! Family -- main.c - [main.c]
-WindowPlacement=MCAAAAAACAAAAAAADAAAAAAAPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPIFAAAAAAEHAAAAAAIAFAAAAAELDAAAAA
+Title=ReflexBall -- ZDS II - Z8 Encore! Family -- reflexball.c - [reflexball.c]
+WindowPlacement=MCAAAAAACAAAAAAADAAAAAAAAADIPPPPAADIPPPPPPPPPPPPPPPPPPPPIFAAAAAAEHAAAAAAIAFAAAAAELDAAAAA
 
 [WorkState_v1_1.ToolBarMgr]
 CoolLook=True

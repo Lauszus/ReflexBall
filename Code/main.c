@@ -34,7 +34,7 @@ Start:
 	while(!updateMenu()); // Wait until difficulty is choosen
 
 	LEDsetString("    "); // Clear display
-	initReflexBall(3,15,224,82,1); // x1, y1, x2, y2, style	
+	initReflexBall(3,15,224,82,1); // x1, y1, x2, y2, style
 
 	for(;;) {
 		buttons = getGameportButtons();

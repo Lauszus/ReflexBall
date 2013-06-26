@@ -4,7 +4,7 @@ Copyright (C) 1999-2004 ZiLOG, Inc. All Rights Reserved
 
 LINK MAP:
 
-DATE:      Wed Jun 26 17:11:58 2013
+DATE:      Wed Jun 26 17:35:17 2013
 PROCESSOR: assembler
 FILES:     C:\PROGRA~1\ZiLOG\ZDSII_~1.3\lib\zilog\startupL.obj
            .\zsldevinit.obj
@@ -101,7 +101,7 @@ Space              Base        Top         Size
 ------------------ ----------- ----------- ---------
 EDATA                   E:0100      E:07F2      6f3h
 RDATA                     R:E0        R:EF       10h
-ROM                     C:0000      C:CA6D     ca6eh
+ROM                     C:0000      C:CA0B     ca0ch
 
 
 SEGMENTS WITHIN SPACE:
@@ -121,38 +121,38 @@ workingreg         absolute data              R:E0        R:EF       10h
 ROM                Type                Base        Top         Size
 ------------------ ------------------- ----------- ----------- ---------
 __VECTORS          absolute data            C:0000      C:0037       38h
-_sputch_TEXT       normal data              C:C511      C:C53F       2fh
-_uputch_TEXT       normal data              C:C4E2      C:C4FA       19h
-abs_TEXT           normal data              C:C75C      C:C799       3eh
-aduart0_TEXT       normal data              C:C86F      C:C8D9       6bh
-ameport_TEXT       normal data              C:A978      C:AA6A       f3h
-ansi_TEXT          normal data              C:749B      C:797D      4e3h
-buttons_TEXT       normal data              C:BC6E      C:BCFA       8dh
-CODE               normal data              C:706A      C:72D5      26ch
-display_TEXT       normal data              C:AA6B      C:BC6D     1203h
-FAR_DATA           * segment copy *         C:C9F1      C:CA6D       7dh
-getch_TEXT         normal data              C:BFC8      C:C05F       98h
-getfreq_TEXT       normal data              C:BFB1      C:BFC7       17h
-kbhit_TEXT         normal data              C:C702      C:C70E        dh
-led_TEXT           normal data              C:797E      C:7DB0      433h
-lexball_TEXT       normal data              C:849E      C:A977     24dah
-main_TEXT          normal data              C:7DB1      C:7F55      1a5h
-math_TEXT          normal data              C:7F56      C:849D      548h
-mstring_TEXT       normal data              C:C70F      C:C75B       4dh
-nt_send_TEXT       normal data              C:BDDD      C:BFB0      1d4h
-putch_TEXT         normal data              C:C8DA      C:C936       5dh
-reverse_TEXT       normal data              C:C79A      C:C86E       d5h
+_sputch_TEXT       normal data              C:C4AF      C:C4DD       2fh
+_uputch_TEXT       normal data              C:C480      C:C498       19h
+abs_TEXT           normal data              C:C6FA      C:C737       3eh
+aduart0_TEXT       normal data              C:C80D      C:C877       6bh
+ameport_TEXT       normal data              C:A929      C:AA1B       f3h
+ansi_TEXT          normal data              C:7447      C:7929      4e3h
+buttons_TEXT       normal data              C:BC0C      C:BC98       8dh
+CODE               normal data              C:706A      C:7281      218h
+display_TEXT       normal data              C:AA1C      C:BC0B     11f0h
+FAR_DATA           * segment copy *         C:C98F      C:CA0B       7dh
+getch_TEXT         normal data              C:BF66      C:BFFD       98h
+getfreq_TEXT       normal data              C:BF4F      C:BF65       17h
+kbhit_TEXT         normal data              C:C6A0      C:C6AC        dh
+led_TEXT           normal data              C:792A      C:7D5C      433h
+lexball_TEXT       normal data              C:844D      C:A928     24dch
+main_TEXT          normal data              C:7D5D      C:7F04      1a8h
+math_TEXT          normal data              C:7F05      C:844C      548h
+mstring_TEXT       normal data              C:C6AD      C:C6F9       4dh
+nt_send_TEXT       normal data              C:BD7B      C:BF4E      1d4h
+putch_TEXT         normal data              C:C878      C:C8D4       5dh
+reverse_TEXT       normal data              C:C738      C:C80C       d5h
 ROM_DATA           normal data              C:0038      C:7069     7032h
-ROM_TEXT           normal data              C:72D6      C:7367       92h
-sio_TEXT           normal data              C:BCFB      C:BDDC       e2h
-startup            normal data              C:7368      C:73D8       71h
-strlen_TEXT        normal data              C:C479      C:C4BA       42h
-t_putch_TEXT       normal data              C:C4FB      C:C510       16h
-teuart0_TEXT       normal data              C:C937      C:C9F0       bah
-time_TEXT          normal data              C:73D9      C:749A       c2h
-tstring_TEXT       normal data              C:C540      C:C701      1c2h
-ultoa_TEXT         normal data              C:C060      C:C478      419h
-ustoa_TEXT         normal data              C:C4BB      C:C4E1       27h
+ROM_TEXT           normal data              C:7282      C:7313       92h
+sio_TEXT           normal data              C:BC99      C:BD7A       e2h
+startup            normal data              C:7314      C:7384       71h
+strlen_TEXT        normal data              C:C417      C:C458       42h
+t_putch_TEXT       normal data              C:C499      C:C4AE       16h
+teuart0_TEXT       normal data              C:C8D5      C:C98E       bah
+time_TEXT          normal data              C:7385      C:7446       c2h
+tstring_TEXT       normal data              C:C4DE      C:C69F      1c2h
+ultoa_TEXT         normal data              C:BFFE      C:C416      419h
+ustoa_TEXT         normal data              C:C459      C:C47F       27h
 
 SEGMENTS WITHIN MODULES:
 ========================
@@ -164,7 +164,7 @@ Module: ..\..\src\boot\common\startupl.asm (File: startupL.obj) Version: 1:0 02/
     Segment: __VECTORS                           C:0000      C:0037       38h
     Segment: FAR_BSS                             E:0100      E:0101        2h
     Segment: FAR_DATA                            E:0776      E:0776        1h
-    Segment: startup                             C:7368      C:73D8       71h
+    Segment: startup                             C:7314      C:7384       71h
     Segment: workingreg                            R:E0        R:EF       10h
 
 
@@ -172,28 +172,28 @@ Module: ..\UART\COMMON\GETCH.C (Library: zslLYD.lib) Version: 1:0 02/23/2005 13:
 
     Name                                        Base        Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: getch_TEXT                          C:BFC8      C:C05F       98h
+    Segment: getch_TEXT                          C:BF66      C:BFFD       98h
 
 
 Module: ..\UART\COMMON\KBHIT.C (Library: zslLYD.lib) Version: 1:0 02/23/2005 13:32:41
 
     Name                                        Base        Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: kbhit_TEXT                          C:C702      C:C70E        dh
+    Segment: kbhit_TEXT                          C:C6A0      C:C6AC        dh
 
 
 Module: ..\UART\COMMON\PUTCH.C (Library: zslLYD.lib) Version: 1:0 02/23/2005 13:32:42
 
     Name                                        Base        Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: putch_TEXT                          C:C8DA      C:C936       5dh
+    Segment: putch_TEXT                          C:C878      C:C8D4       5dh
 
 
 Module: ..\UART\COMMON\READUART0.C (Library: zslLYD.lib) Version: 1:0 02/23/2005 13:32:37
 
     Name                                        Base        Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: aduart0_TEXT                        C:C86F      C:C8D9       6bh
+    Segment: aduart0_TEXT                        C:C80D      C:C877       6bh
     Segment: FAR_DATA                            E:078E      E:078E        1h
 
 
@@ -202,15 +202,15 @@ Module: ..\UART\COMMON\WRITEUART0.C (Library: zslLYD.lib) Version: 1:0 02/23/200
     Name                                        Base        Top      Size
     --------------------------------------- ----------- ----------- ---------
     Segment: FAR_DATA                            E:078F      E:078F        1h
-    Segment: teuart0_TEXT                        C:C937      C:C9F0       bah
+    Segment: teuart0_TEXT                        C:C8D5      C:C98E       bah
 
 
 Module: .\ANSI.C (File: ansi.obj) Version: 1:0 06/26/2013 17:04:48
 
     Name                                        Base        Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: ansi_TEXT                           C:749B      C:797D      4e3h
-    Segment: ROM_TEXT                            C:72D6      C:72E5       10h
+    Segment: ansi_TEXT                           C:7447      C:7929      4e3h
+    Segment: ROM_TEXT                            C:7282      C:7291       10h
 
 
 Module: .\ASCII.C (File: ascii.obj) Version: 1:0 06/26/2013 17:04:58
@@ -220,29 +220,29 @@ Module: .\ASCII.C (File: ascii.obj) Version: 1:0 06/26/2013 17:04:58
     Segment: ROM_DATA                            C:0CD0      C:7069     639ah
 
 
-Module: .\ASCIIDISPLAY.C (File: asciidisplay.obj) Version: 1:0 06/26/2013 17:07:37
+Module: .\ASCIIDISPLAY.C (File: asciidisplay.obj) Version: 1:0 06/26/2013 17:35:17
 
     Name                                        Base        Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: display_TEXT                        C:AA6B      C:BC6D     1203h
+    Segment: display_TEXT                        C:AA1C      C:BC0B     11f0h
     Segment: FAR_BSS                             E:074A      E:0756        dh
     Segment: FAR_DATA                            E:0784      E:078A        7h
     Segment: FAR_DATA                            E:07AB      E:07F2       48h
-    Segment: ROM_TEXT                            C:735E      C:7367        ah
+    Segment: ROM_TEXT                            C:730A      C:7313        ah
 
 
 Module: .\BUTTONS.C (File: buttons.obj) Version: 1:0 06/26/2013 17:07:39
 
     Name                                        Base        Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: buttons_TEXT                        C:BC6E      C:BCFA       8dh
+    Segment: buttons_TEXT                        C:BC0C      C:BC98       8dh
 
 
 Module: .\GAMEPORT.C (File: gameport.obj) Version: 1:0 06/26/2013 17:04:56
 
     Name                                        Base        Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: ameport_TEXT                        C:A978      C:AA6A       f3h
+    Segment: ameport_TEXT                        C:A929      C:AA1B       f3h
 
 
 Module: .\LED.C (File: LED.obj) Version: 1:0 06/26/2013 17:04:50
@@ -252,7 +252,7 @@ Module: .\LED.C (File: LED.obj) Version: 1:0 06/26/2013 17:04:50
     Segment: __VECTORS                           C:0000      C:0009        ah
     Segment: FAR_BSS                             E:010A      E:012C       23h
     Segment: FAR_DATA                            E:077C      E:0780        5h
-    Segment: led_TEXT                            C:797E      C:7DB0      433h
+    Segment: led_TEXT                            C:792A      C:7D5C      433h
     Segment: ROM_DATA                            C:0038      C:023F      208h
 
 
@@ -263,31 +263,31 @@ Module: .\LUT.C (File: lut.obj) Version: 1:0 06/26/2013 17:04:51
     Segment: ROM_DATA                            C:0240      C:063F      400h
 
 
-Module: .\MAIN.C (File: main.obj) Version: 1:0 06/26/2013 17:07:32
+Module: .\MAIN.C (File: main.obj) Version: 1:0 06/26/2013 17:35:15
 
     Name                                        Base        Top      Size
     --------------------------------------- ----------- ----------- ---------
     Segment: FAR_DATA                            E:0790      E:07AA       1bh
-    Segment: main_TEXT                           C:7DB1      C:7F55      1a5h
+    Segment: main_TEXT                           C:7D5D      C:7F04      1a8h
 
 
 Module: .\MATH.C (File: math.obj) Version: 1:0 06/26/2013 17:04:54
 
     Name                                        Base        Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: math_TEXT                           C:7F56      C:849D      548h
-    Segment: ROM_TEXT                            C:72E6      C:72E8        3h
+    Segment: math_TEXT                           C:7F05      C:844C      548h
+    Segment: ROM_TEXT                            C:7292      C:7294        3h
 
 
-Module: .\REFLEXBALL.C (File: reflexball.obj) Version: 1:0 06/26/2013 17:07:35
+Module: .\REFLEXBALL.C (File: reflexball.obj) Version: 1:0 06/26/2013 17:31:13
 
     Name                                        Base        Top      Size
     --------------------------------------- ----------- ----------- ---------
     Segment: FAR_BSS                             E:012D      E:0749      61dh
     Segment: FAR_DATA                            E:0781      E:0783        3h
-    Segment: lexball_TEXT                        C:849E      C:A977     24dah
+    Segment: lexball_TEXT                        C:844D      C:A928     24dch
     Segment: ROM_DATA                            C:0640      C:0CCF      690h
-    Segment: ROM_TEXT                            C:72E9      C:735D       75h
+    Segment: ROM_TEXT                            C:7295      C:7309       75h
 
 
 Module: .\TIME.C (File: time.obj) Version: 1:0 06/26/2013 17:08:33
@@ -296,14 +296,14 @@ Module: .\TIME.C (File: time.obj) Version: 1:0 06/26/2013 17:08:33
     --------------------------------------- ----------- ----------- ---------
     Segment: __VECTORS                           C:0000      C:000B        ch
     Segment: FAR_BSS                             E:0102      E:0109        8h
-    Segment: time_TEXT                           C:73D9      C:749A       c2h
+    Segment: time_TEXT                           C:7385      C:7446       c2h
 
 
 Module: COMMON\ABS.C (Library: crtrevaaLDD.lib) Version: 1:0 02/23/2005 13:27:08
 
     Name                                        Base        Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: abs_TEXT                            C:C75C      C:C799       3eh
+    Segment: abs_TEXT                            C:C6FA      C:C737       3eh
 
 
 Module: common\fpdumyl.asm (File: fpdumyL.obj) Version: 1:0 02/23/2005 13:22:38
@@ -333,42 +333,42 @@ Module: COMMON\PRINT_PUTCH.C (Library: crtrevaaLDD.lib) Version: 1:0 02/23/2005 
 
     Name                                        Base        Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: t_putch_TEXT                        C:C4FB      C:C510       16h
+    Segment: t_putch_TEXT                        C:C499      C:C4AE       16h
 
 
 Module: COMMON\PRINT_PUTROMSTRING.C (Library: crtrevaaLDD.lib) Version: 1:0 02/23/2005 13:27:12
 
     Name                                        Base        Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: mstring_TEXT                        C:C70F      C:C75B       4dh
+    Segment: mstring_TEXT                        C:C6AD      C:C6F9       4dh
 
 
 Module: COMMON\PRINT_PUTSTRING.C (Library: crtrevaaLDD.lib) Version: 1:0 02/23/2005 13:27:12
 
     Name                                        Base        Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: tstring_TEXT                        C:C540      C:C701      1c2h
+    Segment: tstring_TEXT                        C:C4DE      C:C69F      1c2h
 
 
 Module: COMMON\PRINT_SEND.C (Library: crtrevaaLDD.lib) Version: 1:0 02/23/2005 13:27:12
 
     Name                                        Base        Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: nt_send_TEXT                        C:BDDD      C:BFB0      1d4h
+    Segment: nt_send_TEXT                        C:BD7B      C:BF4E      1d4h
 
 
 Module: COMMON\PRINT_SPUTCH.C (Library: crtrevaaLDD.lib) Version: 1:0 02/23/2005 13:27:11
 
     Name                                        Base        Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: _sputch_TEXT                        C:C511      C:C53F       2fh
+    Segment: _sputch_TEXT                        C:C4AF      C:C4DD       2fh
 
 
 Module: COMMON\PRINT_UPUTCH.C (Library: crtrevaaLDD.lib) Version: 1:0 02/23/2005 13:27:11
 
     Name                                        Base        Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: _uputch_TEXT                        C:C4E2      C:C4FA       19h
+    Segment: _uputch_TEXT                        C:C480      C:C498       19h
 
 
 Module: COMMON\SIO.C (Library: crtrevaaLDD.lib) Version: 1:0 02/23/2005 13:27:13
@@ -376,91 +376,84 @@ Module: COMMON\SIO.C (Library: crtrevaaLDD.lib) Version: 1:0 02/23/2005 13:27:13
     Name                                        Base        Top      Size
     --------------------------------------- ----------- ----------- ---------
     Segment: FAR_DATA                            E:078B      E:078B        1h
-    Segment: sio_TEXT                            C:BCFB      C:BDDC       e2h
+    Segment: sio_TEXT                            C:BC99      C:BD7A       e2h
 
 
 Module: COMMON\STRLEN.C (Library: crtrevaaLDD.lib) Version: 1:0 02/23/2005 13:27:14
 
     Name                                        Base        Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: strlen_TEXT                         C:C479      C:C4BA       42h
+    Segment: strlen_TEXT                         C:C417      C:C458       42h
 
 
 Module: common\ubdiv.asm (Library: crtrevaaLDD.lib) Version: 1:0 02/23/2005 13:27:19
 
     Name                                        Base        Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: CODE                                C:71F3      C:7211       1fh
+    Segment: CODE                                C:719F      C:71BD       1fh
 
 
 Module: common\ucase.asm (Library: crtrevaaLDD.lib) Version: 1:0 02/23/2005 13:27:19
 
     Name                                        Base        Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: CODE                                C:7298      C:72D5       3eh
-
-
-Module: common\ulcase.asm (Library: crtrevaaLDD.lib) Version: 1:0 02/23/2005 13:27:19
-
-    Name                                        Base        Top      Size
-    --------------------------------------- ----------- ----------- ---------
-    Segment: CODE                                C:70D4      C:7127       54h
+    Segment: CODE                                C:7244      C:7281       3eh
 
 
 Module: common\uldiv.asm (Library: crtrevaaLDD.lib) Version: 1:0 02/23/2005 13:27:19
 
     Name                                        Base        Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: CODE                                C:7212      C:7266       55h
+    Segment: CODE                                C:71BE      C:7212       55h
 
 
 Module: common\ulmul.asm (Library: crtrevaaLDD.lib) Version: 1:0 02/23/2005 13:27:19
 
     Name                                        Base        Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: CODE                                C:7128      C:71BF       98h
+    Segment: CODE                                C:70D4      C:716B       98h
 
 
 Module: COMMON\ULTOA.C (Library: crtrevaaLDD.lib) Version: 1:0 02/23/2005 13:27:16
 
     Name                                        Base        Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: ultoa_TEXT                          C:C060      C:C478      419h
+    Segment: ultoa_TEXT                          C:BFFE      C:C416      419h
 
 
 Module: COMMON\UREVERSE.C (Library: crtrevaaLDD.lib) Version: 1:0 02/23/2005 13:27:17
 
     Name                                        Base        Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: reverse_TEXT                        C:C79A      C:C86E       d5h
+    Segment: reverse_TEXT                        C:C738      C:C80C       d5h
 
 
 Module: COMMON\USTOA.C (Library: crtrevaaLDD.lib) Version: 1:0 02/23/2005 13:27:18
 
     Name                                        Base        Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: ustoa_TEXT                          C:C4BB      C:C4E1       27h
+    Segment: ustoa_TEXT                          C:C459      C:C47F       27h
 
 
 Module: common\uwdiv.asm (Library: crtrevaaLDD.lib) Version: 1:0 02/23/2005 13:27:19
 
     Name                                        Base        Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: CODE                                C:7267      C:7297       31h
+    Segment: CODE                                C:7213      C:7243       31h
 
 
 Module: common\uwmul.asm (Library: crtrevaaLDD.lib) Version: 1:0 02/23/2005 13:27:19
 
     Name                                        Base        Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: CODE                                C:71C0      C:71F2       33h
+    Segment: CODE                                C:716C      C:719E       33h
 
 
 Module: get_freq.asm (Library: crtrevaaLDD.lib) Version: 1:0 02/23/2005 13:27:19
 
     Name                                        Base        Top      Size
     --------------------------------------- ----------- ----------- ---------
-    Segment: getfreq_TEXT                        C:BFB1      C:BFC7       17h
+    Segment: getfreq_TEXT                        C:BF4F      C:BF65       17h
 
 
 Module: L:\PHQFBI~D\ROIZBJ~K\zsldevinit.asm (File: zsldevinit.obj) Version: 1:0 06/26/2013 17:04:46
@@ -531,18 +524,18 @@ ___print_fmt                          E:0767 PRINT_GLOBALS   FAR_BSS
 ___print_leading_char                 E:0773 PRINT_GLOBALS   FAR_BSS                         
 ___print_len                          E:0772 PRINT_GLOBALS   FAR_BSS                         
 ___print_out                          E:0774 PRINT_GLOBALS   FAR_BSS                         
-___print_putch                        C:C4FB PRINT_PUTCH     t_putch_TEXT                    
-___print_putromstring                 C:C70F PRINT_PUTROMSTR mstring_TEXT                    
-___print_send                         C:BDDD PRINT_SEND      nt_send_TEXT                    
-___print_sendstring                   C:C540 PRINT_PUTSTRING tstring_TEXT                    
-___print_sputch                       C:C511 PRINT_SPUTCH    _sputch_TEXT                    
-___print_uputch                       C:C4E2 PRINT_UPUTCH    _uputch_TEXT                    
+___print_putch                        C:C499 PRINT_PUTCH     t_putch_TEXT                    
+___print_putromstring                 C:C6AD PRINT_PUTROMSTR mstring_TEXT                    
+___print_send                         C:BD7B PRINT_SEND      nt_send_TEXT                    
+___print_sendstring                   C:C4DE PRINT_PUTSTRING tstring_TEXT                    
+___print_sputch                       C:C4AF PRINT_SPUTCH    _sputch_TEXT                    
+___print_uputch                       C:C480 PRINT_UPUTCH    _uputch_TEXT                    
 ___print_xputch                       E:078C PRINT_GLOBALS   FAR_DATA                        
 __close_periphdevice                  C:706B zsldevinit      CODE                            
 __far_atof                            C:706C fpdumyl         CODE                            
 __far_frexp                           C:706C fpdumyl         CODE                            
 __far_modf                            C:706C fpdumyl         CODE                            
-__far_strlen                          C:C479 STRLEN          strlen_TEXT                     
+__far_strlen                          C:C417 STRLEN          strlen_TEXT                     
 __far_strtod                          C:706C fpdumyl         CODE                            
 __fpadd                               C:706C fpdumyl         CODE                            
 __fpcmp                               C:706C fpdumyl         CODE                            
@@ -568,25 +561,24 @@ __near_frexp                          C:706C fpdumyl         CODE
 __near_modf                           C:706C fpdumyl         CODE                            
 __near_strtod                         C:706C fpdumyl         CODE                            
 __open_periphdevice                   C:706A zsldevinit      CODE                            
-__slmul                               C:7128 ulmul           CODE                            
-__swmul                               C:71C0 uwmul           CODE                            
+__slmul                               C:70D4 ulmul           CODE                            
+__swmul                               C:716C uwmul           CODE                            
 __u_dtoe                              C:706C fpdumyl         CODE                            
 __u_dtof                              C:706C fpdumyl         CODE                            
 __u_dtog                              C:706C fpdumyl         CODE                            
 __u_flt_info                          C:706C fpdumyl         CODE                            
 __u_flt_rnd                           C:706C fpdumyl         CODE                            
-__u_ltoa                              C:C060 ULTOA           ultoa_TEXT                      
-__u_reverse                           C:C79A UREVERSE        reverse_TEXT                    
-__u_stoa                              C:C4BB USTOA           ustoa_TEXT                      
-__ubdiv                               C:71F3 ubdiv           CODE                            
-__ucase                               C:7298 ucase           CODE                            
-__ulcase                              C:70D4 ulcase          CODE                            
-__uldiv                               C:7212 uldiv           CODE                            
-__ulmul                               C:7128 ulmul           CODE                            
+__u_ltoa                              C:BFFE ULTOA           ultoa_TEXT                      
+__u_reverse                           C:C738 UREVERSE        reverse_TEXT                    
+__u_stoa                              C:C459 USTOA           ustoa_TEXT                      
+__ubdiv                               C:719F ubdiv           CODE                            
+__ucase                               C:7244 ucase           CODE                            
+__uldiv                               C:71BE uldiv           CODE                            
+__ulmul                               C:70D4 ulmul           CODE                            
 __user_frequency                    01194000 (User Defined)
-__uwdiv                               C:7267 uwdiv           CODE                            
-__uwmul                               C:71C0 uwmul           CODE                            
-_abs                                  C:C75C ABS             abs_TEXT                        
+__uwdiv                               C:7213 uwdiv           CODE                            
+__uwmul                               C:716C uwmul           CODE                            
+_abs                                  C:C6FA ABS             abs_TEXT                        
 _acos                                 C:706C fpdumyl         CODE                            
 _alive                                E:06CF REFLEXBALL      FAR_BSS                         
 _amigoAscii                           C:2DF2 ASCII           ROM_DATA                        
@@ -595,62 +587,62 @@ _atan                                 C:706C fpdumyl         CODE
 _atan2                                C:706C fpdumyl         CODE                            
 _ball                                 E:012D REFLEXBALL      FAR_BSS                         
 _ballMenuYPos                         E:0784 ASCIIDISPLAY    FAR_DATA                        
-_ballPosStriker                       C:A1B8 REFLEXBALL      lexball_TEXT                    
+_ballPosStriker                       C:A167 REFLEXBALL      lexball_TEXT                    
 _ballXPos                             E:0788 ASCIIDISPLAY    FAR_DATA                        
 _ballY                                E:074A ASCIIDISPLAY    FAR_BSS                         
-_bgcolor                              C:751D ANSI            ansi_TEXT                       
-_blink                                C:7755 ANSI            ansi_TEXT                       
+_bgcolor                              C:74C9 ANSI            ansi_TEXT                       
+_blink                                C:7701 ANSI            ansi_TEXT                       
 _bricks                               E:0142 REFLEXBALL      FAR_BSS                         
 _bricksLives                          E:06C9 REFLEXBALL      FAR_BSS                         
-_c_startup                            C:7368 startupl        startup                         
-_calculateDifficulty                  C:BC2F ASCIIDISPLAY    display_TEXT                    
+_c_startup                            C:7314 startupl        startup                         
+_calculateDifficulty                  C:BBCD ASCIIDISPLAY    display_TEXT                    
 _ceil                                 C:706C fpdumyl         CODE                            
 _character_data                       C:0038 LED             ROM_DATA                        
-_checkIteration                       C:8C2F REFLEXBALL      lexball_TEXT                    
+_checkIteration                       C:8BDE REFLEXBALL      lexball_TEXT                    
 _chuckAscii1                          C:1D00 ASCII           ROM_DATA                        
 _chuckAscii2                          C:1F52 ASCII           ROM_DATA                        
 _chuckNorrisAscii                     C:5BF2 ASCII           ROM_DATA                        
 _chuckNorrisTextAscii                 C:5AB7 ASCII           ROM_DATA                        
-_clearBigBall                         C:891B REFLEXBALL      lexball_TEXT                    
-_clearMenuBall                        C:ABEC ASCIIDISPLAY    display_TEXT                    
-_clockLed                             C:797E LED             led_TEXT                        
+_clearBigBall                         C:88CA REFLEXBALL      lexball_TEXT                    
+_clearMenuBall                        C:AB9D ASCIIDISPLAY    display_TEXT                    
+_clockLed                             C:792A LED             led_TEXT                        
 _close_periphdevice                   C:706B zsldevinit      CODE                            
-_clreol                               C:7664 ANSI            ansi_TEXT                       
-_clrscr                               C:7633 ANSI            ansi_TEXT                       
-_color                                C:7564 ANSI            ansi_TEXT                       
+_clreol                               C:7610 ANSI            ansi_TEXT                       
+_clrscr                               C:75DF ANSI            ansi_TEXT                       
+_color                                C:7510 ANSI            ansi_TEXT                       
 _column                               E:077D LED             FAR_DATA                        
 _congratulationsAscii                 C:54AB ASCII           ROM_DATA                        
-_convertChar                          C:79CA LED             led_TEXT                        
-_cos                                  C:8204 MATH            math_TEXT                       
+_convertChar                          C:7976 LED             led_TEXT                        
+_cos                                  C:81B3 MATH            math_TEXT                       
 _cosh                                 C:706C fpdumyl         CODE                            
-_dead                                 C:8803 REFLEXBALL      lexball_TEXT                    
+_dead                                 C:87B2 REFLEXBALL      lexball_TEXT                    
 _deadAscii                            C:3BBC ASCII           ROM_DATA                        
-_delay_ms                             C:7439 TIME            time_TEXT                       
+_delay_ms                             C:73E5 TIME            time_TEXT                       
 _delayCounter                         E:077E LED             FAR_DATA                        
 _delayTimer                           E:0102 TIME            FAR_BSS                         
 _digit                                E:077C LED             FAR_DATA                        
 _divider                              E:06D8 REFLEXBALL      FAR_BSS                         
 _drawBallNow                          E:0740 REFLEXBALL      FAR_BSS                         
-_drawBigBall                          C:89E2 REFLEXBALL      lexball_TEXT                    
-_drawBrick                            C:8B5C REFLEXBALL      lexball_TEXT                    
+_drawBigBall                          C:8991 REFLEXBALL      lexball_TEXT                    
+_drawBrick                            C:8B0B REFLEXBALL      lexball_TEXT                    
 _drawCounter                          E:0782 REFLEXBALL      FAR_DATA                        
 _drawCounterMax                       E:0783 REFLEXBALL      FAR_DATA                        
-_drawLevel                            C:A715 REFLEXBALL      lexball_TEXT                    
-_drawMenuBall                         C:AC54 ASCIIDISPLAY    display_TEXT                    
-_drawSides                            C:7850 ANSI            ansi_TEXT                       
-_drawStriker                          C:A14B REFLEXBALL      lexball_TEXT                    
-_drawTopBot                           C:77BF ANSI            ansi_TEXT                       
+_drawLevel                            C:A6C4 REFLEXBALL      lexball_TEXT                    
+_drawMenuBall                         C:AC05 ASCIIDISPLAY    display_TEXT                    
+_drawSides                            C:77FC ANSI            ansi_TEXT                       
+_drawStriker                          C:A0FA REFLEXBALL      lexball_TEXT                    
+_drawTopBot                           C:776B ANSI            ansi_TEXT                       
 _driveAscii                           C:2F23 ASCII           ROM_DATA                        
 _easyAscii                            C:1AC6 ASCII           ROM_DATA                        
 _errno                                E:0100 startupl        FAR_BSS                         
-_exit                                 C:73D7 startupl        startup                         
+_exit                                 C:7383 startupl        startup                         
 _exp                                  C:706C fpdumyl         CODE                            
-_expand                               C:7F56 MATH            math_TEXT                       
+_expand                               C:7F05 MATH            math_TEXT                       
 _fabs                                 C:706C fpdumyl         CODE                            
 _far_heapbot                        000007F2 (User Defined)
 _far_heaptop                        00000EFF (User Defined)
 _far_stack                          00000EFF (User Defined)
-_fgcolor                              C:749B ANSI            ansi_TEXT                       
+_fgcolor                              C:7447 ANSI            ansi_TEXT                       
 _floor                                C:706C fpdumyl         CODE                            
 _fmod                                 C:706C fpdumyl         CODE                            
 _g_clock0                             E:0778 zsldevinit      FAR_DATA                        
@@ -661,39 +653,39 @@ _g_Txflag0                            E:078F WRITEUART0      FAR_DATA
 _gameOverAscii                        C:2B9A ASCII           ROM_DATA                        
 _gameStarted                          E:0781 REFLEXBALL      FAR_DATA                        
 _gameTimer                            E:06CB REFLEXBALL      FAR_BSS                         
-_get_freq                             C:BFB5 get_freq        getfreq_TEXT                    
-_getch                                C:BFC8 GETCH           getch_TEXT                      
-_getGameportButtons                   C:A9D6 GAMEPORT        ameport_TEXT                    
-_getSavedCursor                       C:7905 ANSI            ansi_TEXT                       
-_getTerminalCoordinate                C:8889 REFLEXBALL      lexball_TEXT                    
-_gotoxy                               C:7695 ANSI            ansi_TEXT                       
-_gotoxyBall                           C:88CB REFLEXBALL      lexball_TEXT                    
-_graphicCommand                       C:76F2 ANSI            ansi_TEXT                       
+_get_freq                             C:BF53 get_freq        getfreq_TEXT                    
+_getch                                C:BF66 GETCH           getch_TEXT                      
+_getGameportButtons                   C:A987 GAMEPORT        ameport_TEXT                    
+_getSavedCursor                       C:78B1 ANSI            ansi_TEXT                       
+_getTerminalCoordinate                C:8838 REFLEXBALL      lexball_TEXT                    
+_gotoxy                               C:7641 ANSI            ansi_TEXT                       
+_gotoxyBall                           C:887A REFLEXBALL      lexball_TEXT                    
+_graphicCommand                       C:769E ANSI            ansi_TEXT                       
 _hardAscii                            C:1C6A ASCII           ROM_DATA                        
 _havNoBallsAscii                      C:30AE ASCII           ROM_DATA                        
 _index                                E:077F LED             FAR_DATA                        
-_init_uart                            C:BD29 SIO             sio_TEXT                        
-_initBall                             C:A6B5 REFLEXBALL      lexball_TEXT                    
-_initBricks                           C:A342 REFLEXBALL      lexball_TEXT                    
-_initButtons                          C:BC6E BUTTONS         buttons_TEXT                    
-_initGameport                         C:A9BF GAMEPORT        ameport_TEXT                    
-_initLED                              C:7D55 LED             led_TEXT                        
-_initReflexBall                       C:A812 REFLEXBALL      lexball_TEXT                    
-_initStartMenu                        C:B721 ASCIIDISPLAY    display_TEXT                    
-_initStriker                          C:A2C4 REFLEXBALL      lexball_TEXT                    
-_initTimers                           C:73D9 TIME            time_TEXT                       
-_initVector                           C:8222 MATH            math_TEXT                       
-_iterate                              C:A0DF REFLEXBALL      lexball_TEXT                    
-_kbhit                                C:C702 KBHIT           kbhit_TEXT                      
+_init_uart                            C:BCC7 SIO             sio_TEXT                        
+_initBall                             C:A664 REFLEXBALL      lexball_TEXT                    
+_initBricks                           C:A2F1 REFLEXBALL      lexball_TEXT                    
+_initButtons                          C:BC0C BUTTONS         buttons_TEXT                    
+_initGameport                         C:A970 GAMEPORT        ameport_TEXT                    
+_initLED                              C:7D01 LED             led_TEXT                        
+_initReflexBall                       C:A7C1 REFLEXBALL      lexball_TEXT                    
+_initStartMenu                        C:B6BF ASCIIDISPLAY    display_TEXT                    
+_initStriker                          C:A273 REFLEXBALL      lexball_TEXT                    
+_initTimers                           C:7385 TIME            time_TEXT                       
+_initVector                           C:81D1 MATH            math_TEXT                       
+_iterate                              C:A08E REFLEXBALL      lexball_TEXT                    
+_kbhit                                C:C6A0 KBHIT           kbhit_TEXT                      
 _ladyAscii                            C:3D92 ASCII           ROM_DATA                        
 _lastBallY                            E:074B ASCIIDISPLAY    FAR_BSS                         
 _lastX                                E:0741 REFLEXBALL      FAR_BSS                         
 _lastY                                E:0745 REFLEXBALL      FAR_BSS                         
 _ldexp                                C:706C fpdumyl         CODE                            
 _ledBuf                               E:070E REFLEXBALL      FAR_BSS                         
-_LEDRunOnce                           C:7B8C LED             led_TEXT                        
-_LEDsetString                         C:7A43 LED             led_TEXT                        
-_LEDupdate                            C:7CA9 LED             led_TEXT                        
+_LEDRunOnce                           C:7B38 LED             led_TEXT                        
+_LEDsetString                         C:79EF LED             led_TEXT                        
+_LEDupdate                            C:7C55 LED             led_TEXT                        
 _len_farbss                         00000676 (User Defined)
 _len_fardata                        0000007D (User Defined)
 _len_nearbss                        00000000 (User Defined)
@@ -701,25 +693,25 @@ _len_neardata                       00000000 (User Defined)
 _level                                E:06DB REFLEXBALL      FAR_BSS                         
 _levels                               C:0640 REFLEXBALL      ROM_DATA                        
 _levelScore                           E:06D6 REFLEXBALL      FAR_BSS                         
-_levelUp                              C:A7AF REFLEXBALL      lexball_TEXT                    
+_levelUp                              C:A75E REFLEXBALL      lexball_TEXT                    
 _lives                                E:06DA REFLEXBALL      FAR_BSS                         
 _log                                  C:706C fpdumyl         CODE                            
 _log10                                C:706C fpdumyl         CODE                            
-_low_far_romdata                    0000C9F1 (User Defined)
+_low_far_romdata                    0000C98F (User Defined)
 _low_farbss                         00000100 (User Defined)
 _low_fardata                        00000776 (User Defined)
 _low_near_romdata                   00000000 (User Defined)
 _low_nearbss                        00000000 (User Defined)
 _low_neardata                       00000000 (User Defined)
-_main                                 C:7DB1 MAIN            main_TEXT                       
+_main                                 C:7D5D MAIN            main_TEXT                       
 _mediumAscii                          C:1B86 ASCII           ROM_DATA                        
 _menuAscii                            C:17BA ASCII           ROM_DATA                        
 _menuState                            E:074C ASCIIDISPLAY    FAR_BSS                         
-_millis                               C:7426 TIME            time_TEXT                       
-_moveBall                             C:AD30 ASCIIDISPLAY    display_TEXT                    
-_moveCursor                           C:7936 ANSI            ansi_TEXT                       
-_moveStriker                          C:A1EA REFLEXBALL      lexball_TEXT                    
-_moveVideoBuffer                      C:7BB4 LED             led_TEXT                        
+_millis                               C:73D2 TIME            time_TEXT                       
+_moveBall                             C:ACE1 ASCIIDISPLAY    display_TEXT                    
+_moveCursor                           C:78E2 ANSI            ansi_TEXT                       
+_moveStriker                          C:A199 REFLEXBALL      lexball_TEXT                    
+_moveVideoBuffer                      C:7B60 LED             led_TEXT                        
 _mscounter                            E:0106 TIME            FAR_BSS                         
 _near_heapbot                       000000EF (User Defined)
 _near_heaptop                       000000FF (User Defined)
@@ -733,67 +725,67 @@ _open_periphdevice                    C:706A zsldevinit      CODE
 _openEyesAscii                        C:3351 ASCII           ROM_DATA                        
 _patienceAscii                        C:3545 ASCII           ROM_DATA                        
 _pow                                  C:706C fpdumyl         CODE                            
-_printAscii                           C:AAA0 ASCIIDISPLAY    display_TEXT                    
-_printAsciiXY                         C:AB3F ASCIIDISPLAY    display_TEXT                    
-_printFix                             C:819E MATH            math_TEXT                       
-_printLevel                           C:849E REFLEXBALL      lexball_TEXT                    
-_printLives                           C:84E7 REFLEXBALL      lexball_TEXT                    
-_printMenu                            C:B913 ASCIIDISPLAY    display_TEXT                    
-_printNumber                          C:7F79 MATH            math_TEXT                       
-_printScore                           C:852D REFLEXBALL      lexball_TEXT                    
-_printVector                          C:83F0 MATH            math_TEXT                       
+_printAscii                           C:AA51 ASCIIDISPLAY    display_TEXT                    
+_printAsciiXY                         C:AAF0 ASCIIDISPLAY    display_TEXT                    
+_printFix                             C:814D MATH            math_TEXT                       
+_printLevel                           C:844D REFLEXBALL      lexball_TEXT                    
+_printLives                           C:8496 REFLEXBALL      lexball_TEXT                    
+_printMenu                            C:B8B1 ASCIIDISPLAY    display_TEXT                    
+_printNumber                          C:7F28 MATH            math_TEXT                       
+_printScore                           C:84DC REFLEXBALL      lexball_TEXT                    
+_printVector                          C:839F MATH            math_TEXT                       
 _pSecondString                        E:0129 LED             FAR_BSS                         
 _pString                              E:012B LED             FAR_BSS                         
-_putch                                C:C8DA PUTCH           putch_TEXT                      
-_read_UART0                           C:C86F READUART0       aduart0_TEXT                    
-_readADC                              C:A978 GAMEPORT        ameport_TEXT                    
-_readButtons                          C:BC85 BUTTONS         buttons_TEXT                    
-_readkey                              C:BCC3 BUTTONS         buttons_TEXT                    
-_readSteeringWheel                    C:A9EB GAMEPORT        ameport_TEXT                    
-_resetbgcolor                         C:7602 ANSI            ansi_TEXT                       
+_putch                                C:C878 PUTCH           putch_TEXT                      
+_read_UART0                           C:C80D READUART0       aduart0_TEXT                    
+_readADC                              C:A929 GAMEPORT        ameport_TEXT                    
+_readButtons                          C:BC23 BUTTONS         buttons_TEXT                    
+_readkey                              C:BC61 BUTTONS         buttons_TEXT                    
+_readSteeringWheel                    C:A99C GAMEPORT        ameport_TEXT                    
+_resetbgcolor                         C:75AE ANSI            ansi_TEXT                       
 _restartGame                          E:0749 REFLEXBALL      FAR_BSS                         
-_reverse                              C:776F ANSI            ansi_TEXT                       
-_rotate                               C:827D MATH            math_TEXT                       
+_reverse                              C:771B ANSI            ansi_TEXT                       
+_rotate                               C:822C MATH            math_TEXT                       
 _runOnce                              E:0128 LED             FAR_BSS                         
 _runOnceBuf                           E:06DC REFLEXBALL      FAR_BSS                         
-_saveCursor                           C:78D4 ANSI            ansi_TEXT                       
+_saveCursor                           C:7880 ANSI            ansi_TEXT                       
 _score                                E:06D4 REFLEXBALL      FAR_BSS                         
-_scrollAll                            C:8737 REFLEXBALL      lexball_TEXT                    
-_scrollLevelUp                        C:866B REFLEXBALL      lexball_TEXT                    
-_scrollLiveInGameLED                  C:85BF REFLEXBALL      lexball_TEXT                    
-_select_port                          C:BCFB SIO             sio_TEXT                        
-_setBallPos                           C:A096 REFLEXBALL      lexball_TEXT                    
-_showGameOver                         C:B056 ASCIIDISPLAY    display_TEXT                    
-_showScoreLED                         C:8583 REFLEXBALL      lexball_TEXT                    
-_showWon                              C:AD7C ASCIIDISPLAY    display_TEXT                    
-_sin                                  C:81D1 MATH            math_TEXT                       
+_scrollAll                            C:86E6 REFLEXBALL      lexball_TEXT                    
+_scrollLevelUp                        C:861A REFLEXBALL      lexball_TEXT                    
+_scrollLiveInGameLED                  C:856E REFLEXBALL      lexball_TEXT                    
+_select_port                          C:BC99 SIO             sio_TEXT                        
+_setBallPos                           C:A045 REFLEXBALL      lexball_TEXT                    
+_showGameOver                         C:B007 ASCIIDISPLAY    display_TEXT                    
+_showScoreLED                         C:8532 REFLEXBALL      lexball_TEXT                    
+_showWon                              C:AD2D ASCIIDISPLAY    display_TEXT                    
+_sin                                  C:8180 MATH            math_TEXT                       
 _SIN                                  C:0240 LUT             ROM_DATA                        
 _sinh                                 C:706C fpdumyl         CODE                            
 _sqrt                                 C:706C fpdumyl         CODE                            
-_startGame                            C:A515 REFLEXBALL      lexball_TEXT                    
-_startMenu                            C:B844 ASCIIDISPLAY    display_TEXT                    
+_startGame                            C:A4C4 REFLEXBALL      lexball_TEXT                    
+_startMenu                            C:B7E2 ASCIIDISPLAY    display_TEXT                    
 _startString                          E:0789 ASCIIDISPLAY    FAR_DATA                        
-_stopGame                             C:A337 REFLEXBALL      lexball_TEXT                    
+_stopGame                             C:A2E6 REFLEXBALL      lexball_TEXT                    
 _striker                              E:013F REFLEXBALL      FAR_BSS                         
 _strikerAngle                         E:06BA REFLEXBALL      FAR_BSS                         
 _strikerWidth                         E:06D9 REFLEXBALL      FAR_BSS                         
 _stringLength                         E:0780 LED             FAR_DATA                        
-_strlen                               C:7789 ANSI            ansi_TEXT                       
-_strlen_rom                           C:AA6B ASCIIDISPLAY    display_TEXT                    
+_strlen                               C:7735 ANSI            ansi_TEXT                       
+_strlen_rom                           C:AA1C ASCIIDISPLAY    display_TEXT                    
 _tan                                  C:706C fpdumyl         CODE                            
 _tanh                                 C:706C fpdumyl         CODE                            
 _thereIsNoBallAscii                   C:3941 ASCII           ROM_DATA                        
 _timer                                E:074D ASCIIDISPLAY    FAR_BSS                         
-_timer1int                            C:7471 TIME            time_TEXT                       
-_timer2int                            C:7D48 LED             led_TEXT                        
+_timer1int                            C:741D TIME            time_TEXT                       
+_timer2int                            C:7CF4 LED             led_TEXT                        
 _titleAscii1                          C:0CD0 ASCII           ROM_DATA                        
 _titleAscii2                          C:1245 ASCII           ROM_DATA                        
-_underline                            C:773B ANSI            ansi_TEXT                       
-_updateGame                           C:A61F REFLEXBALL      lexball_TEXT                    
-_updateMenu                           C:BA57 ASCIIDISPLAY    display_TEXT                    
+_underline                            C:76E7 ANSI            ansi_TEXT                       
+_updateGame                           C:A5CE REFLEXBALL      lexball_TEXT                    
+_updateMenu                           C:B9F5 ASCIIDISPLAY    display_TEXT                    
 _videoBuffer                          E:010A LED             FAR_BSS                         
 _wheelAscii                           C:21A4 ASCII           ROM_DATA                        
-_write_UART0                          C:C937 WRITEUART0      teuart0_TEXT                    
+_write_UART0                          C:C8D5 WRITEUART0      teuart0_TEXT                    
 _x1                                   E:06D0 REFLEXBALL      FAR_BSS                         
 _x2                                   E:06D2 REFLEXBALL      FAR_BSS                         
 _xMax                                 E:0755 ASCIIDISPLAY    FAR_BSS                         
@@ -804,12 +796,12 @@ _yMax                                 E:0756 ASCIIDISPLAY    FAR_BSS
 _yMin                                 E:0754 ASCIIDISPLAY    FAR_BSS                         
 _zsl_g_clock_xdefine                01194000 (User Defined)
 
-328 external symbol(s).
+327 external symbol(s).
 
 
 START ADDRESS:
 ==============
-(C:7368) set in module ..\..\src\boot\common\startupl.asm.
+(C:7314) set in module ..\..\src\boot\common\startupl.asm.
 
 CALL GRAPH
 ==========
