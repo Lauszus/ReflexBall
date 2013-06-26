@@ -17,15 +17,14 @@ I denne implementation af spillet blev strikeren bygget til først at rykke sig 
 
 \item \textbf{Reflex-logik på kanter og hjørner}. Hver gang bolden har rykket sig, inden den tegnes, laves en række tjek for at se om bolden har ramt en væg, et hjørne eller loftet. Bl.a. tjekkes om boldens x-koordinat bliver større end eller lig med banens x2-koordinat. Hvis dette er tilfældet ved vi at bolden har ramt højre væg af banen og bolden tegnes ikke umiddelbart. I stedet trækkes boldens vektor fra boldens nye (x,y)-koordinat, sådan så bolden er tilbage på den plads den stod på inden den ramte ind i væggen, derefter inverteres boldens vektors x-koordinat og vektoren lægges til boldens position og bolden tegnes igen på næste tick. Der udføres altså væsentligt flere operationer hver gang bolden rammer en væg i forhold til når den ikke gør. Når bolden rammer venstre væg fungerer der på præcis samme måde, bortset fra at tjekket er om boldens x-koordinat bliver mindre eller lig med banens x1-koordinat.\\
 
-På loftet
+Loftet fungerer også mere elle mindre på samme måde. Her tjekkes bare om boldens y-koordinat kommer under banens y1-koordinat (husk y-aksen er inverteret). Hvis dette er tilfældet trækkes boldens vektor fra boldens position, boldens vektors y-komposant inverteres og vektor lægges til bolden inden den tegnes igen.
 
 
-\item \textbf{Game start og game over}
+\item \textbf{Game start og game over}. Når spillet starter kan man rykke strikeren rundt som normalt. Her følger bolden med sådan så den bliver ved med at være på midten af strikeren. Det fungerer på den måde at når variablen \texttt{gameStarted} er 0 så gentegnes både strikeren og bolden hver gang man rykker strikeren. Både boldens og strikerens x-koordinat sættes herefter. På samme måde som når strikeren rykkes normalt laves de samme check for om strikeren har bevæget sig ud over banens vægge. Når der så trykkes på space-tasten på tasteturet skydes bolden afsted og \texttt{gameStarted} sættes til 1, og når strikeren rykkes fra nu er det kun strikeren der gentegnes.\\
+
+På samme måde som bolden hver gang den har bevæget sig, inden den tegnes, testes for om den har ramt vægge eller loft, tjekkes også om boldens y-koordinat er større end eller lig med banens y2-koordinat minus 2. Hvis denne test er sand betyder det at bolden ligger på feltet lige over strikeren eller et felt under det. Her testes så om boldens x-koordinat ligger indenfor strikeren, dvs. imellem \texttt{striker.x} og \texttt{striker.x + striker.width}. Hvis dette er tilfældet bliver bolden skudt op igen, hvilket fungerer ved at boldens vektors y-komposant bliver inverteret, på samme måde som når bolden rammer loftet. Hvis bolden er uden for strikeren bliver variablen \texttt{alive} sat til 0 og der bliver displayer \texttt{Game Over!} midt på skærmen. I dette state kan man ikke bevæge strikeren. Dette har vi implementeret fordi man ellers kan 'køre bolden over', hvilket ikke ser så grafisk pænt ud. Når der trykkes space igen gentegnes hele spillet banen og og variablerne \texttt{gameStarted} sættes til 0 og \texttt{alive} sættes til 1.
+
 \end{itemize}
-Vi vil i det følgende forklare hvordan disse delmål blev implementeret. 
-
-Hvordan implementerede vi keyboardinput?
-\texttt{kode tekst tekst}
 
 \section{Advanced}
 Efter alle basics var færdigimplementeret, havde vi planlagt at lave nogle mindre udvidelser til spillet. Disse omfatter dels implemention af liv og pointsystem, men også videreudviklinger af basic-funktionaliteterne, sådan så deres bagvedliggende virkemåde gøres mere avanceret. Advanced inkulderer følgende.
