@@ -50,7 +50,7 @@
                    MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
 
 
-rom const char name[50][95] = {
+rom const char name[50][89] = {
   "                                    MMMMMMMMMMM                                         ",
   "                                 MMMMMMMMMMMMMMMMM                                      ",
   "                             NMMMMMMMMMMMMMMMMMMMMMMMM                                  ",
