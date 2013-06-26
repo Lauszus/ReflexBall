@@ -2,9 +2,9 @@
 #define _levels_h_
 
 #include <eZ8.h>             // special encore constants, macros and flash routines
-#include <sio.h>             // special encore serial i/o routines
 #include "reflexball.h"
 
+// This array contains all the levels for the game
 unsigned char rom levels[6][BRICK_TABLE_HEIGHT][BRICK_TABLE_WIDTH] = {
 	{ // Bier
 		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },

@@ -4,6 +4,7 @@
 #include "ansi.h"
 #include "LED.h"
 #include "time.h"
+#include "buttons.h"
 #include "gameport.h"
 #include "ascii.h"
 #include "reflexball.h"
@@ -264,22 +265,6 @@ void printMenu() {
 	drawMenuBall(ballXPos,ballMenuYPos[ballY]);
 }
 
-void calculateDifficulty() {	
-	if (ballY == 0) { // Easy
-		divider = 10;
-		strikerWidth = 30;
-	} else if (ballY == 1) { // Medium
-		divider = 5;
-		strikerWidth = 20;
-	} else if (ballY == 2) { // Hard
-		divider = 2;
-		strikerWidth = 10;
-	} else { // Chuck Norris
-		divider = 1;
-		strikerWidth = 4;
-	}
-}
-
 unsigned char updateMenu() {
 	int input;
 	unsigned char buttons, buttonsClick;
@@ -342,4 +327,20 @@ unsigned char updateMenu() {
 		}
 	}
 	return 0;
+}
+
+void calculateDifficulty() {	
+	if (ballY == 0) { // Easy
+		divider = 10;
+		strikerWidth = 30;
+	} else if (ballY == 1) { // Medium
+		divider = 5;
+		strikerWidth = 20;
+	} else if (ballY == 2) { // Hard
+		divider = 2;
+		strikerWidth = 10;
+	} else { // Chuck Norris
+		divider = 1;
+		strikerWidth = 4;
+	}
 }

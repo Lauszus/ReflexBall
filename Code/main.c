@@ -4,8 +4,9 @@
 #include "ansi.h"
 #include "LED.h"
 #include "time.h"
+#include "buttons.h"
 #include "gameport.h"
-#include "startScreen.h"
+#include "asciidisplay.h"
 #include "ascii.h"
 
 void main() {
@@ -65,6 +66,6 @@ Start:
 		}
 		updateGame();
 		if (restartGame)
-			goto Start;
+			goto Start; // Goto back to the start of the game
 	}
 }

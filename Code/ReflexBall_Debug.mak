@@ -60,8 +60,10 @@ clean:
             del L:\PHQFBI~D\ROIZBJ~K\gameport.obj
 	@if exist L:\PHQFBI~D\ROIZBJ~K\ascii.obj  \
             del L:\PHQFBI~D\ROIZBJ~K\ascii.obj
-	@if exist L:\PHQFBI~D\ROIZBJ~K\asciiDisplay.obj  \
-            del L:\PHQFBI~D\ROIZBJ~K\asciiDisplay.obj
+	@if exist L:\PHQFBI~D\ROIZBJ~K\asciidisplay.obj  \
+            del L:\PHQFBI~D\ROIZBJ~K\asciidisplay.obj
+	@if exist L:\PHQFBI~D\ROIZBJ~K\buttons.obj  \
+            del L:\PHQFBI~D\ROIZBJ~K\buttons.obj
 
 rebuildall: clean Debug
 
@@ -80,7 +82,8 @@ OBJS =  \
             L:\PHQFBI~D\ROIZBJ~K\reflexball.obj  \
             L:\PHQFBI~D\ROIZBJ~K\gameport.obj  \
             L:\PHQFBI~D\ROIZBJ~K\ascii.obj  \
-            L:\PHQFBI~D\ROIZBJ~K\asciiDisplay.obj
+            L:\PHQFBI~D\ROIZBJ~K\asciidisplay.obj  \
+            L:\PHQFBI~D\ROIZBJ~K\buttons.obj
 
 ReflexBall: $(OBJS)
 	 $(LINK)  @L:\PHQFBI~D\ROIZBJ~K\ReflexBall_Debug.linkcmd
@@ -167,10 +170,11 @@ L:\PHQFBI~D\ROIZBJ~K\main.obj :  \
             L:\PHQFBI~D\ROIZBJ~K\LED.h  \
             L:\PHQFBI~D\ROIZBJ~K\ansi.h  \
             L:\PHQFBI~D\ROIZBJ~K\ascii.h  \
+            L:\PHQFBI~D\ROIZBJ~K\A52KFR~O.H  \
+            L:\PHQFBI~D\ROIZBJ~K\buttons.h  \
             L:\PHQFBI~D\ROIZBJ~K\gameport.h  \
             L:\PHQFBI~D\ROIZBJ~K\math.h  \
             L:\PHQFBI~D\ROIZBJ~K\ROIZBJ~K.H  \
-            L:\PHQFBI~D\ROIZBJ~K\startScreen.h  \
             L:\PHQFBI~D\ROIZBJ~K\time.h
 	 $(CC)  $(CFLAGS) L:\PHQFBI~D\ROIZBJ~K\main.c
 
@@ -209,10 +213,10 @@ L:\PHQFBI~D\ROIZBJ~K\reflexball.obj :  \
             L:\PHQFBI~D\ROIZBJ~K\LED.h  \
             L:\PHQFBI~D\ROIZBJ~K\ansi.h  \
             L:\PHQFBI~D\ROIZBJ~K\ascii.h  \
+            L:\PHQFBI~D\ROIZBJ~K\A52KFR~O.H  \
             L:\PHQFBI~D\ROIZBJ~K\levels.h  \
             L:\PHQFBI~D\ROIZBJ~K\math.h  \
             L:\PHQFBI~D\ROIZBJ~K\ROIZBJ~K.H  \
-            L:\PHQFBI~D\ROIZBJ~K\startScreen.h  \
             L:\PHQFBI~D\ROIZBJ~K\time.h
 	 $(CC)  $(CFLAGS) L:\PHQFBI~D\ROIZBJ~K\reflexball.c
 
@@ -239,8 +243,8 @@ L:\PHQFBI~D\ROIZBJ~K\ascii.obj :  \
             L:\PHQFBI~D\ROIZBJ~K\ascii.h
 	 $(CC)  $(CFLAGS) L:\PHQFBI~D\ROIZBJ~K\ascii.c
 
-L:\PHQFBI~D\ROIZBJ~K\asciiDisplay.obj :  \
-            L:\PHQFBI~D\ROIZBJ~K\asciiDisplay.c  \
+L:\PHQFBI~D\ROIZBJ~K\asciidisplay.obj :  \
+            L:\PHQFBI~D\ROIZBJ~K\asciidisplay.c  \
             C:\PROGRA~1\ZiLOG\ZDSII_~1.3\include\std\FORMAT.H  \
             C:\PROGRA~1\ZiLOG\ZDSII_~1.3\include\std\STDARG.H  \
             C:\PROGRA~1\ZiLOG\ZDSII_~1.3\include\std\STDIO.H  \
@@ -257,9 +261,28 @@ L:\PHQFBI~D\ROIZBJ~K\asciiDisplay.obj :  \
             L:\PHQFBI~D\ROIZBJ~K\ansi.h  \
             L:\PHQFBI~D\ROIZBJ~K\ascii.h  \
             L:\PHQFBI~D\ROIZBJ~K\A52KFR~O.H  \
+            L:\PHQFBI~D\ROIZBJ~K\buttons.h  \
             L:\PHQFBI~D\ROIZBJ~K\gameport.h  \
             L:\PHQFBI~D\ROIZBJ~K\math.h  \
             L:\PHQFBI~D\ROIZBJ~K\ROIZBJ~K.H  \
             L:\PHQFBI~D\ROIZBJ~K\time.h
-	 $(CC)  $(CFLAGS) L:\PHQFBI~D\ROIZBJ~K\asciiDisplay.c
+	 $(CC)  $(CFLAGS) L:\PHQFBI~D\ROIZBJ~K\asciidisplay.c
+
+L:\PHQFBI~D\ROIZBJ~K\buttons.obj :  \
+            L:\PHQFBI~D\ROIZBJ~K\buttons.c  \
+            C:\PROGRA~1\ZiLOG\ZDSII_~1.3\include\std\FORMAT.H  \
+            C:\PROGRA~1\ZiLOG\ZDSII_~1.3\include\std\STDARG.H  \
+            C:\PROGRA~1\ZiLOG\ZDSII_~1.3\include\std\STDIO.H  \
+            C:\PROGRA~1\ZiLOG\ZDSII_~1.3\include\std\FORMAT.H  \
+            C:\PROGRA~1\ZiLOG\ZDSII_~1.3\include\std\STDARG.H  \
+            C:\PROGRA~1\ZiLOG\ZDSII_~1.3\include\zilog\defines.h  \
+            C:\PROGRA~1\ZiLOG\ZDSII_~1.3\include\zilog\dmadefs.h  \
+            C:\PROGRA~1\ZiLOG\ZDSII_~1.3\include\zilog\ez8.h  \
+            C:\PROGRA~1\ZiLOG\ZDSII_~1.3\include\zilog\gpio.h  \
+            C:\PROGRA~1\ZiLOG\ZDSII_~1.3\include\zilog\SIO.H  \
+            C:\PROGRA~1\ZiLOG\ZDSII_~1.3\include\zilog\uart.h  \
+            C:\PROGRA~1\ZiLOG\ZDSII_~1.3\include\zilog\uartdefs.h  \
+            L:\PHQFBI~D\ROIZBJ~K\buttons.h  \
+            L:\PHQFBI~D\ROIZBJ~K\time.h
+	 $(CC)  $(CFLAGS) L:\PHQFBI~D\ROIZBJ~K\buttons.c
 

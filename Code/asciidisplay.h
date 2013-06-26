@@ -3,6 +3,7 @@
 
 extern unsigned char x1, y1, x2, y2;
 
+// Public
 unsigned char strlen_rom(rom const char *string);
 void printAscii(rom const char *str, unsigned char size);
 void printAsciiXY(rom const char *str, unsigned char size, unsigned char x, unsigned char y);
@@ -12,5 +13,11 @@ void printMenu();
 unsigned char updateMenu();
 void showWon();
 void showGameOver();
+
+// Private
+void clearMenuBall(unsigned char x, unsigned char y);
+void drawMenuBall(unsigned char x, unsigned char y);
+void moveBall(char dir);
+void calculateDifficulty();
 
 #endif

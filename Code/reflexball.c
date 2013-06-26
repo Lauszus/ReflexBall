@@ -4,8 +4,8 @@
 #include "time.h"
 #include "levels.h"
 #include "LED.h"
-#include "startScreen.h"
 #include "ascii.h"
+#include "asciidisplay.h"
 
 Ball ball;
 Striker striker;
@@ -37,7 +37,7 @@ void printLevel() {
 	gotoxy(x2-35,y2);
 	printf("Level: %d", level+1);
 }
-void printLives() {	
+void printLives() {
 	gotoxy(x2-25,y2);
 	printf("Lives: %d", lives);	
 }
@@ -96,7 +96,6 @@ void gotoxyBall(long x, long y) {
 	gotoxy(getTerminalCoordinate(x),getTerminalCoordinate(y));
 }
 
-
 void clearBigBall(long x, long y) {
 	gotoxyBall(x,y);
 	printf("    ");
@@ -123,18 +122,6 @@ void drawBigBall() {
 	printf("%c%c%c%c",backSlash,bottom,bottom,slash);
 }
 
-void printBallCoor() {
-	gotoxy(10,10);
-	printf("Ball data: ");
-	printFix(ball.x,2);
-	printf(" ");
-	printFix(ball.y,2);
-	printf(" ");
-	printFix(ball.vector.x,2);
-	printf(" ");
-	printFix(ball.vector.y,2);
-}
-
 void drawBrick(Brick *brick) {
 	unsigned char i, j, brickStyle;
 	for (i=0;i<brick->height;i++) {
@@ -157,9 +144,7 @@ void drawBrick(Brick *brick) {
 	}
 }
 
-unsigned long dontCounter = 0;
-
-void drawBallxy(unsigned char x, unsigned char y) {
+void checkIteration(unsigned char x, unsigned char y) {
 	unsigned char i, j, dontDeflectX = 0, dontDeflectY = 0, deflectedX = 0, deflectedY = 0;
 	char distance; // Distance from center to ball position on striker
 	int angle;
@@ -389,12 +374,12 @@ void setBallPos(unsigned char x, unsigned char y) {
 	ball.y = (long)y << FIX14_SHIFT;
 }
 
-void drawBall() {
+void iterate() {
 	if (alive && gameStarted) {
 		ball.x += ball.vector.x;
 		ball.y += ball.vector.y;
 	}
-	drawBallxy(getTerminalCoordinate(ball.x),getTerminalCoordinate(ball.y));
+	checkIteration(getTerminalCoordinate(ball.x),getTerminalCoordinate(ball.y));
 }
 
 void drawStriker() {
@@ -411,7 +396,7 @@ void drawStriker() {
 
 void ballPosStriker() {
 	setBallPos(striker.x+striker.width/2-ball.width/2,striker.y-ball.height);
-	drawBall();
+	iterate();
 	drawStriker(); // Redraw striker in case the ball clears part of the stikers
 }
 
@@ -541,7 +526,7 @@ void updateGame() {
 
 	if (millis() - gameTimer > speed && gameStarted) {
 		gameTimer = millis();
-		drawBall();
+		iterate();
 	}
 }
 

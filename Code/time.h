@@ -14,25 +14,12 @@
 #define PRIORITY_TIMER1 (1 << 6)
 #define PRIORITY_TIMER2 (1 << 7)
 
-typedef struct {
-	unsigned long hour;
-	unsigned char min, sec, cs;
-} time_t;
-
-extern volatile unsigned long delayTimer;
-extern volatile unsigned char newTime;
-extern volatile time_t time;
-
-void resetTime();
-void printTime(unsigned splittime);
-void timer0int();
-void timer1int();
-void delay_ms(unsigned long time);
-void initButtons();
-unsigned char readButtons();
-unsigned char readkey();
-void initWindow();
+// Public
 void initTimers();
 unsigned long millis();
+void delay_ms(unsigned long time);
+
+// Private
+void timer1int();
 
 #endif

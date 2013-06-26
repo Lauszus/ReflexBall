@@ -37,12 +37,36 @@ extern unsigned char divider; // This is the difficulty set in the beginning
 extern unsigned char strikerWidth; // This is the striker width determent from the selected difficulty
 extern unsigned char restartGame; // True if the user have won the game
 
+// Public
 void initReflexBall(unsigned char newX1, unsigned char newY1, unsigned char newX2, unsigned char newY2, char style);
 void startGame();
-void updateGame();
 void stopGame();
+void updateGame();
 void moveStriker(char dir);
-void levelUp();
+
+// Private
+void printLevel();
+void printLives();
+void printScore();
+void showScoreLED();
+void scrollLiveInGameLED();
+void scrollLevelUp();
+void scrollAll();
+void dead();
+unsigned char getTerminalCoordinate(long input);
+void gotoxyBall(long x, long y);
+void clearBigBall(long x, long y);
+void drawBigBall();
+void drawBrick(Brick *brick);
+void checkIteration(unsigned char x, unsigned char y);
+void setBallPos(unsigned char x, unsigned char y);
+void iterate();
+void drawStriker();
+void ballPosStriker();
+void initStriker(unsigned char x, unsigned y, unsigned char width);
+void initBricks(char clear);
+void initBall();
 void drawLevel();
+void levelUp();
 
 #endif

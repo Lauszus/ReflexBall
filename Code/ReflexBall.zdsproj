@@ -25,6 +25,8 @@
 <file filter-key="">.\gameport.h</file>
 <file filter-key="">.\asciidisplay.c</file>
 <file filter-key="">.\asciidisplay.h</file>
+<file filter-key="">.\buttons.c</file>
+<file filter-key="">.\buttons.h</file>
 </files>
 
 <!-- configuration information -->
