@@ -33,9 +33,9 @@ char readSteeringWheel() {
 
 	// The driving wheel is not linear therefor this table is needed
 	if (val > 1000)
-		return -4;
+		return -6; // We will move it more aggressively to the side
 	else if (val > 796)
-		return -3;
+		return -4;
 	else if (val > 712)
 		return -2;
 	else if (val > 610)
@@ -47,7 +47,7 @@ char readSteeringWheel() {
 	else if (val > 466)
 		return 2;
 	else if (val > 440)
-		return 3;
-	else
 		return 4;
+	else
+		return 6;
 }

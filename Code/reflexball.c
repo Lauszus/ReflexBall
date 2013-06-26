@@ -407,7 +407,7 @@ void moveStriker(char dir) { // Take care of moving the striker left or right
 	if (dir < 0)
 		absDir = -dir;
 
-	if (striker.x + dir <= x1)
+	if ((int)striker.x + dir <= x1)
 		striker.x = x1+1;
 	else if (striker.x+striker.width-1 + dir >= x2)
 		striker.x = x2-striker.width;

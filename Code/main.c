@@ -9,6 +9,8 @@
 #include "asciidisplay.h"
 #include "ascii.h"
 
+unsigned long wheelTimer;
+
 void main() {
 	int input;
 	unsigned char buttons;
@@ -37,13 +39,16 @@ Start:
 	initReflexBall(3,15,224,82,1); // x1, y1, x2, y2, style
 
 	for(;;) {
-		buttons = getGameportButtons();
-		wheel = readSteeringWheel();
+		buttons = getGameportButtons();		
 		
 		if (buttons & 0xE) // Gear backward or button press
 			startGame();
-		else if (wheel != 0)
-			moveStriker(wheel);
+		else if (millis() - wheelTimer > 20) { // We have to limit the update rate or it will move to fast
+			wheelTimer = millis();
+			wheel = readSteeringWheel();
+			if (wheel != 0)
+				moveStriker(wheel);
+		}
 		else { // The driving wheel overrules the other controls
 			buttons = readButtons();
 			if (buttons) {
