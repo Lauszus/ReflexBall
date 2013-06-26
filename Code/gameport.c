@@ -1,5 +1,6 @@
 #include <eZ8.h>             // special encore constants, macros and flash routines
 #include <sio.h>             // special encore serial i/o routines
+#include "gameport.h"
 #include "ansi.h"
 
 unsigned int readADC(unsigned char channel) {
@@ -37,9 +38,9 @@ char readSteeringWheel() {
 		return -3;
 	else if (val > 712)
 		return -2;
-	else if (val > 616)
+	else if (val > 610)
 		return -1;
-	else if (val > 560)
+	else if (val > 570)
 		return 0;
 	else if (val > 500)
 		return 1;

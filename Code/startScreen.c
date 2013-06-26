@@ -6,6 +6,7 @@
 #include "time.h"
 #include "gameport.h"
 #include "ascii.h"
+#include "reflexball.h"
 
 const unsigned char ballMenuYPos[4] = { 40, 48, 55, 64 };
 const unsigned char ballXPos = 85;
@@ -80,6 +81,42 @@ void moveBall(char dir) {
 	drawMenuBall(ballXPos,ballMenuYPos[ballY]);
 }
 
+void showWon() {
+	const char* highscoreString = "Good try! But the highscore is still held by:";
+	clrscr();
+	if (divider == 1) { // Chuck Norris mode		
+		printAsciiXY(chuckNorrisAscii[0],sizeof(chuckNorrisAscii)/sizeof(chuckNorrisAscii[0]),(xMin+xMax)/2-strlen_rom(chuckNorrisAscii[0])/2,(yMin+yMax)/2-(sizeof(chuckNorrisAscii)/sizeof(chuckNorrisAscii[0]))/2-10);
+		moveCursor(DOWN,1);
+		moveCursor(BACK,strlen_rom(onlyChuckAscii[0])/2-strlen_rom(chuckNorrisAscii[0])/2);
+		saveCursor();
+		printAscii(onlyChuckAscii[0],sizeof(onlyChuckAscii)/sizeof(onlyChuckAscii[0]));
+	} else {
+		gotoxy(0,0);
+		saveCursor();
+		printAscii(ladyAscii[0],sizeof(ladyAscii)/sizeof(ladyAscii[0]));
+
+		gotoxy((xMin+xMax)/2-strlen_rom(congratulationsAscii[0])/2+strlen_rom(ladyAscii[0])/2,20);		
+		saveCursor();
+		printAscii(congratulationsAscii[0],sizeof(congratulationsAscii)/sizeof(congratulationsAscii[0]));
+		moveCursor(DOWN,1);
+		moveCursor(FORWARD,strlen_rom(congratulationsAscii[0])/2-strlen_rom(nowTryAscii[0])/2);
+		saveCursor();
+		printAscii(nowTryAscii[0],sizeof(nowTryAscii)/sizeof(nowTryAscii[0]));
+		
+		moveCursor(DOWN,10);
+		moveCursor(FORWARD,strlen_rom(nowTryAscii[0])/2-strlen(highscoreString)/2);
+		blink(1);
+		printf("%s",highscoreString);
+		blink(0);
+		moveCursor(DOWN,1);
+		moveCursor(BACK,strlen(highscoreString)+strlen_rom(chuckNorrisTextAscii[0])/2-strlen(highscoreString)/2);
+		saveCursor();
+		printAscii(chuckNorrisTextAscii[0],sizeof(chuckNorrisTextAscii)/sizeof(chuckNorrisTextAscii[0]));
+	}
+
+	while (!getGameportButtons() && !readButtons() && !kbhit()); // Wait for button press
+}
+
 void showGameOver() {
 	clrscr();
 	printAsciiXY(gameOverAscii[0],sizeof(gameOverAscii)/sizeof(gameOverAscii[0]),(xMin+xMax)/2-strlen_rom(gameOverAscii[0])/2,(yMin+yMax)/2-(sizeof(gameOverAscii)/sizeof(gameOverAscii[0]))/2-5);
@@ -88,7 +125,7 @@ void showGameOver() {
 	switch (millis() & 0x7) { // Pseudo random number from 0-7
 		case 0:
 			if (strlen_rom(gameOverAscii[0]) > strlen_rom(amigoAscii[0]))
-				moveCursor(FORWARD,strlen_rom(gameOverAscii[0])/2-strlen_rom(amigoAscii[0])/2);	
+				moveCursor(FORWARD,strlen_rom(gameOverAscii[0])/2-strlen_rom(amigoAscii[0])/2);
 			else
 				moveCursor(BACK,strlen_rom(amigoAscii[0])/2-strlen_rom(gameOverAscii[0])/2);
 			saveCursor();
@@ -151,6 +188,7 @@ void showGameOver() {
 			printAscii(deadAscii[0],sizeof(deadAscii)/sizeof(deadAscii[0])); // Center text below "Game Over!"
 			break;
 	}
+	while (!getGameportButtons() && !readButtons() && !kbhit()); // Wait for button press
 }
 
 void initStartMenu(unsigned char newX1, unsigned char newY1, unsigned char newX2, unsigned char newY2) {
@@ -226,6 +264,22 @@ void printMenu() {
 	drawMenuBall(ballXPos,ballMenuYPos[ballY]);
 }
 
+void calculateDifficulty() {	
+	if (ballY == 0) { // Easy
+		divider = 10;
+		strikerWidth = 30;
+	} else if (ballY == 1) { // Medium
+		divider = 5;
+		strikerWidth = 20;
+	} else if (ballY == 2) { // Hard
+		divider = 2;
+		strikerWidth = 10;
+	} else { // Chuck Norris
+		divider = 1;
+		strikerWidth = 4;
+	}
+}
+
 unsigned char updateMenu() {
 	int input;
 	unsigned char buttons, buttonsClick;
@@ -259,13 +313,16 @@ unsigned char updateMenu() {
 			moveBall(-1);
 		else if (buttonsClick & 0x4) // Gear backward
 			moveBall(1);
-		else if (buttonsClick & 0xA) // Either of the wheel buttons
+		else if (buttonsClick & 0xA) { // Either of the wheel buttons
+			calculateDifficulty();
 			return 1;
+		}
 	} else if (kbhit()) {
 		input = getch();
-		if (input == ' ') // Space
+		if (input == ' ') { // Space
+			calculateDifficulty();
 			return 1;
-		else if (input == 65) // Up
+		} else if (input == 65) // Up
 			moveBall(-1);
 		else if (input == 66) // Down
 			moveBall(1);
@@ -275,9 +332,10 @@ unsigned char updateMenu() {
 			buttonsClick = buttons & ~oldButtonsBoard; // Only look at the buttons that have changed
 			oldButtonsBoard = buttons;
 
-			if (buttonsClick & 0x2) // Center
+			if (buttonsClick & 0x2) { // Center
+				calculateDifficulty();
 				return 1;
-			else if (buttonsClick & 0x4) // Left
+			} else if (buttonsClick & 0x4) // Left
 				moveBall(-1);
 			else if (buttonsClick & 0x1) // Right
 				moveBall(1);

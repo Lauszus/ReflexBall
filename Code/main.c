@@ -6,6 +6,7 @@
 #include "time.h"
 #include "gameport.h"
 #include "startScreen.h"
+#include "ascii.h"
 
 void main() {
 	int input;
@@ -13,28 +14,30 @@ void main() {
 	char wheel;
 
 	initTimers();
-	LEDinit();
+	initLED();
 	initButtons();
 	initGameport();
 	init_uart(_UART0,_DEFFREQ,BAUD_115200);
+
 	color(2,0); // Green forground, black background
 
-	clrscr();		
+Start:
+	clrscr();
+
+	LEDsetString("    ReflexBall RALLY!");
+
 	initStartMenu(3,1,224,82); // x1, y1, x2, y2
 	while(!startMenu()); // Wait for any key to be pressed
 	clrscr();
 	printMenu();
 	while(!updateMenu()); // Wait until difficulty is choosen
 
+	LEDsetString("    "); // Clear display
 	initReflexBall(3,15,224,82,1); // x1, y1, x2, y2, style	
 
 	for(;;) {
 		buttons = getGameportButtons();
 		wheel = readSteeringWheel();
-		/*gotoxy(10,20);
-		printf("Buttons: %X",buttons);
-		gotoxy(10,22);
-		printf("Wheel: %02d",wheel);*/
 		
 		if (buttons & 0xE) // Gear backward or button press
 			startGame();
@@ -61,5 +64,7 @@ void main() {
 			}
 		}
 		updateGame();
+		if (restartGame)
+			goto Start;
 	}
 }

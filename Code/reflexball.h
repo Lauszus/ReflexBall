@@ -8,7 +8,8 @@
 #define STRIKER_MAX_ANGLE	64 // 360 deg = 512
 #define NLIVES				3
 #define DEFAULT_DIFFICULTY	40
-#define MAX_DIFFICULTY		30 // If speed gets under this value the UART can no longer keep up
+#define UART_MAX_SPEED		20 // If it gets below this value, we will only draw it every second time or if it hits an object, this is because the UART can not send the characters fast enough
+#define MAX_DIFFICULTY		10 // If speed gets under this value the UART can no longer keep up
 #define BALL_WIDTH			4 // The modulus of this number should be even
 #define BALL_HEIGHT			2
 
@@ -31,6 +32,10 @@ typedef struct {
 	unsigned char lives;
 	unsigned char width, height;
 } Brick;
+
+extern unsigned char divider; // This is the difficulty set in the beginning
+extern unsigned char strikerWidth; // This is the striker width determent from the selected difficulty
+extern unsigned char restartGame; // True if the user have won the game
 
 void initReflexBall(unsigned char newX1, unsigned char newY1, unsigned char newX2, unsigned char newY2, char style);
 void startGame();

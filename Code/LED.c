@@ -153,7 +153,7 @@ void timer2int() {
 	LEDupdate();
 }
 
-void LEDinit() {
+void initLED() {
 	unsigned char i;
 	PEDD = 0; // All output
 	PGDD = 0; // All output

@@ -18,7 +18,10 @@ unsigned char gameStarted = 0, alive;
 
 unsigned char x1, y1, x2, y2;
 
-unsigned int score;
+unsigned int score, levelScore; // The total score and the score obtained in this level
+unsigned char divider; // This is the difficulty set in the beginning
+unsigned char strikerWidth; // This is the striker width determent from the selected difficulty
+
 unsigned char lives, level;
 volatile char runOnceBuf[50], ledBuf[50]; // We need this global buffer as the LED code creates a pointer to the memory location
 
@@ -27,6 +30,8 @@ char drawCounterMax = 1;
 char drawBallNow;
 
 long lastX, lastY;
+
+unsigned char restartGame; // True if the user have won the game
 
 void printLevel() {
 	gotoxy(x2-35,y2);
@@ -63,26 +68,22 @@ void scrollAll() {
 	
 	LEDRunOnce(runOnceBuf,ledBuf);
 }
-/*
-void printTextCenter(char* string) {
-	gotoxy((x2-x1)/2+x1-strlen(string)/2,(y2-y1)/2+y1);
-	printf("%s",string);
-}
-*/
+
 void dead() {
 	if(--lives == 0) {
-		//printTextCenter("Game Over!");
 		delay_ms(1000); // Wait a bit before showing Game Over ASCII string
-		showGameOver();
 		sprintf(ledBuf,"%04d$ Game Over! Score:", score);
 		LEDsetString(ledBuf);
+		showGameOver();
+		restartGame = 1;
+		return;
 	} else {
 		scrollLiveInGameLED();
 		printLives();
 	}
 
 	alive = 0;
-	stopGame();
+	stopGame();	
 }
 
 unsigned char getTerminalCoordinate(long input) {
@@ -175,6 +176,7 @@ void drawBallxy(unsigned char x, unsigned char y) {
 				// Check if the ball hit a brick
 				if (y <= bricks[i][j].y+bricks[i][j].height-1 && y+ball.height-1 >= bricks[i][j].y && x+ball.width-1 >= bricks[i][j].x && x <= bricks[i][j].x+bricks[i][j].width-1) {
 					score++;
+					levelScore++;
 					printScore();
 					showScoreLED();
 					
@@ -196,7 +198,7 @@ void drawBallxy(unsigned char x, unsigned char y) {
 										//printf("Alive below! %04d",dontCounter++);
 									}
 								}
-							} else if (y == bricks[i][j].y)
+							} else if (y >= bricks[i][j].y && y+ball.height-1 <= bricks[i][j].y+bricks[i][j].height-1) // Check if we hit the brick directly from the side
 								dontDeflectY = 1;
 
 							if (y+ball.height-1 >= bricks[i][j].y && y <= bricks[i][j].y) { // Top of brick
@@ -288,8 +290,6 @@ void drawBallxy(unsigned char x, unsigned char y) {
 						}						
 					}
 					bricks[i][j].lives--;
-					//if (!bricks[i][j].lives)
-						//score++;
 					bricksLives--;				
 					drawBrick(&bricks[i][j]);
 					if (!bricksLives) {
@@ -314,12 +314,12 @@ void drawBallxy(unsigned char x, unsigned char y) {
 			ball.vector.x = -ball.vector.x;
 			ball.x += 2*ball.vector.x;
 		}
-		
-		gotoxyBall(ball.x,ball.y);		
 	}
 	else if (((y+ball.height-1 > striker.y) || (y+ball.height-1 == striker.y && (x+ball.width <= striker.x || x >= striker.x+striker.width))) && gameStarted) { // If you are below the striker then player must be dead	
+		drawBallNow = 1;
+		drawBigBall();
 		dead();
-		gotoxy(x,y);
+		return;
 	}
 	else if (gameStarted) {
 		if (x <= x1 || x+ball.width >= x2) {
@@ -328,7 +328,6 @@ void drawBallxy(unsigned char x, unsigned char y) {
 		}		
 		if ((y <= y1) || (y+ball.height-1 == striker.y && x+ball.width > striker.x && x < striker.x+striker.width)) {
 			if (y+ball.height-1 == striker.y) { // Check if we hit the striker
-				//score++;
 				printScore();
 				showScoreLED();
 	
@@ -377,7 +376,6 @@ void drawBallxy(unsigned char x, unsigned char y) {
 			ball.vector.y = -ball.vector.y;
 			ball.y += 2*ball.vector.y;
 		}
-		gotoxyBall(ball.x,ball.y);
 	}
 
 	if (x == x1+1 || x+ball.width == x2-1 || y == y1+1 || (y+ball.height-1 == striker.y-1 && x+ball.width > striker.x && x < striker.x+striker.width)) // Check if we are next to the sides, top or striker
@@ -403,8 +401,12 @@ void drawStriker() {
 	const unsigned char strikerStyle = 223;
 	unsigned char i;
 	gotoxy(striker.x,striker.y);
+	if (divider == 1) // Blink striker if Chuck Norris mode is on
+		blink(1);
 	for (i=0;i<striker.width;i++)
 		printf("%c",strikerStyle);
+	if (divider == 1)
+		blink(0);
 }
 
 void ballPosStriker() {
@@ -427,9 +429,9 @@ void moveStriker(char dir) { // Take care of moving the striker left or right
 	else
 		striker.x += dir;
 
-	if (dir < 0) // Negative
+	if (dir < 0) // Left
 		gotoxy(striker.x+striker.width,striker.y);
-	else
+	else // Right
 		gotoxy(striker.x-dir,striker.y);
 
 	for (; absDir > 0; absDir--)
@@ -496,9 +498,9 @@ void startGame() {
 		alive = 1;
 		if (lives == 0) {						
 			score = 0;
+			levelScore = 0;
 			showScoreLED();
 			initReflexBall(x1,y1,x2,y2,1);
-			//printTextCenter("          "); // Clear GameOver!
 
 			gameTimer = 0;
 			printLives();
@@ -506,7 +508,7 @@ void startGame() {
 			printLevel();
 		}
 		ballPosStriker();		
-	} else { // TODO: Replace with: else if (!gameStarted) {
+	} else if (!gameStarted) {
 		initVector(&ball.vector,1,0);
 		startAngle = (millis() & 0x7F) - 192; // Calculate a "random" angle from 0-127 (0-89.3 deg) and then subtract 192 (135 deg)
 
@@ -527,13 +529,14 @@ void startGame() {
 	}
 }
 
-void updateGame() {	
-	int speed = DEFAULT_DIFFICULTY-score/2;
-	if (speed < MAX_DIFFICULTY) { // If it gets below this value, we will only draw it every second time or if it hits an object, this is because the UART can not send the characters as fast
-		if (speed < 0)
-			speed = 0;
+void updateGame() {
+	int speed = DEFAULT_DIFFICULTY-levelScore/divider; // Calculate teh speed using the score obtained in the current level and the divider set in the start up menu
+	if (speed < MAX_DIFFICULTY || divider == 1) // Limit maximum speed and set maximum speed as default if Chuck Norris mode is enabled
+		speed = MAX_DIFFICULTY;
+		
+	if (speed < UART_MAX_SPEED) // If it gets below this value, we will only draw it every second time or if it hits an object, this is because the UART can not send the characters fast enough
 		drawCounterMax = 2;
-	} else
+	else
 		drawCounterMax = 1;
 
 	if (millis() - gameTimer > speed && gameStarted) {
@@ -554,7 +557,7 @@ void drawLevel(char clear) {
 	gotoxy(striker.x,striker.y);
 	for (i=0;i<striker.width;i++)
 		printf(" "); // Clear old striker
-	initStriker((x2-x1)/2+x1,y2-1,20); // The width of the striker should always be even
+	initStriker((x2-x1)/2+x1,y2-1,strikerWidth); // The width of the striker should always be even
 
 	initBall(); // Initialize to striker position
 	
@@ -573,16 +576,30 @@ void drawLevel(char clear) {
 
 void levelUp() {
 	level++;	
-	if (level >= sizeof(levels)/sizeof(levels[0])) // Make sure we do not exceed the maximum level
-		level = 0;
+	if (level >= sizeof(levels)/sizeof(levels[0])) { // Check if the user won the game
+		showWon();
+		if (divider != 1) { // If not in Chuck Norris mode, then the user wins the game
+			restartGame = 1;
+			return;
+		}
+		initReflexBall(x1,y1,x2,y2,1);
+		return;
+	}	
 	lives += 2;
 	
+	levelScore = 0;
 	scrollLevelUp();
 	drawLevel(1);
 }
 
 void initReflexBall(unsigned char newX1, unsigned char newY1, unsigned char newX2, unsigned char newY2, char style) {
 	unsigned char leftTop, rightTop, leftBot, rightBot, verSide, horSide, leftCross, rightCross;
+	/*
+	for (level=0;level<sizeof(levels)/sizeof(levels[0]);level++) {
+		clrscr();
+		drawLevel(1);
+		delay_ms(5000);
+	}*/
 
 	x1 = newX1;
 	y1 = newY1;
@@ -612,8 +629,7 @@ void initReflexBall(unsigned char newX1, unsigned char newY1, unsigned char newX
 	lastX = (long)((x1+x2)/2) << FIX14_SHIFT; // Sets the last ball coordinates to the bottom of the map, so it clears the ball correctly the first time
 	lastY = (long)(y2+4) << FIX14_SHIFT;
 
-	gotoxy(x1,y1);
-	clrscr();
+	clrscr(); // Clear the screen
 	
 	// Put the title in the top of the screen - this is done when animateTitle() is called inside updateGame()
 	printAsciiXY(titleAscii1[0],sizeof(titleAscii1)/sizeof(titleAscii1[0]),(x1+x2)/2-strlen_rom(titleAscii1[0])/2,y1/2-(sizeof(titleAscii1)/sizeof(titleAscii1[0]))/2);
@@ -621,8 +637,10 @@ void initReflexBall(unsigned char newX1, unsigned char newY1, unsigned char newX
 	drawSides(x1,y1,x2,y2,verSide);	
 	drawTopBot(x1,y1,x2-x1-1,leftTop,rightTop,horSide);
 	
-	level = 0;
+	restartGame = 0;
+	level = 5 /*0*/;
 	score = 0;
+	levelScore = 0;
 	lives = NLIVES;
 	drawLevel(0);
 	scrollAll();

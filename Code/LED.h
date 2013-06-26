@@ -14,8 +14,7 @@
 
 //#define STORE_STRING_IN_ROM
 
-void LEDinit();
-//void LEDupdate();
+void initLED();
 
 #ifdef STORE_STRING_IN_ROM
 void LEDsetString(char rom *string);

@@ -21,4 +21,11 @@ extern rom const char notPassAscii[5][89];
 extern rom const char thereIsNoBallAscii[5][127];
 extern rom const char deadAscii[5][94];
 
+extern rom const char ladyAscii[81][73];
+extern rom const char chuckNorrisAscii[50][89];
+extern rom const char congratulationsAscii[8][126];
+extern rom const char nowTryAscii[5][108];
+extern rom const char onlyChuckAscii[5][158];
+extern rom const char chuckNorrisTextAscii[5][63];
+
 #endif

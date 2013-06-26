@@ -166,6 +166,7 @@ L:\PHQFBI~D\ROIZBJ~K\main.obj :  \
             C:\PROGRA~1\ZiLOG\ZDSII_~1.3\include\zilog\uartdefs.h  \
             L:\PHQFBI~D\ROIZBJ~K\LED.h  \
             L:\PHQFBI~D\ROIZBJ~K\ansi.h  \
+            L:\PHQFBI~D\ROIZBJ~K\ascii.h  \
             L:\PHQFBI~D\ROIZBJ~K\gameport.h  \
             L:\PHQFBI~D\ROIZBJ~K\math.h  \
             L:\PHQFBI~D\ROIZBJ~K\ROIZBJ~K.H  \
@@ -229,7 +230,8 @@ L:\PHQFBI~D\ROIZBJ~K\gameport.obj :  \
             C:\PROGRA~1\ZiLOG\ZDSII_~1.3\include\zilog\SIO.H  \
             C:\PROGRA~1\ZiLOG\ZDSII_~1.3\include\zilog\uart.h  \
             C:\PROGRA~1\ZiLOG\ZDSII_~1.3\include\zilog\uartdefs.h  \
-            L:\PHQFBI~D\ROIZBJ~K\ansi.h
+            L:\PHQFBI~D\ROIZBJ~K\ansi.h  \
+            L:\PHQFBI~D\ROIZBJ~K\gameport.h
 	 $(CC)  $(CFLAGS) L:\PHQFBI~D\ROIZBJ~K\gameport.c
 
 L:\PHQFBI~D\ROIZBJ~K\startScreen.obj :  \
@@ -250,6 +252,8 @@ L:\PHQFBI~D\ROIZBJ~K\startScreen.obj :  \
             L:\PHQFBI~D\ROIZBJ~K\ansi.h  \
             L:\PHQFBI~D\ROIZBJ~K\ascii.h  \
             L:\PHQFBI~D\ROIZBJ~K\gameport.h  \
+            L:\PHQFBI~D\ROIZBJ~K\math.h  \
+            L:\PHQFBI~D\ROIZBJ~K\ROIZBJ~K.H  \
             L:\PHQFBI~D\ROIZBJ~K\SBD22I~Z.H  \
             L:\PHQFBI~D\ROIZBJ~K\time.h
 	 $(CC)  $(CFLAGS) L:\PHQFBI~D\ROIZBJ~K\startScreen.c

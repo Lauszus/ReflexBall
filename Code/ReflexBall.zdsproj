@@ -24,6 +24,7 @@
 <file filter-key="">.\startScreen.h</file>
 <file filter-key="">.\ascii.h</file>
 <file filter-key="">.\ascii.c</file>
+<file filter-key="">.\gameport.h</file>
 </files>
 
 <!-- configuration information -->
