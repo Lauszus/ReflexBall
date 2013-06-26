@@ -1,46 +1,52 @@
 \chapter{Specifikationer}
 
-Nedenfor er vores forskellige delmål i projektet. Spillet skal have de nedenstående funktionaliteter. Listen kan derfor ses som kravene til hvd vores spil skal kunne og er samtidig opdelt på en logisk måde så man kan starte fra toppen af og arbejde sig igennem delmålene indtil man har et færdigt spil der fungerer og ser ud efter vores hensigt. 
+Nedenfor er vores forskellige delmål i projektet. Spillet skal have de nedenstående funktionaliteter. Listen kan derfor ses som kravene til hvad vores spil skal kunne og er samtidig opdelt på en logisk måde så man kan starte fra toppen af og arbejde sig igennem delmålene indtil man har et færdigt spil der fungerer og ser ud efter vores hensigt. Delmålene er samtidig bygget op på en sådan måde, at skulle der ikke være tid til at nå det hele, har man stadigvæk et fuldt funktionelt spil. Det vil altså sige at vi arbejder fra basale funktionaliteter ud mod mere specifikke og detaljerede elementer.\\
 
 \textbf{Delmål Basics}
 \begin{itemize}
+\item Detektere tastatur-input så keyboardet kan bruges til at styre striker
 \item Tegne banen
-\item Detektere tastaturinput
 \item Bevæge strikeren
 \item Bevægelig bold
-\item Bolden reflekteres af striker og vægge
-\item Det skal detekteres når man er under strikeren (man er død)
+\item Bolden reflekteres af striker, loft og vægge
+\item Det skal detekteres når bolden er under strikeren (man er død)
 \end{itemize}
 
 \textbf{Delmål advanced}
-\item Liv
-\item Score
-\item Hastighed
-\item Bolden skal starte i en tilfældig startvinkel
-\item Zoner på strikeren
-\item Realistisk bevægelse på skærmen
 \begin{itemize}
-	\item Kompensere for karakterer der ikke er lige brede som høje
-	\item Internt 18.14 koordinatsystem
+\item Liv-system, så man har 3 liv inden man bliver Game Over
+\item Pointsystem
+\item Ændring i boldhastighed som ens score stiger
+\item Internt 18.14 koordinatsystem, så boldens bevægelse kan laves som en enhedsvektor der kan roteres rundt
+\item Bolden skal starte i en tilfældig vinkel
+\item Striker-zoner, så boldens afbøjningsvinkel afhænger af hvor den rammes 
+\item Stor bold, der fylder 4x2 monospace-karakterer.
+\item {Forskellige sværhedsgrader}
+\item {Brikker og forskellige baner}
 \end{itemize}
-\item LED display med score, liv og levels
 	
 
 \textbf{Brikker}
-\item Banen skal indeholde brikker
 \begin{itemize}
-	\item Der skal være forskellige typer af brikker
-	\item Der skal være forskellige levels med brikker i forskellige mønstre
-\end{itemize}
+\item Banen skal indeholde brikker
+\item Der skal være forskellige typer af brikker (forskellig antal liv)
+\item Der skal være forskellige levels med brikker i forskellige mønstre
 \item Når bolden rammer brikker og kanter skal den reflekteres på en logisk måde så fysikken i spillet ser realistisk ud
-
-\textbf{Styring med hardware}\\
+\end{itemize}
 
 \textbf{Helhedsindtryk}
 \begin{itemize}
-\item Menu hvor man kan vælge sværhedsgrad (bredden af strikeren)
-\item Helpscreen
-\item Beskeder ved Game over
+\item LED display med score, liv og levels
+\item Menu hvor man kan vælge sværhedsgrad
+\item Beskeder ved Game Over
+\item Besked hvis spillet vindes
+\item Implementering af ASCII-Art tekst og billeder til Menu, Game Over og Win
+\end{itemize}
+
+\textbf{Hardware}
+\begin{itemize}
+\item Styring med intern hardware (knapper på microcontrolleren)
+\item Tilslutning af ekstern hardware (DEXXA Steering Wheel)
 \end{itemize}
 
 Vi har lagt en del vægt på at spillet skal se realistisk ud og at bolden, strikeren og brikkerne skal flytte sig på en realistisk måde. Vi vil forsøge at lave spillets fysik så dette er opfyldt, så bolden bevæger sig så naturligt og logisk som muligt. 

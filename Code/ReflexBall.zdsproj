@@ -20,10 +20,13 @@
 <file filter-key="">.\reflexball.h</file>
 <file filter-key="">.\levels.h</file>
 <file filter-key="">.\gameport.c</file>
-<file filter-key="">.\startScreen.c</file>
-<file filter-key="">.\startScreen.h</file>
 <file filter-key="">.\ascii.h</file>
 <file filter-key="">.\ascii.c</file>
+<file filter-key="">.\gameport.h</file>
+<file filter-key="">.\asciidisplay.c</file>
+<file filter-key="">.\asciidisplay.h</file>
+<file filter-key="">.\buttons.c</file>
+<file filter-key="">.\buttons.h</file>
 </files>
 
 <!-- configuration information -->

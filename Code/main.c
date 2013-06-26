@@ -4,8 +4,12 @@
 #include "ansi.h"
 #include "LED.h"
 #include "time.h"
+#include "buttons.h"
 #include "gameport.h"
-#include "startScreen.h"
+#include "asciidisplay.h"
+#include "ascii.h"
+
+unsigned long wheelTimer;
 
 void main() {
 	int input;
@@ -13,33 +17,38 @@ void main() {
 	char wheel;
 
 	initTimers();
-	LEDinit();
+	initLED();
 	initButtons();
 	initGameport();
 	init_uart(_UART0,_DEFFREQ,BAUD_115200);
+
 	color(2,0); // Green forground, black background
 
-	clrscr();		
+Start:
+	clrscr();
+
+	LEDsetString("    ReflexBall RALLY!");
+
 	initStartMenu(3,1,224,82); // x1, y1, x2, y2
 	while(!startMenu()); // Wait for any key to be pressed
 	clrscr();
 	printMenu();
 	while(!updateMenu()); // Wait until difficulty is choosen
 
-	initReflexBall(3,15,224,82,1); // x1, y1, x2, y2, style	
+	LEDsetString("    "); // Clear display
+	initReflexBall(3,15,224,82,1); // x1, y1, x2, y2, style
 
 	for(;;) {
-		buttons = getGameportButtons();
-		wheel = readSteeringWheel();
-		/*gotoxy(10,20);
-		printf("Buttons: %X",buttons);
-		gotoxy(10,22);
-		printf("Wheel: %02d",wheel);*/
+		buttons = getGameportButtons();		
 		
 		if (buttons & 0xE) // Gear backward or button press
 			startGame();
-		else if (wheel != 0)
-			moveStriker(wheel);
+		else if (millis() - wheelTimer > 20) { // We have to limit the update rate or it will move to fast
+			wheelTimer = millis();
+			wheel = readSteeringWheel();
+			if (wheel != 0)
+				moveStriker(wheel);
+		}
 		else { // The driving wheel overrules the other controls
 			buttons = readButtons();
 			if (buttons) {
@@ -61,5 +70,7 @@ void main() {
 			}
 		}
 		updateGame();
+		if (restartGame)
+			goto Start; // Goto back to the start of the game
 	}
 }

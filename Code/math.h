@@ -10,6 +10,7 @@ typedef struct {
 	long x,y;
 } TVector;
 
+// Public
 long expand(long input);
 void printNumber(long input, unsigned char decimalBits, unsigned char decimal);
 void printFix(long input, unsigned char decimal);

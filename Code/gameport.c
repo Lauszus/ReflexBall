@@ -1,5 +1,6 @@
 #include <eZ8.h>             // special encore constants, macros and flash routines
 #include <sio.h>             // special encore serial i/o routines
+#include "gameport.h"
 #include "ansi.h"
 
 unsigned int readADC(unsigned char channel) {
@@ -32,21 +33,21 @@ char readSteeringWheel() {
 
 	// The driving wheel is not linear therefor this table is needed
 	if (val > 1000)
-		return -4;
+		return -6; // We will move it more aggressively to the side
 	else if (val > 796)
-		return -3;
+		return -4;
 	else if (val > 712)
 		return -2;
-	else if (val > 616)
+	else if (val > 610)
 		return -1;
-	else if (val > 560)
+	else if (val > 570)
 		return 0;
 	else if (val > 500)
 		return 1;
 	else if (val > 466)
 		return 2;
 	else if (val > 440)
-		return 3;
-	else
 		return 4;
+	else
+		return 6;
 }

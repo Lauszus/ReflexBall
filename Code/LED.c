@@ -7,14 +7,9 @@
 unsigned char digit = 0, column = 0, delayCounter = 0, index = 0, stringLength = 0;
 char videoBuffer[5][6];
 
-
-volatile char runOnce, *pSecondString;
-
-#ifdef STORE_STRING_IN_ROM
-char rom *pString; // Pointer to string in rom
-#else
+volatile char runOnce, *pSecondString; // runOnce is used scroll a text only once, the pointer will point to the second string that is shown after the scroll is complete
 char *pString; // Pointer to string in ram
-#endif
+
 
 void clockLed(unsigned char digit) {
 	if (digit == 0) {
@@ -61,23 +56,14 @@ unsigned char convertChar(char input) { // Convert to some of our own characters
 	return c;
 }
 
-#ifdef STORE_STRING_IN_ROM
-void LEDsetString(char rom *string) {
-#else
 void LEDsetString(char *string) {
-#endif
 	unsigned char i, j;	
 
 	DI(); // Disbable all interrupts
 
 	runOnce = 0; // Reset flag
-
-#ifdef STORE_STRING_IN_ROM
-	stringLength = strlen_rom(string);
-#else
-	stringLength = strlen(string);
-#endif
-	pString = string;
+	stringLength = strlen(string); // Calculate length of string
+	pString = string; // Set pointer to the start of the string
 
 	for (i=0; i < 5; i++) {
 		for (j=0;j<5;j++)			
@@ -100,7 +86,7 @@ void LEDsetString(char *string) {
 	EI(); // Enable all interrupts
 }
 
-void LEDRunOnce(char *firstString, char* secondString) { // Used to sroll the first string once and then show the second string afterwards	
+void LEDRunOnce(char *firstString, char* secondString) { // Used to sroll the first string once and then show the second string afterwards
 	LEDsetString(firstString);
 	runOnce = 1;
 	pSecondString = secondString; // We will save the location of the second string
@@ -153,7 +139,7 @@ void timer2int() {
 	LEDupdate();
 }
 
-void LEDinit() {
+void initLED() {
 	unsigned char i;
 	PEDD = 0; // All output
 	PGDD = 0; // All output

@@ -12,17 +12,16 @@
 
 #define SCROLL_SPEED	5
 
-//#define STORE_STRING_IN_ROM
+// Public
+void initLED(); // Initialize the LED display
+void LEDsetString(char *string); // Used to scroll a string
+void LEDRunOnce(char *firstString, char* secondString); // Used to sroll the first string once and then show the second string afterwards	
 
-void LEDinit();
-//void LEDupdate();
-
-#ifdef STORE_STRING_IN_ROM
-void LEDsetString(char rom *string);
-#else
-void LEDsetString(char *string);
-#endif
-
-void LEDRunOnce(char *firstString, char* secondString);
+// Private
+void clockLed(unsigned char digit);
+unsigned char convertChar(char input);
+void moveVideoBuffer();
+void LEDupdate();
+void timer2int();
 
 #endif
