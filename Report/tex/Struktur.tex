@@ -97,10 +97,11 @@ Udover at kunne scolle den samme tekst havde vi også brug for at kunne scrolle 
 Funktionen \texttt{LEDRunOnce()} kan ses nedenfor.
 
 \begin{lstlisting}[frame=single]
+// Used to sroll the first string once and then show the second string afterwards
 void LEDRunOnce(char *firstString, char* secondString) {
 	LEDsetString(firstString);
 	runOnce = 1;
-	pSecondString = secondString;
+	pSecondString = secondString; // We will save the location of the second string
 }
 \end{lstlisting}
 
@@ -175,7 +176,7 @@ Rattet og pedalerne fungerer en smule anderledes i det de er forbundet til et 10
 Koden til at læse en analog indgang kan ses nedenfor.
 
 \begin{lstlisting}
-unsigned int readADC(unsigned char channel) {
+unsigned int readADC(unsigned char channel) { // Read a specific analog channel
   unsigned char inHigh, inLow;
   unsigned int ADC_data;
   
