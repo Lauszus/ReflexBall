@@ -1,13 +1,19 @@
 PLAN OVER HVAD DER MANGLER I RAPPORT:
 
-Lav brugermanual											(Kristian)
-Lav blokdiagram over Hardware layer, application layer etc.
-Ret konklusion til
+Mangler:
+	Beskriv bold-bounce ordentligt i Basics						(Tobias)
+	Beskriv vektor-rotation i Advanced							(Tobias)
+	Fjern punktform i Struktur
+	Lav blokdiagram over Hardware layer, application layer etc.
+	Ret konklusion til
 
-Skriv verifikationsafsnit
-	Globale variabler
-	Problemer med brikker og bold
-	Nåede ikke power-ups og power-downs
-	Fandt undervejs ud af vi ville inkludere ASCII-Art
-	Hvad vi nåede og hvad vi ikke nåede (se tidsplan2.png
-	Hvordan vi har testet det hele
+	Skriv verifikationsafsnit
+		Globale variabler
+		Problemer med brikker og bold
+		Nåede ikke power-ups og power-downs
+		Fandt undervejs ud af vi ville inkludere ASCII-Art
+		Hvad vi nåede og hvad vi ikke nåede (se tidsplan2.png
+		Hvordan vi har testet det hele
+
+Done:
+	Lav brugermanual											(Kristian)
