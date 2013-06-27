@@ -1,5 +1,9 @@
 \chapter{Java kode}
 
+Nedenfor ses den Java kode vi brugte til at konvertere en given ASCII art gemt i tekst-fil til et array, som man kunne indsætte direkte i vores C kode. Den sørger således for først at finde bredden og højden af tegnene, da den skal bruge disse informationer til at definerer array'et. \\
+Derefter indsætter den en ekstra backslashes for hver gang den enten finder en backslash, anførselstegn eller accent. Til sidst indsætter den anførselstegn rundt om strengene og fylder de der ikke er lange nok ud med mellemrum, så alle strengene er lige så lange som den bredeste streng. \\
+Til sidst printer den resultatet ud på konsollen, som herefter kan kopieres direkte ind i C koden.
+
 \section{BackslashEscapes}
 \label{BackslashEscapes}
 
