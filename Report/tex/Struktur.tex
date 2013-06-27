@@ -141,9 +141,12 @@ Det der er vist på denne figur er, borset fra de omgivende brikker, samme situa
 
 
 \item \textbf{Briklogikken.} Briklogikken er selve spillets game engine der styrer hvordan det opfører sig. Det er her alle reglerne for interaktion mellem bolden og brikkerne ligger. Et flowchart for briklogikken er vist på Figur \ref{fig:brickFlow}. De blå bokse på figuren repræsenterer funktionskald eller operationer på boldens vektors x- og y-koordinater. De grønne bokse er variable der bliver forøget eller sat (flagene dontDeflectX og dontDeflectY der bliver sat). De orange bokse er tests i form af if-statements. Med de grå bokse har vi vist alle indgange til, og udgange fra, det indlejrede for-loop der tjekker alle brikkerne
-\footnote{Da et for-loop egentlig bare er noget kode der køres så længe en test er sand, kunne det tegnes med en orange boks og en pil der fører tilbage til den. For at forøge overskueligheden og holde antallet af test-bokse og lange pile i diagrammet nede, har vi dog valgt, at undlade at lave det på denne måde.}. 
+\footnote{Da et for-loop egentlig bare er noget kode der køres så længe en test er sand, kunne det tegnes med en orange boks og en pil der fører tilbage til den. For at forøge overskueligheden og holde antallet af test-bokse og lange pile i diagrammet nede, har vi dog valgt, at undlade at lave det på denne måde.}. De to gule bokse repræsenterer de samme linjer kode. Denne kode er en blanding af variable der bliver sat og funktioner der bliver kaldt hver gang logikken har gennemløbet en brik. \\
 
-Når bolden er itereret tjekker briklogikken der ligger i funktionen \texttt{checkIteration(x,y)} om iterationen af bolden er gyldig. Er den ikke det, reflekteres bolden og funktionen kalder så \texttt{drawBigBall()} og returnerer. 
+Når bolden er itereret (øverste venstre hjørne på Figur  \ref{fig:brickFlow}) kaldes briklogikken. Den ligger i funktionen \texttt{checkIteration(x,y)} og den tjekker om iterationen af bolden er gyldig. Er den ikke det, reflekteres bolden og funktionen kalder så \texttt{drawBigBall()} og returnerer. 
+På Figuren er de forskellige test vist, og det kan ses at der er adskillige steder hvor flagene \texttt{dontDeflectX} og \texttt{dontDeflectY} kan blive sat. Disse flag sættes hvis bolden ikke må blive reflekteret i en retning. De test der går forud for at et flag sættes er altså reglerne for hvornår bolden ikke kan reflekteres i en bestemt retning. 
+
+\nameref{reflexball}
 
 \begin{itemize}
 \item Højre/venstre og oppe/nede
