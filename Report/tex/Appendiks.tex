@@ -1,2 +1,115 @@
 \chapter{Appendiks}
 Henvis til: \url{https://github.com/Lauszus/ReflexBall}
+
+\section{ansi}
+\label{ansi}
+
+\underline{ansi.h}
+\begin{lstlisting}
+//keeps program running with while(true)-loop. On mouse click zooms in on mouse (x,y)-coordinates
+public static void zoom() {
+	while(true) {
+		if(StdDraw.mousePressed()) {
+			center[0] = StdDraw.mouseX();
+			center[1] = StdDraw.mouseY();
+			sideLength /= 2.0;
+			setupDraw();
+			drawMandelbrot();
+		}
+	}
+}
+\end{lstlisting}
+
+\underline{ansi.c}
+\begin{lstlisting}
+//keeps program running with while(true)-loop. On mouse click zooms in on mouse (x,y)-coordinates
+public static void zoom() {
+	while(true) {
+		if(StdDraw.mousePressed()) {
+			center[0] = StdDraw.mouseX();
+			center[1] = StdDraw.mouseY();
+			sideLength /= 2.0;
+			setupDraw();
+			drawMandelbrot();
+		}
+	}
+}
+\end{lstlisting}
+
+
+\section{ascii}
+\label{ascii}
+
+\underline{ascii.h}
+\underline{ascii.c}
+
+\section{asciidisplay}
+\label{asciidisplay}
+
+\underline{asciidisplay.h}
+\underline{asciidisplay.c}
+
+\section{buttons}
+\label{buttons}
+
+\underline{buttons.h}
+\underline{buttons.c}
+
+\section{charset}
+\label{charset}
+
+\underline{charset.h}
+
+\section{gameport}
+\label{gameport}
+
+\underline{gameport.h}
+\underline{gameport.c}
+
+\section{LED}
+\label{LED}
+
+\underline{LED.h}
+\underline{LED.c}
+
+\section{levels}
+\label{levels}
+
+\underline{levels.h}
+
+\section{lut}
+\label{lut}
+
+\underline{lut.h}
+\underline{lut.c}
+
+\section{main}
+\label{main}
+
+\underline{main.c}
+
+\section{math}
+\label{math}
+
+\underline{math.h}
+\underline{math.c}
+
+\section{reflexball}
+\label{reflexball}
+
+\underline{reflexball.h}
+\underline{reflexball.c}
+
+\section{time}
+\label{time}
+
+\underline{time.h}
+\underline{time.c}
+
+\section{BackslashEscapes}
+\label{BackslashEscapes}
+
+\underline{BackslashEscapes.java}
+\begin{lstlisting}[language=Java]
+
+\end{lstlisting}
