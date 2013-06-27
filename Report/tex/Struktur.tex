@@ -988,8 +988,8 @@ Vi har delt funktionerne op så Hardware Abstraction Layer indeholder de funktio
 
 \begin{center}
 
-\begin{figure}
-
+\begin{figure} [H]
+\centering
 
 
 \begin{tikzpicture}[%
@@ -1068,16 +1068,16 @@ Vi har delt funktionerne op så Hardware Abstraction Layer indeholder de funktio
 
 \end{center}
 
-For at få en fornemmelse for strukturen af koden, kan man også se på hvilke filer de forskellige filer inkluderer. På Figur \ref{fig:main_incl} er det vist hvilke filer der er inkluderet af main.c. Filerne ez8.h og sio.h er to filer der f.eks. indeholder mikroprocessorens funktioner til at skrive tekst til terminalen. De er specifikke for Zilog 6403-mikroprocessoren. Vi har inkluderet dem i alle dokumenter. Ud over disse filer inkluderer main.c filer fra alle tre lag i vores softwarearkitektur. For at få et bedre overblik af hvordan filerne inkluderer hinanden har vi på Figur \ref{fig:reflexball_incl} vist hvilke filer der er inkluderet af reflexball.c. Et fuldt overblik over hvilke filer der linker til hinanden m.m. kan findes på \url{http://lauszus.github.io/ReflexBall/files.html} \\
+For at få en fornemmelse for strukturen af koden, kan man også se på hvilke filer de forskellige filer inkluderer. På Figur \ref{fig:main_incl} er det vist hvilke filer der er inkluderet af main.c. Filerne ez8.h og sio.h er to filer der f.eks. indeholder mikroprocessorens funktioner til at skrive tekst til terminalen. De er specifikke for Zilog 6403-mikroprocessoren. Ud over disse filer inkluderer main.c filer fra alle tre lag i vores softwarearkitektur. For at få et bedre overblik af hvordan filerne inkluderer hinanden har vi på Figur \ref{fig:reflexball_incl} vist hvilke filer der er inkluderet af reflexball.c. Et fuldt overblik over hvilke filer der linker til hinanden m.m. kan findes på \url{http://lauszus.github.io/ReflexBall/files.html}.
 
-\begin{figure}[h!]
+\begin{figure}[H]
 \centering
 \includegraphics[scale=0.6]{figs/main_incl.png}
 \caption{Her er det vist hvilke funktioner main.c inkluderer}
 \label{fig:main_incl}
 \end{figure}
 
-\begin{figure}[h!]
+\begin{figure}[H]
 \centering
 \includegraphics[scale=0.8]{figs/reflexball_incl.png}
 \caption{Her er det vist hvilke funktioner reflexball.c inkluderer}
