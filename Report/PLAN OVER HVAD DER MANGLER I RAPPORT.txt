@@ -1,9 +1,6 @@
 PLAN OVER HVAD DER MANGLER I RAPPORT:
 
-Mangler:
-	Beskriv bold-bounce ordentligt i Basics						(Tobias)
-	Beskriv vektor-rotation i Advanced							(Tobias)
-	Fjern punktform i Struktur
+Mangler:	
 	Lav blokdiagram over Hardware layer, application layer etc.
 	Ret konklusion til
 
@@ -17,3 +14,6 @@ Mangler:
 
 Done:
 	Lav brugermanual											(Kristian)
+	Beskriv bold-bounce ordentligt i Basics						(Tobias)
+	Beskriv vektor-rotation i Advanced							(Tobias)
+	Fjern punktform i Struktur
