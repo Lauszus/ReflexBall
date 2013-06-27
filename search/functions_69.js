@@ -1,0 +1,14 @@
+var searchData=
+[
+  ['initball',['initBall',['../reflexball_8c.html#aff8d2da32a046e8ba8c0c92762c804b1',1,'initBall():&#160;reflexball.c'],['../reflexball_8h.html#aff8d2da32a046e8ba8c0c92762c804b1',1,'initBall():&#160;reflexball.c']]],
+  ['initbricks',['initBricks',['../reflexball_8c.html#a15cf71d8acf1350b93560e45c4b37caf',1,'initBricks(char clear):&#160;reflexball.c'],['../reflexball_8h.html#a15cf71d8acf1350b93560e45c4b37caf',1,'initBricks(char clear):&#160;reflexball.c']]],
+  ['initbuttons',['initButtons',['../buttons_8c.html#a27d3ba5afb772cc36c9a432c28975ace',1,'initButtons():&#160;buttons.c'],['../buttons_8h.html#a27d3ba5afb772cc36c9a432c28975ace',1,'initButtons():&#160;buttons.c']]],
+  ['initgameport',['initGameport',['../gameport_8c.html#ac1bfa434c2879992c174e9999fc5ee3f',1,'initGameport():&#160;gameport.c'],['../gameport_8h.html#ac1bfa434c2879992c174e9999fc5ee3f',1,'initGameport():&#160;gameport.c']]],
+  ['initled',['initLED',['../_l_e_d_8c.html#a586efe898f67cacd16a9870785d921eb',1,'initLED():&#160;LED.c'],['../_l_e_d_8h.html#a586efe898f67cacd16a9870785d921eb',1,'initLED():&#160;LED.c']]],
+  ['initreflexball',['initReflexBall',['../reflexball_8c.html#aa06c6d528a84710fcc721f0e0379c5e5',1,'initReflexBall(unsigned char newX1, unsigned char newY1, unsigned char newX2, unsigned char newY2, char style):&#160;reflexball.c'],['../reflexball_8h.html#aa06c6d528a84710fcc721f0e0379c5e5',1,'initReflexBall(unsigned char newX1, unsigned char newY1, unsigned char newX2, unsigned char newY2, char style):&#160;reflexball.c']]],
+  ['initstartmenu',['initStartMenu',['../asciidisplay_8c.html#af15a0e7805d76fe9fdd2c4e332bd4d13',1,'initStartMenu(unsigned char newX1, unsigned char newY1, unsigned char newX2, unsigned char newY2):&#160;asciidisplay.c'],['../asciidisplay_8h.html#a0cd51069c41c727ad9421ea32adc80a8',1,'initStartMenu(unsigned char x1, unsigned char y1, unsigned char x2, unsigned char y2):&#160;asciidisplay.c']]],
+  ['initstriker',['initStriker',['../reflexball_8c.html#aad1685af0e49c3cd515ab819ba958b9e',1,'initStriker(unsigned char x, unsigned y, unsigned char width):&#160;reflexball.c'],['../reflexball_8h.html#aad1685af0e49c3cd515ab819ba958b9e',1,'initStriker(unsigned char x, unsigned y, unsigned char width):&#160;reflexball.c']]],
+  ['inittimers',['initTimers',['../time_8c.html#a87611108f72b2495e59f965bd53ac7cf',1,'initTimers():&#160;time.c'],['../time_8h.html#a87611108f72b2495e59f965bd53ac7cf',1,'initTimers():&#160;time.c']]],
+  ['initvector',['initVector',['../math_8c.html#a62cd2f1d942892478ce56b8f3541db52',1,'initVector(TVector *v, long x, long y):&#160;math.c'],['../math_8h.html#a62cd2f1d942892478ce56b8f3541db52',1,'initVector(TVector *v, long x, long y):&#160;math.c']]],
+  ['iterate',['iterate',['../reflexball_8c.html#a33547eee14dff0ec511b4bf5733fe122',1,'iterate():&#160;reflexball.c'],['../reflexball_8h.html#a33547eee14dff0ec511b4bf5733fe122',1,'iterate():&#160;reflexball.c']]]
+];
