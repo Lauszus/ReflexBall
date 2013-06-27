@@ -9,7 +9,7 @@ import javax.swing.JFileChooser;
 /**
  * This class is used to generate an array from an ASCII art that can be put directly into the .c file.
  */
-public class BackslashEscapesMain {
+public class BackslashEscapes {
 
 	public static void main(String[] args) throws FileNotFoundException {
 		JFileChooser chooser = new JFileChooser(new File(System.getProperty("user.home"))); // Create the FileChooser instance 
