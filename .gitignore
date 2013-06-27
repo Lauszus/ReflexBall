@@ -2,6 +2,9 @@
 *.lod
 *.obj
 
+# Working PDF
+Report/Rapport.pdf
+
 # Latex
 *.acn
 *.acr
