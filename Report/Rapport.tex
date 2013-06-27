@@ -1,4 +1,4 @@
-\documentclass[a4paper,11pt,article,oneside]{memoir}
+\documentclass[a4paper,11pt,article,twoside]{memoir}
 
 %%%%%%%%%%%%%%%%
 %%% PACKAGES %%%
@@ -28,9 +28,12 @@
 \usepackage[table]{xcolor}					% Farvekoder til tabeller
 \usepackage{titlesec}
 \usepackage{rotating}
-\usepackage{tikz}
+
 \usepackage{geometry}						% Pakke til at ændre margen på enkelte sider
+
+\usepackage{tikz}							%Tikz til at tegne flow chart 
 \usetikzlibrary{shapes,arrows,chains}		%Tikz-library til figurer i flowchart
+\usetikzlibrary{positioning}				%Positioning of boxes in flow chart
 \titleformat{\section}{\normalsize\bfseries}{\thesection}{1em}{}
 \captionsetup{margin=25pt,font={footnotesize,sf},format=hang}
 
@@ -46,7 +49,7 @@
 \addtolength{\trimedge}{-\paperwidth}				
 \settypeblocksize{634pt}{448.13pt}{*}				
 \setulmargins{5cm}{*}{*}										
-\setlrmargins{*}{*}{1}									
+\setlrmargins{*}{*}{0.6}									
 \setmarginnotes{17pt}{51pt}{\onelineskip}			
 \setheadfoot{\onelineskip}{2\onelineskip}		
 \setheaderspaces{*}{2\onelineskip}{*}
