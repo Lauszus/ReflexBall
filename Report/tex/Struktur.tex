@@ -1,11 +1,11 @@
 \chapter{Struktur}
 
 \section{Basics}
-Da vi skulle planlægge projektet valgte vi efter en brainstorm at dele projektet op i en mængde delmål vi ville have implementeret. Delmålene i kategorien basics var dem vi skulle implementere for at have et fungerende spil. Vi fandt frem til at det ville være følgende funktionaliteter.\\
+Da vi skulle planlægge projektet valgte vi efter en brainstorm at dele projektet op i en mængde delmål vi ville have implementeret. Delmålene i kategorien basics var dem vi skulle implementere for at have et fungerende spil. Vi fandt frem til at det skulle være følgende funktionaliteter.\\
 
 \underline{Keyboard input}\\
 
-Vi har valgt at man i basic implementeringen af spillet laver al styring vha. keyboardet, da knapperne på microcontrollerne var al for slidte og derfor virkede dårligt. Vi implementerede det sådan så man bevæger strikeren ved hjælp af piletasterne på tasteturet og sender bolden af sted ved space-tasten. Hvis man dør og bliver Game Over startes spillet forfra ved tryk på space-tasten. Der er dog et 1000ms delay fra man dør til spillet kan startes forfra. På den måde kommer man ikke til at starte spillet forfra uden at opdage at man døde.\\
+Vi har valgt at man i basic implementeringen af spillet laver al styring vha. keyboardet, da knapperne på udviklings boardet var al for slidte og derfor virkede dårligt. Vi implementerede det sådan så man bevæger strikeren ved hjælp af piletasterne på tasteturet og sender bolden af sted ved space-tasten. Hvis man dør og bliver Game Over startes spillet forfra ved tryk på space-tasten. Der er dog et 1000ms delay fra man dør til spillet kan startes forfra. På den måde kommer man ikke til at starte spillet forfra uden at opdage at man døde.\\
 \newpage
 
 \underline{Banen}\\
@@ -14,40 +14,46 @@ Banen har vi implementeret i et koordinatsystem på den måde at vi har  x$_{1}$
 
 \underline{Udnyttelse af Timer}\\
 
-Da vi ofte har brug for at kunne bestemme tiden siden sidste gang en bestemt funktion blev kaldt, opsatte vi Timer1 til at interrupte hvert 1ms. I dette interrupt forøgede vi en variable \texttt{mscounter}. Denne er således et udtryk for hvor lang tid siden der er gået siden programmets start i millisekunder. Ved at kalde funktionen \texttt{millis()} der returner \texttt{mscounter} kunne vi således let bestemme hvad hvor langt tid der var siden sidst funktionen blev kaldt hvis vi havde gemt denne tid i en variable.\\
+Da vi ofte har brug for at kunne bestemme tiden siden sidste gang en bestemt funktion blev kaldt, opsatte vi Timer1 til at interrupte hvert 1ms. I dette interrupt forøgede vi en variable \texttt{mscounter}. Denne er således et udtryk for hvor lang tid siden der er gået siden programmets start i millisekunder. Ved at kalde funktionen \texttt{millis()} der returner \texttt{mscounter} kunne vi således let bestemme hvad hvor langt tid der var gået siden sidst funktionen blev kaldt hvis vi havde gemt denne tid i en variable.\\
 
 \underline{Bevægelig striker}\\
 
-Til Strikeren har vi lavet et \texttt{struct}, sådan så den kender sin egen x-værdi (yderstre venstre karakter af strikeren), samt sin bredde.
-Strikeren er så blevet implementeret på den måde at når den rykkes til venstre, tjekkes der om strikerens x-værdi -1 er mindre end eller lig med banens venstre side (dvs. banens x$_{1}$-værdi). Hvis strikeren er ude i sin yderste venstre position er strikerens x-værdi nemlig 1 større end banens x$_{1}$-værdi, derfor fratrækkes 1 fra strikerens x-værdi inden der tjekkes. Hvis strikerens x-værdi minus 1 er mindre end eller lig med banens x$_{1}$ når strikeren forsøges rykket, sker der ingenting og strikeren bliver stående. Hvis dette ikke er tilfældet, slettes strikerens yderstre højre-karakter det vil sige at feltet \texttt{striker.x + striker.width -1} bliver overskrevet med et mellemrum og strikerens x-værdi formindskes så med 1 og strikeren gentegnes.\\
-Når strikeren bevæger sig til højre fungerer samme princip, bare hvor der tjekkes om \texttt{striker.x + striker.width} er større end eller lig med banens x$_{2}$-værdi. Grunden til der ikke minuses med 1 her er at \texttt{striker.x + striker.width} svarer til feltet lige til højre for strikerens yderste højre felt. Hvis testen er positiv sker ingenting og strikeren bliver stående, hvis testen er negativ overskrives  feltet \texttt{striker.x} med et mellemrum og derefter forøges \texttt{striker.x} med 1, hvorefter strikeren gentegnes.\\
+Til strikeren har vi lavet et \texttt{struct}, der er givet ved strikerens x-værdi (yderstre venstre karakter af strikeren), y-værdi, samt sin bredde.
+Strikeren er blevet implementeret på den måde at når den rykkes til venstre, tjekkes der om strikerens x-værdi, minus det antal felter den skal rykkes til venstre, er mindre end eller lig med banens venstre side (dvs. banens x$_{1}$-værdi). Hvis dette er tilfældet befinder strikens sig ved dens venstre yderposition og sættes dermed til at være helt ude til venstre med venstre siden mod væggen.
+Hvis strikeren er ude i sin yderste venstre position er strikerens x-værdi nemlig 1 større end banens x$_{1}$-værdi, strikeren x-værdi må således aldrig blive lig eller mindre end banens x$_{1}$-værdi, da den således ville befinde sig uden for banens vægge. \\
 
-I denne implementation af spillet blev strikeren bygget til først at rykke sig et monospace ad gangen, derefter satte vi det op til at strikeren bevægede sig to monopaces ad gangen. Dette var vi nødt til at gøre eftersom vi styrede strikeren med keyboardet og der i keyboardets hardware er en lavere grænse for maksimumsfrekvensen hvormed en knap bliver genaktiveret når knappen på keyboardet holdes nede, i forhold til microcontrolleren der har en højere maksimumsfrekvens. Her i Basics-implementationen byggede vi banen sådan så det passede med at strikeren ved altid at rykke to felter ad gangen kunne komme ud i banens yderpositioner.\\
+Hvis strikerens x-værdi derimod er større end banens x$_{1}$-værdi, trækkes der det antal felter den skal rykkes fra strikerens x-værdi. Derefter fjernes de felter strikeren har rykket væk fra og strikeren tegnes på ny. \\
+
+Når strikeren bevæger sig til højre fungerer samme princip, bare hvor der tjekkes om \texttt{striker.x + striker.width-1+antal\_ryk} er større eller lig med banens x$_{2}$-værdi. 
+
+Hvis testen er positiv sker ingenting og strikeren bliver stående, hvis testen er negativ overskrives felterne det antal felter den skal rykke med mellemrum i venstre side. Derefter tegnes strikeren igen. \\
+
+I denne første implementation af spillet blev strikeren bygget til først at rykke sig et monospace ad gangen, derefter satte vi det op til at strikeren bevægede sig to monopaces ad gangen. Dette var vi nødt til at gøre eftersom vi styrede strikeren med keyboardet og der i keyboardets hardware er en lavere grænse for maksimumsfrekvensen hvormed en knap bliver genaktiveret når knappen på keyboardet holdes nede, i forhold til microcontrolleren der har en højere maksimumsfrekvens. Her i Basics-implementationen byggede vi banen sådan så det passede med at strikeren altid kun rykkede to felter ad gangen indtil den kom ud i banens yderpositioner.\\
 \newpage
 
 \underline{Bevægelig bold}\\
 
-Vi har indstillet timeren til hver gang der er et tick bevæger bolden sig. Her i basics implementationen hardcodede vi dette til at boldens x-værdi ændrede sig med plus 1 for hvert tick og boldens y-værdi ændrede sig med minus 1 for hvert tick, når bolden blev skudt afsted fra strikeren. Dette skyldes at vi jo arbejder med en inverteret y-akse i forhold til et almindeligt koordinatsystem. Det fungerer på den må at vi har et \texttt{Ball struct} sådan så bolden hele tiden kender sin egen position i form af x- og y-koordinat, samt en vektor (den retning og hastighed den bevæger sig i). Så når bolden rykker sig, overskrives feltet som er boldens (x,y)-koordinat med et mellemrum (da bolden i basic implementationen kun fylder et enkelt felt) og derefter tillægges boldens vektor til boldens (x,y)-koordinat og den gentegnes.\\
+Ved at aflæse timer funktionen \texttt{millis()} hver gang vi kalder funktionen \texttt{updateGame()}, kan vi bestemme hvor lang tid der er gået siden sidste gang vi opdaterede spillet. Hvis der således er gået længere end en bestemt værdi bevægede vi bolden og opdaterede resten af spil-logikken.\\
+
+Her i basics implementationen hardcodede vi dette til at boldens x-værdi ændrede sig med plus 1 for hvert tick og boldens y-værdi ændrede sig med minus 1 for hvert tick, når bolden blev skudt afsted fra strikeren. Dette skyldes at vi jo arbejder med en inverteret y-akse i forhold til et almindeligt koordinatsystem. Det fungerer på den må at vi har et \texttt{Ball struct} sådan så bolden hele tiden kender sin egen position i form af x- og y-koordinat, samt en vektor (den retning og hastighed den bevæger sig i). Så når bolden rykker sig, overskrives feltet som er boldens (x,y)-koordinat med et mellemrum (da bolden i basic implementationen kun fylder et enkelt felt) og derefter tillægges boldens vektor til boldens (x,y)-koordinat og den gentegnes.\\
 
 \underline{Reflex-logik på kanter og hjørner}\\
 
 Hver gang bolden har rykket sig, inden den tegnes, laves en række tjek for at se om bolden har ramt en væg, et hjørne eller loftet. Bl.a. tjekkes om boldens x-koordinat bliver større end eller lig med banens x$_{2}$-koordinat. Hvis dette er tilfældet ved vi at bolden har ramt højre væg af banen og bolden tegnes ikke umiddelbart. Det der i stedet for skal ske er at boldens vektor skal trækkes fra boldens nye (x,y)-koordinat, sådan så bolden er tilbage på den plads den stod på inden den ramte ind i væggen, derefter skal boldens vektors x-komposant inverteres og vektoren skal lægges til boldens position inden bolden igen bliver tegnet på næste tick. Det var netop sådan vi implementerede kant-logikken til at starte med. Efterfølgende ændrede vi dette til at at hvis bolden rammer højre væg, så trækkes 2 fra boldens x-koordinat og boldens vektors x-komposant inverteres. Effekten af de to implementeringer er den samme, forskellen er bare at den sidste kræver lidt færre beregninger og den er derfor mere effektiv.\\
 Når bolden rammer venstre væg fungerer der på præcis samme måde, bortset fra at tjekket er om boldens x-koordinat bliver mindre eller lig med banens x$_{1}$-koordinat og hvis dette er tilfældet inverteres vektorens x-komposant og der ligges 2 til boldens x-koordinat.\\
 
-Loftet fungerer også mere elle mindre på samme måde. Her tjekkes bare om boldens y-koordinat kommer under banens y$_{1}$-koordinat (husk y-aksen er inverteret). Hvis dette er tilfældet inverteres vektorens y-komposant og der ligges to til boldens y-koordinat inden den tegnes igen.\\
+Loftet fungerer også mere elle mindre på samme måde. Her tjekkes bare om boldens y-koordinat kommer under banens y$_{1}$-koordinat (husk y-aksen er inverteret). Hvis dette er tilfældet inverteres vektorens y-komposant og der ligges to til boldens y-koordinat inden den tegnes igen. \\
 
 Al refleks-logikken tjekkes med if-sætninger, sådan så hver gang bolden har bevæget sig tjekkes først om den har ramt banens højre side, derefter banens venstre side og derefter loftet, inden den gentegnes. Så hvis fx bolden rammer højre øvre hjørne sker der det at refleks-logikken først detekterer at banens højre side er overskredet og derfor inverteres vektorens x-komposant og boldens x-koordinat formindskes med 2. Efterfølgende detekteres at bolden har ramt loftet og derfor tillægges to til boldens y-koordinat, samtidig med at vektorens y-komposant inverteres. Når bolden tegnes igen er den tilbage på feltet den var på 2 gange forinden den ramte væggen, med både x- og y-komposant af vektoren inverteret, hvilket er det ønskede resultat.\\
 
-
-
 \underline{Game Start og Game Over}\\
 
-Når spillet starter kan man rykke strikeren rundt som normalt. Her følger bolden med sådan så den bliver ved med at være på midten af strikeren. Det fungerer på den måde at når variablen \texttt{gameStarted} er 0 så gentegnes både strikeren og bolden hver gang man rykker strikeren. Både boldens og strikerens x-koordinat sættes herefter. På samme måde som når strikeren rykkes normalt laves de samme check for om strikeren har bevæget sig ud over banens vægge. Når der så trykkes på space-tasten på tasteturet skydes bolden afsted og \texttt{gameStarted} sættes til 1, og når strikeren rykkes fra nu er det kun strikeren der gentegnes.\\
+Når spillet starter kan man rykke strikeren rundt som normalt. Her følger bolden med sådan så den bliver ved med at være på midten af strikeren. Det fungerer på den måde at når variablen \texttt{gameStarted} er 0 så gentegnes både strikeren og bolden hver gang man rykker strikeren. Både boldens og strikerens x-koordinat sættes herefter. På samme måde som når strikeren rykkes normalt laves de samme check for om strikeren har bevæget sig ud over banens vægge. Når der så trykkes på space-tasten på tasteturet skydes bolden afsted og \texttt{gameStarted} sættes til 1, og når strikeren nu rykkes er det kun strikeren der gentegnes.\\
 
-På samme måde som bolden hver gang den har bevæget sig, inden den tegnes, testes for om den har ramt vægge eller loft, tjekkes også om boldens y-koordinat er større end eller lig med banens y$_{2}$-koordinat minus 2. Hvis denne test er sand betyder det at bolden ligger på feltet lige over strikeren eller et felt under det. Her testes så om boldens x-koordinat ligger indenfor strikeren, dvs. imellem \texttt{striker.x} og \texttt{striker.x + striker.width}. Hvis dette er tilfældet bliver bolden skudt op igen, hvilket fungerer ved at boldens vektors y-komposant bliver inverteret, på samme måde som når bolden rammer loftet. Hvis bolden er uden for strikeren bliver variablen \texttt{alive} sat til 0 og der bliver displayer \texttt{Game Over!} midt på skærmen. I dette state kan man ikke bevæge strikeren. Dette har vi implementeret fordi man ellers kan 'køre bolden over', hvilket ikke ser så grafisk pænt ud. Når der trykkes space igen gentegnes hele spillet banen og og variablerne \texttt{gameStarted} sættes til 0 og \texttt{alive} sættes til 1.
+På samme måde som bolden hver gang den har bevæget sig, inden den tegnes, testes for om den har ramt vægge eller loft, tjekkes også om boldens y-koordinat lig strikerens y$_{2}$-koordinat. Hvis denne test er sand betyder det at bolden ligger på feltet lige i strikeren. Her testes så om boldens x-koordinat ligger indenfor strikeren, dvs. imellem \texttt{striker.x} og \texttt{striker.x + striker.width}. Hvis dette er tilfældet bliver bolden skudt op igen, hvilket fungerer ved at boldens vektors y-komposant bliver inverteret, på samme måde som når bolden rammer loftet. Hvis bolden er uden for strikeren bliver variablen \texttt{alive} sat til 0 og der vises \texttt{Game Over!} midt på skærmen. I denne tilstand kan man ikke bevæge strikeren. Dette har vi implementeret fordi man ellers kan 'køre bolden over', da bolden jo ligger nede på gulvet, hvilket ikke ser så grafisk pænt ud. Når der trykkes space igen gentegnes hele spillet banen og og variablerne \texttt{gameStarted} sættes til 0 og \texttt{alive} sættes til 1. \\
 
 \section{Advanced}
-Efter alle basics var færdig-implementeret, havde vi planlagt at lave nogle mindre udvidelser til spillet. Disse omfatter dels implementering af liv og pointsystem, men også videreudviklinger af basic-funktionaliteterne, sådan så deres bagvedliggende virkemåde gøres mere avanceret. Advanced inkluderer følgende.\\
+Efter alle basics var færdig-implementeret, havde vi planlagt at lave en række udvidelser til spillet. Disse omfatter dels implementering af liv og pointsystem, men også videreudviklinger af basic-funktionaliteterne, sådan så deres bagvedliggende virkemåde gøres mere avanceret. Advanced inkluderer følgende.\\
 
 \underline{Liv}\\
 
@@ -55,11 +61,12 @@ Som i ethvert andet arkade-spil har vi implementeret liv, sådan så man starter
 
 \underline{Pointsystem}\\
 
-Scoren er opbygget sådan så det giver 1 point hver gang man rammer en brik. Vi har valgt at det ikke skal give nogle point når bolden rammer strikeren, da vi ikke synes det skal give credit 'ikke' at ramme brikkerne.\\
+Scoren er opbygget sådan så det giver 1 point hver gang man rammer en brik. Vi har valgt at det ikke skal give nogle point når bolden rammer strikeren, da vi ikke synes det skal give point 'ikke' at ramme brikkerne.\\
 
 \underline{Internt 18.14 koordinat-system}\\
 
-I basic-implementeringen af spillet satte vi bolden til at rykke sig et bestem antal monospaces hver gang den bevægede sig, altså en simpel vektor-implementering. Men efter denne udvidelse er hele banens indre struktur blevet gentænkt sådan så bolden bevæger sig som en enhedsvektor i et koordinatsystem. Som nævnt i basics har vi lavet et \texttt{Ball struct} sådan så bolden hele tiden kender sine egne (x,y)-koordinater, samt nu dens egen enhedsvektor (altså retning hvori den bevæger sig). Når bolden bevæger sig sker der det at dens vektors (x,y)-koordinat lægges til boldens (x,y)-koordinat. Derefter tjekkes om bolden er død eller har ramt en brik, en væg, et hjørne, strikeren eller loftet. Hvis intet af dette er tilfældet, slettes boldens gamle koordinater ved at der på disse felter tegnes blanke mellemrum. Derefter afrundes boldens (x,y)-koordinater til nærmeste heltal ved at kigge på 1. bit efter kommaet, det vil sige boldens x- hhv. y-koordinats 19. bit (Da det tænkte komma er sat mellem 18. og 19. bit). Hvis denne er 0 rundes ned og ellers rundes op. Nu kendes boldens (x,y)-koordinat i heltal og den kan derfor indtegnes på banen.\\
+I basic-implementeringen af spillet satte vi bolden til at rykke sig et bestem antal monospaces hver gang den bevægede sig, altså en simpel vektor-implementering. Men efter denne udvidelse er hele banens indre struktur blevet gentænkt sådan så bolden bevæger sig som en enhedsvektor i et internt koordinatsystem. Som nævnt i basics har vi lavet et \texttt{Ball struct} sådan så bolden hele tiden kender sine egne (x,y)-koordinater, samt nu dens egen enhedsvektor (altså retning hvori den bevæger sig). I denne udvidelse valgte vi dog at angive disse værdier i et 18.14 format, så vi får en meget højere opløsning for boldens bane. \\
+Når bolden bevæger sig sker der det at dens vektors (x,y)-koordinat lægges til boldens (x,y)-koordinat. Derefter tjekkes om bolden er død eller har ramt en brik, en væg, et hjørne, strikeren eller loftet. Hvis intet af dette er tilfældet, slettes boldens gamle koordinater ved at der på disse felter tegnes blanke mellemrum. Derefter afrundes boldens (x,y)-koordinater til nærmeste heltal ved at kigge på 1. bit efter kommaet, det vil sige boldens x- hhv. y-koordinats 13. bit (da det tænkte komma er sat mellem 14. og 13. bit). Hvis denne er 0 rundes ned og ellers rundes op. Nu kendes boldens (x,y)-koordinat i heltal og den kan derfor indtegnes på banen.\\
 
 \underline{Vilkårlig startvinkel}\\
 
@@ -70,7 +77,7 @@ Når bolden skydes af bliver den sendt afsted i en vilkårlig vinkel på mellem 
 Strikeren er opbygget sådan så den altid skal bestå af et lige antal felter. Dens midterste venstre felt har en afbøjningsvinkel på indgangsvinkel plus 0 grader, og dens yderste venstre felt har en afbøjningsvinkel på indgangsvinkel plus ca. 45 grader. Hvert felt mellem det midterste venstre til det yderste venstre felt, har så en stigende afbøjningsvinkel, hvor den vinkel der bliver lagt til hvert felt er 45 grader divideret med antallet af felter fra det midterste venstre (eksklusiv) til det yderste venstre (eksklusiv). Højre-siden af strikeren fungerer på præcis samme måde, bare med omvendt fortegn, sådan så afbøjningsvinklen på midterste højre felt er lig indgangsvinklen og afbøjningsvinklen på yderste højre felt er lig indgangsvinklen minus 45 grader.\\
 Alt dette er lavet ved at boldens reflekslogik er gentænkt sådan så dens vektors x- og y-komposant nu bare  er lig vektorens sinus hhv. cosinus-værdi, da boldens vektor nu hele tiden er en enhedsvektor. Når bolden skal reflekteres kan vi så bruge  den sinus look-up table, som vi fik givet som led i en af introduktionsopgaverne.\\
 
-Strikeren er lavet på denne måde så dens bredde er meget fleksibel. Fx bruges der forskellige Striker-størrelser på spillets forskellige sværhedsgrader og dette er så bare implementeret ved at ændre på størrelsen af \texttt{striker.width}. Så sørger spillet selv for at inddele Striker-zonerne. \\
+Strikeren er lavet på denne måde så dens bredde er meget fleksibel. Fx bruges der forskellige striker-størrelser på spillets forskellige sværhedsgrader og dette er så bare implementeret ved at ændre på størrelsen af \texttt{striker.width}. Så sørger spillet selv for at inddele Striker-zonerne. \\
 
 Figur \ref{fig:striker_zones} viser hvordan strikeren er opdelt i zoner for en striker med længden 10 og en bold med længden 4. Det ses hvis bare boldens ene ende er inde over midten, så afbøjes den ikke. Hvis bolden derimod kun rører med den ene kant, så afbøjes den med den maksimale vinkel $\pm$ 42.2 grader.
 
@@ -86,19 +93,18 @@ Der er desuden implementeret en minimums-afbøjningsvinkel på 15 grader og en m
 
 \underline{Stor bold}\\
 
-I \texttt{Ball struct} er der ud over x- og y-koordinater og en vektor to andre variable som er bredde (\texttt{width}), højde (\texttt{height}). Den bold vi bruger i spillet har en højde på 2 og en bredde på 4. Dette komplicerer en del ting eftersom bolden nu både kan rammer alle objekter (striker, vægge, loft, brikker) på mange flere måder. Desuden er der en grænse for hvor hurtigt uarten kan arbejde, selvom vi har sat baud-raten op til maksimum (115200), dette kan godt gå hen og blive lidt problematisk, da uarten ved en vis hastighed af bolden ikke kan nå at slette og gentegne den ordentligt. Som løsning på dette, har vi sørget for at bolden ved en vis hastighed kun tegnes hver anden gang, hvilket letter uartens arbejde en smule. Læs mere om dette under  afsnittet om \texttt{Rettelser og fintuning}.\\
+I \texttt{Ball struct} er der ud over x- og y-koordinater og en vektor to andre variable som er bredde (\texttt{width}), højde (\texttt{height}). Den bold vi bruger i spillet har en højde på 2 og en bredde på 4. Dette komplicerer en del ting eftersom bolden nu både kan rammer alle objekter (striker, vægge, loft, brikker) på mange flere måder. Desuden er der en grænse for hvor hurtigt uarten kan arbejde, selvom vi har sat baud-raten op til maksimum (115200), dette kan godt gå hen og blive lidt problematisk, da uarten ved en vis hastighed af bolden ikke kan nå at slette og gentegne den ordentligt. Som løsning på dette, har vi sørget for at bolden ved en vis hastighed kun tegnes hver anden gang, hvilket letter UART'ens arbejde en smule. Læs mere om dette under  afsnittet om \texttt{Rettelser og fintuning}.\\
 
 \underline{Sværhedsgrader og ændring i boldens hastighed}\\
 
 I spillet er der implementeret fire forskellige sværhedsgrader. Disse er Easy, Medium, Hard og Chuck Norris. Forskellen på sværhedsgraderne er hvor bred strikeren er, hvor hurtig starthastighed bolden har og hvor mange point man skal have før at boldens hastighed bliver sat op. På Easy er \texttt{striker.width} = 30 og boldens starthastighed er 40ms. Det vil sige der går 40ms fra bolden bliver tegnet, til den tegnes igen. På Medium er \texttt{striker.width} = 20 og boldens starthastighed 40ms, på Hard er \texttt{striker.width} = 10 og boldens starthastighed 40ms og på Chuck Norris er \texttt{striker.width} = 4 og boldens starthastighed er 10ms.\\
 
-Som man får flere point sættes boldens hastighed op. På Easy bliver delayet mellem to på hinanden følgende gange hvor bolden tegnes, sat 1ms ned for hvert 10 point man får. På Medium ved hvert 5. point man får og på Hard ved hvert 2. point man får. Når delayet mellem bold-aftegningerne kommer under 20 ms begynder bolden kun at blive tegnet hver anden gang for at uarten kan følge med. Minimumshastigheden som bolden kan bevæge sig i er 10ms delay mellem aftegningerne. Grænsen er sat her fordi spillet ellers bliver for umuligt at gennemføre. Da Chuck Norris-sværhedsgraden starter på 10ms delay øges boldhastigheden altså ikke uanset hvor mange point man får.\\
-Når der skiftes bane bliver boldhastigheden reset'et til starthastigheden ved den givne sværhedsgrad. Dvs. 40ms delay på Easy, Medium og Hard og 10ms på Chuck Norris.\\
+Som man får flere point sættes boldens hastighed op. På Easy bliver delayet mellem to på hinanden følgende gange hvor bolden tegnes, sat 1ms ned for hvert 10 point man får. På Medium ved hvert 5. point man får og på Hard ved hvert 2. point man får. Når delayet mellem bold-aftegningerne kommer under 20 ms begynder bolden kun at blive tegnet hver anden gang for at UART'en kan følge med. Minimumshastigheden som bolden kan bevæge sig i er 10ms delay mellem aftegningerne. Grænsen er sat her fordi spillet ellers bliver for umuligt at gennemføre. Da Chuck Norris-sværhedsgraden starter på 10ms delay øges boldhastigheden altså ikke uanset hvor mange point man får.\\
+Når der skiftes bane bliver boldhastigheden resat til starthastigheden ved den givne sværhedsgrad. Dvs. 40ms delay på Easy, Medium og Hard og 10ms på Chuck Norris.\\
 
 \underline{Brikker og baner}\\
 
-Som en del af de avancerede mål havde vi at lave brikker, så gameplayet bliver sjovere. Se mere om implementering af brikker, forskellige brik-typer og forskellige baner i afsnit \textbf{3.3}.\\ \\ \\ \\
-
+Som en del af de avancerede mål havde vi at lave brikker, så gameplayet bliver sjovere. Se mere om implementering af brikker, forskellige brik-typer og forskellige baner i afsnit \textbf{3.3}. \\
 
 \section{Brikker}
 
@@ -106,7 +112,7 @@ Formålet med at implementere brikker i spillet var at give gameplayet en helt n
 
 \underline{Tegne Brikker.}\\
 
-For lettest at kunne holde styr på brikkerne har vi lavet en struct, \texttt{Brick} der repræsenterer en brik. Den indeholder position i x- og y-koordinater, bredde, højde og brikkens liv. Brikkerne i en bane er gemt i et array:\\ \texttt{Brick bricks[BRICK\_TABLE\_HEIGHT][BRICK\_TABLE\_WIDTH];}. Når banen initialiseres gennemløbes dette array og hver brik tildeles koordinater, bredde, højde og liv. Efter dette tegnes brikken. Hvis brikken har 0 liv svarer det til at der ikke er en brik. Ved at give brikkerne i array'et forskellige antal liv kan man lave mønstre med brikkerne så man på den måde har flere forskellige baner i spillet. På Figur \ref{fig:brikker} er der vist hvordan brikker med forskelligt antal liv er tegnet. Jo flere liv de har, des mere solide tegnes de. Som et lille twist i gameplayet har vi valgt at gøre brikker med mere end fem liv usynlige så de pludseligt kan dukke op når man rammer dem. 
+For lettest at kunne holde styr på brikkerne har vi lavet en struct, \texttt{Brick} der repræsenterer en brik. Den indeholder position i x- og y-koordinater, bredde, højde og brikkens liv. Brikkerne i en bane er gemt i et array:\\ \texttt{Brick bricks[BRICK\_TABLE\_HEIGHT][BRICK\_TABLE\_WIDTH]}. Når banen initialiseres gennemløbes dette array og hver brik tildeles koordinater, bredde, højde og liv. Efter dette tegnes brikken. Hvis brikken har 0 liv svarer det til at der ikke er en brik. Ved at give brikkerne i array'et forskellige antal liv kan man lave mønstre med brikkerne så man på den måde har flere forskellige baner i spillet. På Figur \ref{fig:brikker} er der vist hvordan brikker med forskelligt antal liv er tegnet. Jo flere liv de har, des mere solide tegnes de. Som et lille twist i gameplayet har vi valgt at gøre brikker med mere end fire liv usynlige så de pludseligt kan dukke op når man rammer dem. 
 \newpage
 
 \begin{figure}[h!]
@@ -119,7 +125,7 @@ For lettest at kunne holde styr på brikkerne har vi lavet en struct, \texttt{Br
 
 \underline{Baner gemt i et array i ROM'en.}\\
 
-Vi har valgt at hardcode brikkernes bredde og højde for at spare plads når vi gemmer banerne i ROM'en. På denne måde kan en bane i ROM'en gemmes i arrayet\\ \texttt{unsigned char rom levels[6][BRICK\_TABLE\_HEIGHT][BRICK\_TABLE\_WIDTH]}. Dette arrray er et tredimensionalt array af chars der er gemt i ROM'en. Det indeholder 6 "lag" der hver indeholder de todimensionale data til en bane. Værdien af hver char er antallet af liv den tilsvarende brik får. Når banen initialiseres, løbes dette array og arrayet \texttt{bricks[BRICK\_TABLE\_HEIGHT][BRICK\_TABLE\_WIDTH]} igennem og brikkerne i \texttt{bricks} får det antal liv der står i \texttt{levels} arrayet. Den dynamiske hukommelse i mikroprocessoren indeholder således kun et array af brikker der svarer til den aktuelle bane. Et eksempel på hvordan en bane er gemt i arrayet \texttt{levels} er vist nedenfor.
+Vi har valgt at hardcode brikkernes bredde og højde for at spare plads når vi gemmer banerne i ROM'en. På denne måde kan en bane i ROM'en gemmes i arrayet\\ \texttt{unsigned char rom levels[6][BRICK\_TABLE\_HEIGHT][BRICK\_TABLE\_WIDTH]}. Dette arrray er et tredimensionalt array af chars der er gemt i ROM'en. Det indeholder 6 "lag" der hver indeholder de todimensionale data til en bane. Værdien af hver char er antallet af liv den tilsvarende brik får. Når banen initialiseres, løbes dette array og arrayet\\ \texttt{bricks[BRICK\_TABLE\_HEIGHT][BRICK\_TABLE\_WIDTH]} igennem og brikkerne i \texttt{bricks} får det antal liv der står i \texttt{levels} arrayet. Den dynamiske hukommelse i mikroprocessoren indeholder således kun et array af brikker der svarer til den aktuelle bane. Et eksempel på hvordan en bane er gemt i arrayet \texttt{levels} er vist nedenfor.
 
 \begin{lstlisting}
 { 
@@ -161,7 +167,7 @@ Banen der svarer til det ovenstående array, er vist på Figur \ref{fig:level1}.
 Den helt store udfordring med brikkerne var at tjekke om bolden ramte dem. Ved hver eneste iteration af spillet gennemløber vi arrayet \texttt{bricks[][]} og for alle brikker med mere end 0 liv tjekker vi om bolden har ramt og i givet fald hvordan.\\
 Når spillet itereres og bolden flyttes tjekker vi først om bolden rammer brikkerne før vi tegner den. Hvis bolden har ramt en brik reflekteres den og får sin nye position før den tegnes. Hvis bolden har ramt en brik, er boldens koordinater altså inde i brikken når vi tjekker.\\
 
-For at bolden skulle bevæge sig lige hurtigt i begge retninger på skærmen har vi lavet x-komposanten af boldens vektor dobbelt så stor. Det giver nogle ekstra udfordringer når bolden rammer brikkerne. Når bolden kan bevæge sig 2 karakterer i x-retningen kan den ramme brikkerne fra siden på en række forskellige måder. Disse er vist for højre side af brikken på Figur \ref{fig:SideReflexSamlet}. 
+For at bolden skulle bevæge sig lige hurtigt i begge retninger på skærmen har vi lavet x-komposanten af boldens vektor dobbelt så stor, da der var næsten præcis dobbelt så stor opløsning i x-aksen i forhold til y-aksen. Det giver nogle ekstra udfordringer når bolden rammer brikkerne. Når bolden kan bevæge sig 2 karakterer i x-retningen kan den ramme brikkerne fra siden på en række forskellige måder. Disse er vist for højre side af brikken på Figur \ref{fig:SideReflexSamlet}. 
 Når vi har itereret spillet og tjekker boldens position kan den på x-aksen befinde sig både en eller to karakterer inde i brikken. Den kan således ramme brikken på seks forskellige måder som vist på ovennævnte figur. Det er vigtigt at tage højde for at bolden kan ramme to karakterer ind i brikken, når man tjekker om bolden har ramt brikken midtpå fra siden. Hvis man ikke tager højde for dette, vil bolden bevæge sig igennem brikken mens den reflekteres af toppe og bunden.\\
 
 \begin{figure}[h!]
@@ -172,7 +178,7 @@ Når vi har itereret spillet og tjekker boldens position kan den på x-aksen bef
 \end{figure}
 \newpage
 
-For at give et godt gameplay har vi besluttet at bolden fortrinsvis skal reflekteres ned og op så brugeren kan få den. Dette er vist på Figur \ref{fig:ReflexOppeFri}. Når bolden rammer brikken fra toppen og er 2 karakterer inde i brikken vil den blive reflekteret som vist på figuren. Hvis bolden havde ramt på samme måde, men var kommet nedefra var den blevet reflekteret som om den havde ramt siden af brikken.\\
+For at give et godt gameplay har vi besluttet at bolden fortrinsvis skal reflekteres op og ned så brugeren kan få den. Dette er vist på Figur \ref{fig:ReflexOppeFri}. Når bolden rammer brikken fra toppen og er 2 karakterer inde i brikken vil den blive reflekteret som vist på figuren. Hvis bolden havde ramt på samme måde, men var kommet nedefra var den blevet reflekteret som om den havde ramt siden af brikken.\\
 
 Det der er vist på denne figur er, borset fra de omgivende brikker, samme situation som på Figur \ref{fig:SideReflexSamlet}, Top, 2 brikker inde. 
 \begin{figure}[h!]
@@ -194,7 +200,8 @@ Et specialtilfælde er når en brik bliver ramt lige på hjørnet, en karakter i
 
 \underline{Flere brikker ramt.}\\
 
-Som det kan ses på Figur \ref{fig:cornerReflex}, øverst, kan bolden ramme flere brikker af gangen. Når dette sker, skal man tjekke om der bare findes én brik på banen, hvor der er en konflikt med at reflektere bolden i en bestemt retning. Hvis der er det må brikken ikke reflekteres i denne retning. Hvis man så på en situation hvor bolden ramte et hjørne af brikker (en kombination af det øverste og midterste billede på Figur \ref{fig:cornerReflex} vil der både være en konflikt i forhold til at reflektere bolden op og til siden. I denne specialsituation reflekteres bolden i begge retninger ligesom på det nederste billede i figuren.\\
+Som det kan ses på Figur \ref{fig:cornerReflex}, øverst, kan bolden ramme flere brikker af gangen. Når dette sker, skal man tjekke om der bare findes én brik på banen, hvor der er en konflikt med at reflektere bolden i en bestemt retning. Hvis der er det må brikken ikke reflekteres i denne retning.\\
+Hvis man så på en situation hvor bolden kom oppefra og ramte øverste højre hjørne af en brik der havde en brik både til højre og ovenover den (en kombination af det øverste og midterste billede på Figur \ref{fig:cornerReflex} vil der både være en konflikt både i forhold til at reflektere bolden op og til siden. I denne specialsituation reflekteres bolden i begge retninger ligesom på det nederste billede i figuren.\\
 \newpage
 
 \underline{Briklogikken.}\\
@@ -203,7 +210,7 @@ Briklogikken er selve spillets game engine der styrer hvordan det opfører sig. 
 \footnote{Da et for-loop egentlig bare er noget kode der køres så længe en test er sand, kunne det tegnes med en orange boks og en pil der fører tilbage til den. For at forøge overskueligheden og holde antallet af test-bokse og lange pile i diagrammet nede, har vi dog valgt, at undlade at lave det på denne måde.}. De to gule bokse repræsenterer de samme linjer kode. Denne kode er en blanding af variable der bliver sat og funktioner der bliver kaldt hver gang logikken har gennemløbet en brik. \\
 
 På Figur \ref{fig:brickFlow} kan det ses at der er adskillige steder hvor flagene \texttt{dontDeflectX} og \texttt{dontDeflectY} kan blive sat. Disse flag sættes hvis bolden ikke må blive reflekteret i en retning. De test der går forud for at et flag sættes, er altså reglerne for hvornår bolden ikke må reflekteres i en bestemt retning. 
-Når bolden er itereret (øverste venstre hjørne på Figuren) kaldes briklogikken. Den funktion der itererer boldens position er \texttt{iterate()} der kan findes på linje 375 i filen reflexcall.c der er vedlagt i Appendix \nameref{reflexball}. Denne funktion kalder \texttt{checkIteration(x,y)} på linje 145 i samme fil som er selve briklogikken. Briklogikken tester om iterationen er gyldig. Hvis den er det, tegnes bolden med \texttt{drawBigBall()}. Er den ikke det, reflekteres bolden hvorefter den tegnes. 
+Når bolden er itereret (øverste venstre hjørne på Figuren) kaldes briklogikken. Den funktion der itererer boldens position er \texttt{iterate()} der kan findes på linje 375 i \nameref{reflexball}.c der er vedlagt i Appendix \ref{C kode}. Denne funktion kalder \texttt{checkIteration(x,y)} på linje 145 i samme fil som er selve briklogikken. Briklogikken tester om iterationen er gyldig. Hvis den er det, tegnes bolden med \texttt{drawBigBall()}. Er den ikke det, reflekteres bolden hvorefter den tegnes. 
 
 %\newpage
 
@@ -788,7 +795,6 @@ Når bolden er itereret (øverste venstre hjørne på Figuren) kaldes briklogikk
 		
 
 \section{Helhedsindtryk}
-
 
 \underline{LED display med score, liv og levels}\\
 
