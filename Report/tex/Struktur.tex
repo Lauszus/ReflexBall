@@ -119,7 +119,7 @@ if (*pString == '\0') { // Check if we have reached the end of the string
 }
 \end{lstlisting}
 
-Når den kommer til null-terminatoren i strengen tjekker den om det var funktionen \textt{LEDRunOnce()} der blev kaldt. Hvis dette var tilfældet kalder den \texttt{LEDsetString()} med pointen til den anden streng som argument.
+Når den kommer til null-terminatoren i strengen tjekker den om det var funktionen \texttt{LEDRunOnce()} der blev kaldt. Hvis dette var tilfældet kalder den \texttt{LEDsetString()} med pointen til den anden streng som argument.
 
 \item \textbf{Menu hvor man kan vælge sværhedsgrad}. For at kunne variere spillets sværhedsgrad implementerede vi et menu system i starten af spillet hvor brugeren kan vælge den ønskede sværhedsgrad. Et screenshot af menuen kan ses i se figur \ref{fig:menu}. Menuen står og kører i et while-loop indtil brugeren har valgt en sværhedsgrad.
 
@@ -141,7 +141,7 @@ Når den kommer til null-terminatoren i strengen tjekker den om det var funktion
 
 For at kunne vælge en tilfældig tekst benytter vi os af at funktionen \texttt{millis()} nederste bits ændrer sig meget hurtigt. Ved at læse de tre nederste bits kan vi således få et "tilfældigt" tal mellem 0-7. Den er dog ikke helt tilfældig, men i stedet det man kalder pseudo-tilfældig - dette er dog tilstrækkeligt i dette tilfælde.
 
-Det udsnit af funktionen \texttt{showGameOver()} der læser \textt{millis()} kan ses nedenfor.
+Det udsnit af funktionen \texttt{showGameOver()} der læser \texttt{millis()} kan ses nedenfor.
 
 \begin{lstlisting}[frame=single,firstnumber=6]
 switch (millis() & 0x7) { // Pseudo random number from 0-7
@@ -163,26 +163,52 @@ Figur \ref{fig:won_normal} viser et screenshot ved gennemførsel af spillet.
 \end{itemize}
 
 \section{Styring med rat}
-Som et delmål fandt vi hurtigt ud af vi ville have et DEXXA Steering Wheel sluttet til microcontrolleren, sådan så styringn
+Som et delmål fandt vi hurtigt ud af vi ville have et DEXXA Steering Wheel sluttet til microcontrolleren, sådan så styringen af strikeren var væsentlig bedre i forhold til keyboardet eller udviklings boardets indbyggede knapper.
 
 \begin{itemize}
-\item Styring med intern hardware (knapper på microcontrolleren)
-\item Tilslutning af ekstern hardware (DEXXA Steering Wheel) - henvis til billede i brugermanualen.
-\begin{itemize}
-\item Gameport breakout board - henvis til billede i brugermanualen af boardet.
+\item \textbf{Gameport adapter}. For at kunne koble DEXXA Steering Wheel'et til vores udviklingsboard var det dog nødvendigt at lave en lille adapter. På den måde kan vi aflæse alle digitale knapper samt de to potentiometre inde i rattet og pedalerne - vi bruger dog ikke pedalerne i spillet.
 
-\item Gameport driver
+De digitale knapper fungerer ved at de er forbundet til en række knapper der svæver når de ikke holdes i bund. Hvis knappen holde nede kortsluttes den til \texttt{GND}. Ved at forbinde indgangen til knappen til en pullup modstand og derefter forbinde indgangen til en indgang på microcontrolleren kan man således aflæse knapperne. Udover at forbinde en pullup modstand til indgangen forbandt vi også en 100nF kondensator for at modvirke debouncing.
 
-\item ADC-converter
+Rattet og pedalerne fungerer en smule anderledes i det de er forbundet til et 100k$\Omega$ potentiometer. Potentiometerets ene ben er forbundet til \texttt{VCC}, mens det andet er forbundet til en udgang på Gameporten. Ved at forbinde denne udgang til en 100k$\Omega$ modstand der er forbundet til \texttt{GND} har man således dannet en spændingsdeler vha. de to modstande. Ved at måle spændingen vha. ADC'en i microcontrolleren kan man således bestemme positionen af rattet og pedalerne.
 
-\item (Kalibreringsrutine og linearitet)
+Koden til at læse en analog indgang kan ses nedenfor.
 
-\item Manuel kalibrering
+\begin{lstlisting}
+unsigned int readADC(unsigned char channel) {
+  unsigned char inHigh, inLow;
+  unsigned int ADC_data;
+  
+  ADCCTL = 0x80 | 0x20 | (channel & 0x0F); // Enable ADC on the selected channel and use external voltage (3.3V) as VREF
+  while (ADCCTL & 0x80); // Wait for conversion to be completed
+  inHigh = ADCD_H; // ADC high byte
+  inLow = ADCD_L; // ADC low low byte
+  ADC_data = ((unsigned int)inHigh << 2)| inLow >> 6; // ADC output word
+  
+  return ADC_data;
+}
+\end{lstlisting}
+
+På linje 5 opsættes ADC'en til at starte målingen på den pågældende indput. Derudover benytter vi os af en ekstern spændings reference på 3.3V. I linje 6 venter koden på at ADC konverteringen er færdig, når dette sker cleares bit 7 og koden aflæser nu de to registre og returnerer spændingen som en 10-bit værdi mellem 0-1023.
+
+Først lavede vi lineær model for rattet, men det viste sig hurtigt at den ikke var lineær, derfor lavede vi blot inddelingen manuelt vha. en række if-sætning.
+
+Den samlede koden til Gameport adapteren kan ses i \nameref{gameport} i appendiks.
+
+Et pinout til Gameport'en samt dybere forklaring kan ses på følgende side \footnote{\url{http://pinouts.ru/Inputs/GameportPC_pinout.shtml}} .
+
+Figur \ref{fig:board_overview} nedenfor viser hvordan Gameport adapteren er forbundet til udviklingsboardet.
+
+\begin{figure}[h!]
+\centering
+\includegraphics[scale=0.10]{figs/board_overview_crop.png}
+\caption{Billede af Gameport adapteren forbundet til udviklings boardet}
+\label{fig:board_overview}
+\end{figure}
+
+\item \textbf{Styring med intern hardware og keyboard}. Udover at kunne styre spillet vha. rattet kan man også styre spillet vha. computerens keyboard eller udviklings boardets knapper. Spillet er dog tiltænkt at skulle styres med rattet, da det giver en meget bedre styringsfølsomhed og dermed en bedre spilleoplevelse.
 
 \end{itemize}
-\end{itemize}
-
-
 
 \section{Rettelser og fintuning}
 
