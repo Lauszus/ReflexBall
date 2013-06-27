@@ -94,7 +94,7 @@ Det ses i linje 1, at vi blot lægger et tal til video-bufferens adresse, dette 
 
 Udover at kunne scolle den samme tekst havde vi også brug for at kunne scrolle en besked én gang på displayet - dette bruger vi fx hver gang man dør eller går til næste level.
 
-Funktionen \texttt{LEDRunOnce} kan ses nedenfor.
+Funktionen \texttt{LEDRunOnce()} kan ses nedenfor.
 
 \begin{lstlisting}[frame=single]
 void LEDRunOnce(char *firstString, char* secondString) {
@@ -104,9 +104,9 @@ void LEDRunOnce(char *firstString, char* secondString) {
 }
 \end{lstlisting}
 
-Den virker på den måde at den sætter den første streng på normalvis, den sætter dog flaget \texttt{runOnce} til 1 og derefter sætter den en pointer til den anden streng.
+Den virker på den måde at den sætter den første streng på normalvis, den sætter dog flaget \texttt{runOnce()} til 1 og derefter sætter den en pointer til den anden streng.
 
-Et udsnit af funktionen \texttt{moveVideoBuffer} kan ses nedenfor.
+Et udsnit af funktionen \texttt{moveVideoBuffer()} kan ses nedenfor.
 
 \begin{lstlisting}[frame=single,firstnumber=12]
 pString++;
@@ -119,12 +119,46 @@ if (*pString == '\0') { // Check if we have reached the end of the string
 }
 \end{lstlisting}
 
-Når den kommer til null-terminatoren i strengen tjekker den om det var funktionen \textt{LEDRunOnce} der blev kaldt. Hvis dette var tilfældet kalder den \texttt{LEDsetString} med pointen til den anden streng som argument.
+Når den kommer til null-terminatoren i strengen tjekker den om det var funktionen \textt{LEDRunOnce()} der blev kaldt. Hvis dette var tilfældet kalder den \texttt{LEDsetString()} med pointen til den anden streng som argument.
 
-\item Menu hvor man kan vælge sværhedsgrad
-\item Beskeder ved Game Over
-\item Besked hvis spillet vindes
-\item Implementering af ASCII-Art tekst og billeder til Menu, Game Over og Win - henvis til brugermanual med et billede af ASCII art.
+\item \textbf{Menu hvor man kan vælge sværhedsgrad}. For at kunne variere spillets sværhedsgrad implementerede vi et menu system i starten af spillet hvor brugeren kan vælge den ønskede sværhedsgrad. Et screenshot af menuen kan ses i se figur \ref{fig:menu}. Menuen står og kører i et while-loop indtil brugeren har valgt en sværhedsgrad.
+
+\begin{figure}[h!]
+\centering
+\includegraphics[scale=0.25]{figs/screenshots/menu_crop.png}
+\caption{Screenshot af menuen}
+\label{fig:menu}
+\end{figure}
+
+\item \textbf{Beskeder ved Game Over}. Når spilleren dør vises en fast tekst "GameOver", samt et vilkårligt citat. I alt er der 8 forskellige citater som kan vises når man dør. En eksempel på dette kan ses i figur \ref{fig:gameover}.
+
+\begin{figure}[h!]
+\centering
+\includegraphics[scale=0.25]{figs/screenshots/gameover_crop.png}
+\caption{Eksempel på screenshot game over tekst}
+\label{fig:gameover}
+\end{figure}
+
+For at kunne vælge en tilfældig tekst benytter vi os af at funktionen \texttt{millis()} nederste bits ændrer sig meget hurtigt. Ved at læse de tre nederste bits kan vi således få et "tilfældigt" tal mellem 0-7. Den er dog ikke helt tilfældig, men i stedet det man kalder pseudo-tilfældig - dette er dog tilstrækkeligt i dette tilfælde.
+
+Det udsnit af funktionen \texttt{showGameOver()} der læser \textt{millis()} kan ses nedenfor.
+
+\begin{lstlisting}[frame=single,firstnumber=6]
+switch (millis() & 0x7) { // Pseudo random number from 0-7
+\end{lstlisting}
+
+\item \textbf{Besked hvis spillet vindes}. Hvis man er så heldig at vinde spillet vises der en lykønskning samt en opkvikker i form af en flot præmiepige, da dette er ægte klassisk japansk arkade kutyme.
+
+Figur \ref{fig:won_normal} viser et screenshot ved gennemførsel af spillet.
+
+\begin{figure}[h!]
+\centering
+\includegraphics[scale=0.25]{figs/screenshots/won_normal.png}
+\caption{Screenshot ved gennemførsel af spillet}
+\label{fig:won_normal}
+\end{figure}
+
+\item Implementering af ASCII-Art tekst og billeder til Menu, Game Over og Win - henvis til brugermanual med et billede af ASCII art
 \begin{itemize}
 \item HUSK at nævne Java-program til ASCII-Art strenge - henvis til appendiks.
 \item Skal der forklares hvordan bolder bliver sat ud fra et array? Eller er den ikke en teknisk rapport?
