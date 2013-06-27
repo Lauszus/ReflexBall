@@ -1,0 +1,5 @@
+<map id="buttons.h" name="buttons.h">
+<area shape="rect" id="node2" href="$asciidisplay_8c.html" title="asciidisplay.c" alt="" coords="5,75,75,96"/>
+<area shape="rect" id="node3" href="$buttons_8c.html" title="buttons.c" alt="" coords="99,75,153,96"/>
+<area shape="rect" id="node4" href="$main_8c.html" title="main.c" alt="" coords="179,75,224,96"/>
+</map>
