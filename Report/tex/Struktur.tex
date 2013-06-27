@@ -64,34 +64,63 @@ Når der skiftes bane bliver boldhastigheden reset'et til starthastigheden ved d
 \section{Helhedsindtryk}
 
 \begin{itemize}
-\item \textbf{LED display med score, liv og levels}. Udover at vise brugerens score, liv og nuværende level på skærmen, valgte vi også at bruge boardet indbyggede LED display til at  
+\item \textbf{LED display med score, liv og levels}. Udover at vise brugerens score, liv og nuværende level på skærmen, valgte vi også at bruge boardet indbyggede LED display til at vise dette. På den måde kan brugeren se hans score når spillet kører og hans liv hver gang han dør eller går et level up. \\
+For at vise de forskellige karakterer på displayet opsatte vi Timer2 til at inerrupte hver 500us, den kalder derefter en funktion der sørger for at  multiplekse LED displayet, så hurtigt at det virker som om alle LED'er hele tiden er tændt. Oprindeligt kaldte vi opdaterings funktionen fra vores main-loop, men det bevirkede i at displayet blinkede, da der var forholdsvis lange pauser hver gang den skulle opdaterer spillet. \\
+Da funktionen bliver kaldt inde i et interrupt er det nødvendigt at sikre sig at denne er så kort som mulig, så programmet ikke bruger for lang tid på at eksekvere interruptet. Dette sikrede vi ved kun at gemme de første 5 karakterer i en video-buffer og derefter læse fra den ved at læse direkte fra en specifik adresse i microcontrollerens memory. Derved undgår man at skulle flytte rundt på video-bufferen hele tiden, der ville tage meget lang tid at eksekverer. Man skal dog selv holde styr på at man ikke læser fra et andet sted i hukommelsen. \\
+Koden til opdaterings funktionen kan ses nedenfor.
 
-
-
-Skriv om videobuffer og om opdatering af LED i interrupt HER \\
-Forklar om fordelen ved pointers - den peger blot på en specifik adresse. Derfor tager det meget kort tid, da man blot skal forøge en variable i stedet for fx. at flytte en hele bufferen. Derfor kan vi således også gøre det i et interrupt uden at der opstår problemer.
-\\
-Sætter timer op til at interrupte hver 500us, den sørger derfor at multiplekse LED displayet, så hurtigt at det virker som om alle LED'er hele tiden er tændt.
-
-\begin{scriptsize}
-\begin{lstlisting}
+\begin{lstlisting}[frame=single]
 PGOUT = (PGOUT & (1 << 7)) | *(&videoBuffer[0][0] + digit*6 + column + index);
 PEOUT |= 0x1F; // Set all cathodes high
 PEOUT &= ~(1 << (4-column)); // Set one cathodes low decided by column
+
+clockLed(digit);
+if (++digit == 4) {
+  digit = 0;
+  if (++column == 5) {
+    column = 0;
+	if (++delayCounter == SCROLL_SPEED && stringLength > 4) { // We don't have to scroll the text if there is less than five characters
+	  delayCounter = 0;				
+	  if (++index > 5) {
+        index = 0;
+		moveVideoBuffer();
+	  }
+	}
+  }
+}
 \end{lstlisting}
-\end{scriptsize}
 
-Forklar også om LEDRunOnce funktion:
+Det ses i linje 1, at vi blot lægger et tal til video-bufferens adresse, dette tager således utroligt lidt tid og dermed opstår der ingen problemer ved at kalde den i et interrupt. Som det ses i linje 14 skal den dog stadig flytte bufferen hver gang den kommer til en ny karakter. Denne kode kan ses i afsnittet \nameref{LED} i appendiks.
 
-\begin{scriptsize}
-\begin{lstlisting}
+Udover at kunne scolle den samme tekst havde vi også brug for at kunne scrolle en besked én gang på displayet - dette bruger vi fx hver gang man dør eller går til næste level.
+
+Funktionen \texttt{LEDRunOnce} kan ses nedenfor.
+
+\begin{lstlisting}[frame=single]
 void LEDRunOnce(char *firstString, char* secondString) {
 	LEDsetString(firstString);
 	runOnce = 1;
 	pSecondString = secondString;
 }
 \end{lstlisting}
-\end{scriptsize}
+
+Den virker på den måde at den sætter den første streng på normalvis, den sætter dog flaget \texttt{runOnce} til 1 og derefter sætter den en pointer til den anden streng.
+
+Et udsnit af funktionen \texttt{moveVideoBuffer} kan ses nedenfor.
+
+\begin{lstlisting}[frame=single,firstnumber=12]
+pString++;
+if (*pString == '\0') { // Check if we have reached the end of the string
+  if (runOnce) { // This wil actually abort when it loads the last character in the 5th digit, so you have to put a space in end of the sentence
+    runOnce = 0;
+	LEDsetString(pSecondString);
+  } else
+	pString -= stringLength;
+}
+\end{lstlisting}
+
+Når den kommer til null-terminatoren i strengen tjekker den om det var funktionen \textt{LEDRunOnce} der blev kaldt. Hvis dette var tilfældet kalder den \texttt{LEDsetString} med pointen til den anden streng som argument.
+
 \item Menu hvor man kan vælge sværhedsgrad
 \item Beskeder ved Game Over
 \item Besked hvis spillet vindes
