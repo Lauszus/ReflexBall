@@ -44,63 +44,64 @@ void bgcolor(unsigned char background) {
   printf("%c[%dm", ESC, background+40);
 }
 
-void color(unsigned char foreground, unsigned char background) { // combination of fgcolor() and bgcolor() - uses less bandwidth
-  int type = 22;             // normal text
+void color(unsigned char foreground, unsigned char background) { // Combination of fgcolor() and bgcolor() - uses less bandwidth
+  int type = 22; // Normal text
 	if (foreground > 7) {
-	  type = 1;                // bold text
+	  type = 1; // Bold text
 		foreground -= 8;
 	}
   printf("%c[%d;%d;%dm", ESC, type, foreground+30, background+40);
 }
 
-void resetbgcolor() {
+void resetbgcolor() { // Reset background color
   printf("%c[m", ESC); // Gray on black text, no underline, no blink, no reverse
 }
 
-void clrscr() {
-	printf("%c[2J", ESC);	
+void clrscr() { // Clear screen
+	printf("%c[2J", ESC);
 }
 
-void clreol() {
+void clreol() { // Clear line
 	printf("%c[K", ESC);	
 }
 
-void gotoxy(unsigned char x, unsigned char y) {
+void gotoxy(unsigned char x, unsigned char y) { // Move the marker to the (x,y)-coordinate
 	printf("%c[%d;%dH", ESC, y, x);
 }
 
-void graphicCommand(char command) {
+void graphicCommand(char command) { // Private helper function
 	printf("%c[%dm", ESC, command);
 }
 
-void underline(char on) {
+void underline(char on) { // Used to turn underline on and off
 	char command = 4;
 	if (!on)
 		command += 20;
 	graphicCommand(command);
 }
 
-void blink(char on) {
+void blink(char on) { // Used to blink the text
 	char command = 5;
 	if (!on)
 		command += 20;
 	graphicCommand(command);	
 }
 
-void reverse(char on) {
+void reverse(char on) { // Used to reverse the background and forground of the text
 	char command = 7;
 	if (!on)
 		command += 20;
 	graphicCommand(command);
 }
 
-unsigned char strlen(char* string) {
+unsigned char strlen(char* string) { // Calculate the length of a string
 	unsigned char length = 0;
 	while(*string++ != '\0')
 		length++;
 	return length;
 }
 
+// Used to draw a horizontal line with the corners specified in left and right
 void drawTopBot(unsigned char x, unsigned char y, unsigned char width, unsigned char left, unsigned char right, unsigned char side) {
 	int i;
 	gotoxy(x,y);
@@ -110,6 +111,7 @@ void drawTopBot(unsigned char x, unsigned char y, unsigned char width, unsigned 
 	printf("%c",right);
 }
 
+// Used to draw vertical sides
 void drawSides(unsigned char x1, unsigned char y1, unsigned char x2, unsigned char y2, unsigned char side) {
 	int i, j;
 	for (i=y1+1;i<y2;i++) {
@@ -120,14 +122,14 @@ void drawSides(unsigned char x1, unsigned char y1, unsigned char x2, unsigned ch
 	}
 }
 
-void saveCursor() {
+void saveCursor() { // Save the position of the cursor
 	printf("%c[s", ESC);
 }
 
-void getSavedCursor() {
+void getSavedCursor() { // Get the last saved position
 	printf("%c[u", ESC);
 }
 
-void moveCursor(char dir, unsigned char n) {
+void moveCursor(char dir, unsigned char n) { // Move cursor in some direction
 	printf("%c[%d%c", ESC, n, dir);
 }

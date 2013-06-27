@@ -9,67 +9,65 @@
 
 Ball ball;
 Striker striker;
-Brick bricks[BRICK_TABLE_HEIGHT][BRICK_TABLE_WIDTH];
-unsigned char strikerAngle[STRIKER_MAX_WIDTH/2-1+BALL_WIDTH/2-1];
-unsigned int bricksLives; // Stores the total number of lives of the bricks
+Brick bricks[BRICK_TABLE_HEIGHT][BRICK_TABLE_WIDTH]; // Array of brick structs
+unsigned char strikerAngle[STRIKER_MAX_WIDTH/2-1+BALL_WIDTH/2-1]; // Deflect angle for the different striker zones
+unsigned int bricksLives; // Stores the total number of lives of the bricks - used to detect when all the bricks are gone
 
-unsigned long gameTimer;
-unsigned char gameStarted = 0, alive;
+unsigned long gameTimer; // Time of last iteration
+unsigned char gameStarted, alive; // Variables used to check if the ball is free and if the user is alive
 
-unsigned char x1, y1, x2, y2;
+unsigned char x1, y1, x2, y2; // Min/max position of the corners
 
 unsigned int score, levelScore; // The total score and the score obtained in this level
 unsigned char divider; // This is the difficulty set in the beginning
 unsigned char strikerWidth; // This is the striker width determent from the selected difficulty
 
-unsigned char lives, level;
+unsigned char lives, level; // Current number of lives and the current level
 volatile char runOnceBuf[50], ledBuf[50]; // We need this global buffer as the LED code creates a pointer to the memory location
 
-char drawCounter = 0;
-char drawCounterMax = 1;
-char drawBallNow;
-
-long lastX, lastY;
+char drawCounter = 0, drawCounterMax = 1; // Used to skip a drawing
+char drawBallNow; // Varaibled used to set if the ball should be drawn even if it should otherwise skip it
+long lastX, lastY; // Last position of the ball - used to clear the old ball
 
 unsigned char restartGame; // True if the user have won the game
 
-void printLevel() {
+void printLevel() { // Print the current level on the screen
 	gotoxy(x2-35,y2);
 	printf("Level: %d", level+1);
 }
-void printLives() {
+void printLives() { // Print number of lives on the screen
 	gotoxy(x2-25,y2);
 	printf("Lives: %d", lives);	
 }
-void printScore() {
+void printScore() { // Print score of lives on the screen
 	gotoxy(x2-15,y2);
 	printf("Score: %04d$", score);
 }
 
-void showScoreLED() {
+void showScoreLED() { // Show the score on the LED display
 	sprintf(ledBuf,"%04d",score);
 	LEDsetString(ledBuf);
 }
-void scrollLiveInGameLED() {
+void scrollLiveInGameLED() { // Scrol the number of lives once
 	sprintf(ledBuf,"%04d",score);
 	sprintf(runOnceBuf,"%s$ Lives:%d£ %s ", ledBuf, lives, ledBuf); // We have to put a space behind as the LED routine aborts when it loaded the last character in the 5th digit
 	
 	LEDRunOnce(runOnceBuf,ledBuf);
 }
-void scrollLevelUp() {
+void scrollLevelUp() { // Scroll level and lives once, when the user levels up
 	sprintf(ledBuf,"%04d", score);
 	sprintf(runOnceBuf,"%s$ Level up!§ Level:%d Lives:%d£ %s ", ledBuf, level+1, lives, ledBuf); // We have to put a space behind as the LED routine aborts when it loaded the last character in the 5th digit
 	
 	LEDRunOnce(runOnceBuf,ledBuf);
 }
-void scrollAll() {
+void scrollAll() { // Scroll level and lives once
 	sprintf(ledBuf,"%04d",score);
 	sprintf(runOnceBuf,"%s$ Level:%d Lives:%d£ %s ", ledBuf, level+1, lives, ledBuf); // We have to put a space behind as the LED routine aborts when it loaded the last character in the 5th digit
 	
 	LEDRunOnce(runOnceBuf,ledBuf);
 }
 
-void dead() {
+void dead() { // Called when the ball hit's the ground
 	if(--lives == 0) {
 		delay_ms(1000); // Wait a bit before showing Game Over ASCII string
 		sprintf(ledBuf,"%04d$ Game Over! Score:", score);
@@ -86,24 +84,24 @@ void dead() {
 	stopGame();	
 }
 
-unsigned char getTerminalCoordinate(long input) {
+unsigned char getTerminalCoordinate(long input) { // Convert 18.14 to normal value with correct rounding
 	unsigned char output = input >> FIX14_SHIFT;
 	output += (input >> (FIX14_SHIFT-1)) & 0x1; // Round correctly
 	return output;
 }
 
-void gotoxyBall(long x, long y) {
+void gotoxyBall(long x, long y) { // Goto (x,y)-coordinates from the dongle
 	gotoxy(getTerminalCoordinate(x),getTerminalCoordinate(y));
 }
 
-void clearBigBall(long x, long y) {
+void clearBigBall(long x, long y) { // Clear the ball at teh (x,y)-coordinate
 	gotoxyBall(x,y);
 	printf("    ");
 	gotoxyBall(x,y + ((long)1 << FIX14_SHIFT));
 	printf("    ");
 }
 
-void drawBigBall() {
+void drawBigBall() { // Draw the ball
 	const unsigned char top = 238, bottom = 95, slash = '/', backSlash = '\\';
 
 	if ((++drawCounter != drawCounterMax && !drawBallNow) || !alive) // Check if we should skip the draweing in this iteration or if the game is not running
@@ -122,7 +120,7 @@ void drawBigBall() {
 	printf("%c%c%c%c",backSlash,bottom,bottom,slash);
 }
 
-void drawBrick(Brick *brick) {
+void drawBrick(Brick *brick) { // Draw one brick
 	unsigned char i, j, brickStyle;
 	for (i=0;i<brick->height;i++) {
 		gotoxy(brick->x,brick->y+i);
@@ -144,7 +142,7 @@ void drawBrick(Brick *brick) {
 	}
 }
 
-void checkIteration(unsigned char x, unsigned char y) {
+void checkIteration(unsigned char x, unsigned char y) { // Check if the ball hit's one of the bricks, striker, wall etc.
 	unsigned char i, j, dontDeflectX = 0, dontDeflectY = 0, deflectedX = 0, deflectedY = 0;
 	char distance; // Distance from center to ball position on striker
 	int angle;
@@ -369,12 +367,12 @@ void checkIteration(unsigned char x, unsigned char y) {
 	drawBigBall();	
 }
 
-void setBallPos(unsigned char x, unsigned char y) {
+void setBallPos(unsigned char x, unsigned char y) { // Set the position of the ball
 	ball.x = (long)x << FIX14_SHIFT;
 	ball.y = (long)y << FIX14_SHIFT;
 }
 
-void iterate() {
+void iterate() { // Iterate the game
 	if (alive && gameStarted) {
 		ball.x += ball.vector.x;
 		ball.y += ball.vector.y;
@@ -382,7 +380,7 @@ void iterate() {
 	checkIteration(getTerminalCoordinate(ball.x),getTerminalCoordinate(ball.y));
 }
 
-void drawStriker() {
+void drawStriker() { // Draw the striker
 	const unsigned char strikerStyle = 223;
 	unsigned char i;
 	gotoxy(striker.x,striker.y);
@@ -394,7 +392,7 @@ void drawStriker() {
 		blink(0);
 }
 
-void ballPosStriker() {
+void ballPosStriker() { // Position the ball above the striker
 	setBallPos(striker.x+striker.width/2-ball.width/2,striker.y-ball.height);
 	iterate();
 	drawStriker(); // Redraw striker in case the ball clears part of the stikers
@@ -431,10 +429,10 @@ void moveStriker(char dir) { // Take care of moving the striker left or right
 	}
 }
 
-void initStriker(unsigned char x, unsigned y, unsigned char width) {
+void initStriker(unsigned char x, unsigned y, unsigned char width) { // Initialize the striker - this will also calculate the deflect angle for the striker zones
 	unsigned char i, dAngle, strikerZones;
 
-	if (width > STRIKER_MAX_WIDTH)
+	if (width > STRIKER_MAX_WIDTH) // Make sure the width is not larger than the array
 		width = STRIKER_MAX_WIDTH;
 
 	strikerZones = width/2-1+BALL_WIDTH/2-1; // The striker is split up into zones to the left and right of the striker center
@@ -453,11 +451,11 @@ void initStriker(unsigned char x, unsigned y, unsigned char width) {
 	}
 }
 
-void stopGame() {
+void stopGame() { // Stop the game
 	gameStarted = 0;
 }
 
-void initBricks(char clear) {
+void initBricks(char clear) { // Initialize all the bricks, if clear is true then all the bricks will be cleared
 	unsigned char i, j;
 
 	bricksLives = 0; // Reset
@@ -467,8 +465,8 @@ void initBricks(char clear) {
 			bricks[i][j].width = 14;
 			bricks[i][j].height = 2;
 
-			bricks[i][j].lives = levels[level][i][j];
-			bricksLives += bricks[i][j].lives;
+			bricks[i][j].lives = levels[level][i][j]; // Get live from the level array
+			bricksLives += bricks[i][j].lives; // Increment the total number of lives of the bricks
 			bricks[i][j].x = x1+6 + (bricks[i][j].width+1)*j;
 			bricks[i][j].y = y1+3 + (bricks[i][j].height+1)*i;
 			if (bricks[i][j].lives || clear)
@@ -477,9 +475,9 @@ void initBricks(char clear) {
 	}
 }
 
-void startGame() {
+void startGame() { // Start a game
 	int startAngle;
-	if (!alive) {
+	if (!alive) { // Check if the player were Game Over
 		alive = 1;
 		if (lives == 0) {						
 			score = 0;
@@ -493,7 +491,7 @@ void startGame() {
 			printLevel();
 		}
 		ballPosStriker();		
-	} else if (!gameStarted) {
+	} else if (!gameStarted) { // The player is not dead yet
 		initVector(&ball.vector,1,0);
 		startAngle = (millis() & 0x7F) - 192; // Calculate a "random" angle from 0-127 (0-89.3 deg) and then subtract 192 (135 deg)
 
@@ -514,7 +512,7 @@ void startGame() {
 	}
 }
 
-void updateGame() {
+void updateGame() { // Update the game - this has to be called frequently
 	int speed = DEFAULT_DIFFICULTY-levelScore/divider; // Calculate teh speed using the score obtained in the current level and the divider set in the start up menu
 	if (speed < MAX_DIFFICULTY || divider == 1) // Limit maximum speed and set maximum speed as default if Chuck Norris mode is enabled
 		speed = MAX_DIFFICULTY;
@@ -524,19 +522,19 @@ void updateGame() {
 	else
 		drawCounterMax = 1;
 
-	if (millis() - gameTimer > speed && gameStarted) {
+	if (millis() - gameTimer > speed && gameStarted) { // The game is updated if the delta time is larger than the speed
 		gameTimer = millis();
 		iterate();
 	}
 }
 
-void initBall() {
+void initBall() { // Initialize a new ball at the center of the striker
 	setBallPos(striker.x+striker.width/2-2,striker.y-2); // Initialize the ball position to the striker position, as ballPosStriker will clear this
 	ball.width = BALL_WIDTH; // This has to be even
 	ball.height = BALL_HEIGHT;
 	initVector(&ball.vector,0,0);
 }
-void drawLevel(char clear) {
+void drawLevel(char clear) { // Draw the current level, if clear is true then all the bricks will be cleared
 	unsigned char i;
 
 	gotoxy(striker.x,striker.y);
@@ -559,10 +557,10 @@ void drawLevel(char clear) {
 	initBricks(clear);
 }
 
-void levelUp() {
+void levelUp() { // Called when the user finishes a level
 	level++;	
 	if (level >= sizeof(levels)/sizeof(levels[0])) { // Check if the user won the game
-		showWon();
+		showWon(); // This will block until a button is pressed
 		if (divider != 1) { // If not in Chuck Norris mode, then the user wins the game
 			restartGame = 1;
 			return;
@@ -577,7 +575,7 @@ void levelUp() {
 	drawLevel(1);
 }
 
-void initReflexBall(unsigned char newX1, unsigned char newY1, unsigned char newX2, unsigned char newY2, char style) {
+void initReflexBall(unsigned char newX1, unsigned char newY1, unsigned char newX2, unsigned char newY2, char style) { // Initialize the game
 	unsigned char leftTop, rightTop, leftBot, rightBot, verSide, horSide, leftCross, rightCross;
 
 	x1 = newX1;

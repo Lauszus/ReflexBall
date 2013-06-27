@@ -5,7 +5,7 @@
 
 volatile unsigned long delayTimer, mscounter;
 
-void initTimers() {
+void initTimers() { // Initialize Timer1 to interrupt every 1ms
 	DI(); // Disable interrupt
 
 	T1CTL = 0; // TEN - disable timer
@@ -32,17 +32,17 @@ void initTimers() {
 	EI(); // Enable interrupt
 }
 
-unsigned long millis() {
+unsigned long millis() { // Get the time since program start in ms
 	return mscounter;
 }
 
-void delay_ms(unsigned long time) { // This is not that acurate, but good enough for our needs
+void delay_ms(unsigned long time) { // Delay in ms - this is not that acurate, but good enough for our needs
 	delayTimer = time;
 	while(delayTimer);
 }
 
 #pragma interrupt
-void timer1int() {
+void timer1int() { // Interrupt function
 	delayTimer--;
 	mscounter++;
 }

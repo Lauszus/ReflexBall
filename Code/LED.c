@@ -11,7 +11,7 @@ volatile char runOnce, *pSecondString; // runOnce is used scroll a text only onc
 char *pString; // Pointer to string in ram
 
 
-void clockLed(unsigned char digit) {
+void clockLed(unsigned char digit) { // Clock the specific digit
 	if (digit == 0) {
 		PEOUT &= ~(1 << 7);
 		PEOUT |= (1 << 7);
@@ -56,7 +56,7 @@ unsigned char convertChar(char input) { // Convert to some of our own characters
 	return c;
 }
 
-void LEDsetString(char *string) {
+void LEDsetString(char *string) { // Set string to show on the display
 	unsigned char i, j;	
 
 	DI(); // Disbable all interrupts
@@ -92,7 +92,7 @@ void LEDRunOnce(char *firstString, char* secondString) { // Used to sroll the fi
 	pSecondString = secondString; // We will save the location of the second string
 }
 
-void moveVideoBuffer() {
+void moveVideoBuffer() { // Increment to the next character in the string
 	unsigned char i, j;
 
 	for (i=0; i < 5; i++) {
@@ -109,7 +109,7 @@ void moveVideoBuffer() {
 			runOnce = 0;
 			LEDsetString(pSecondString);
 		} else
-			pString -= stringLength;
+			pString -= stringLength; // Go all the way back to the end of the string
 	}
 }
 
@@ -135,11 +135,11 @@ void LEDupdate() { // This function is called inside the interrupt
 }
 
 #pragma interrupt
-void timer2int() {
+void timer2int() { // Interrupt function
 	LEDupdate();
 }
 
-void initLED() {
+void initLED() { // Initialize Timer2 used for multiplexing of the display
 	unsigned char i;
 	PEDD = 0; // All output
 	PGDD = 0; // All output

@@ -3,11 +3,11 @@
 #include "math.h"
 #include "lut.h"
 
-long expand(long input) {
-	return input << 2; // Convert an 18.14 to 16.16
+long expand(long input) { // Convert an 18.14 to 16.16
+	return input << 2;
 }
 
-void printNumber(long input,  unsigned char decimalBits, unsigned char decimal) {
+void printNumber(long input,  unsigned char decimalBits, unsigned char decimal) { // Print a fixed point number in any format
 	int i;
 	unsigned long pow = 10, mask = 0xFFFFFFFF, result, output;
 
@@ -30,24 +30,24 @@ void printNumber(long input,  unsigned char decimalBits, unsigned char decimal) 
 	printf("%ld.%0*ld", input >> decimalBits, decimal, output);
 }
 
-void printFix(long input, unsigned char decimal) {
+void printFix(long input, unsigned char decimal) { // Used to print an 18.14 fixed point number
 	printNumber(input,FIX14_SHIFT,decimal);
 }
 
-long sin(int val) {
+long sin(int val) { // sin()
 	return SIN[val & 0x1FF];
 }
 
-long cos(int val) {
+long cos(int val) { // cos()
 	return sin(val + 128);
 }
 
-void initVector(TVector* v, long x, long y) {
+void initVector(TVector* v, long x, long y) { // Initialize a vector
 	v->x = x << FIX14_SHIFT;
 	v->y = y << FIX14_SHIFT;
 }
 
-void rotate(TVector* v, int val) {
+void rotate(TVector* v, int val) { // Rotate a vector from 512-0 equal to 360-0 degrees
 	long sinVal, cosVal, tempX;
  	sinVal = sin(val);
 	cosVal = cos(val);
@@ -57,7 +57,7 @@ void rotate(TVector* v, int val) {
 	v->y = FIX14_MULT(tempX,sinVal) + FIX14_MULT(v->y,cosVal);
 }
 
-void printVector(TVector* v) {
+void printVector(TVector* v) { // Print a vector
 	printf("(");
 	printFix(v->x,4);
 	printf(",");

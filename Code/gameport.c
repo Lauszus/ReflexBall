@@ -3,7 +3,7 @@
 #include "gameport.h"
 #include "ansi.h"
 
-unsigned int readADC(unsigned char channel) {
+unsigned int readADC(unsigned char channel) { // Read a specific analog channel
 	unsigned char inHigh, inLow;
 	unsigned int ADC_data;
 
@@ -16,16 +16,16 @@ unsigned int readADC(unsigned char channel) {
 	return ADC_data;
 }
 
-void initGameport() {
+void initGameport() { // Initialize the steering wheel's digital buttons and analog wheel and pedals
 	PBDD = (1 << 5) | (1 << 4) | (1 << 3) | (1 << 2); // Use PB2, PB3, PB4 and PB5 as digial inputs
 	PBAF = (1 << 1) | (1 << 0); // Use PB0 and PB1 for ADC conversion
 }
 
-unsigned char getGameportButtons() {
+unsigned char getGameportButtons() { // Read the digital buttons
 	return (((~PBIN) & 0x3C) >> 2);
 }
 
-char readSteeringWheel() {
+char readSteeringWheel() { // Read the steering wheel, this will output a value that can be directly used with moveStriker()
 	int val = readADC(1);
 
 	//gotoxy(50,10);

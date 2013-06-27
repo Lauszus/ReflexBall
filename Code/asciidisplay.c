@@ -21,14 +21,14 @@ unsigned char xMin, yMin, xMax, yMax;
 
 const char *startString = "Press any key to continue";
 
-unsigned char strlen_rom(rom const char *string) {
+unsigned char strlen_rom(rom const char *string) { // Calculate the length of a string stored in the ROM
 	unsigned char length = 0;
 	while ((char)*string++ != '\0')
 		length++;
 	return length;
 }
 
-void printAscii(rom const char *str, unsigned char size) {	
+void printAscii(rom const char *str, unsigned char size) { // Used to print an ASCII art array at the last saved cursor position
 	unsigned char i;
 
 	for (i=1;i<=size;i++) {
@@ -36,32 +36,32 @@ void printAscii(rom const char *str, unsigned char size) {
 		moveCursor(DOWN,i);
 		while ((char)*str != '\0')
 			printf("%c",*str++);
-		str++;		
+		str++; // Skip the null-terminater
 	}
 	getSavedCursor();
 	moveCursor(DOWN,size);
 	saveCursor();
 }
 
-void printAsciiXY(rom const char *str, unsigned char size, unsigned char x, unsigned char y) {
+void printAsciiXY(rom const char *str, unsigned char size, unsigned char x, unsigned char y) { // Used to print an ASCII art array at the specifid (x,y)-coordinate
 	unsigned char i, length = strlen_rom(str);	
 	for (i=0;i<size;i++) {
 		gotoxy(x,y+i);
 		while ((char)*str != '\0')
 			printf("%c",*str++);
-		str++;
+		str++; // Skip the null-terminater
 	}
 	moveCursor(BACK,length);
 }
 
-void clearMenuBall(unsigned char x, unsigned char y) {
+void clearMenuBall(unsigned char x, unsigned char y) { // Clear the ball in the menu
 	gotoxy(x,y);
 	printf("    ");
 	gotoxy(x,y+1);
 	printf("    ");
 }
 
-void drawMenuBall(unsigned char x, unsigned char y) {
+void drawMenuBall(unsigned char x, unsigned char y) { // Draw the ball in the menu
 	const unsigned char top = 238, bottom = 95, slash = '/', backSlash = '\\';
 
 	clearMenuBall(ballXPos,lastBallY);
@@ -74,7 +74,7 @@ void drawMenuBall(unsigned char x, unsigned char y) {
 	printf("%c%c%c%c",backSlash,bottom,bottom,slash);
 }
 
-void moveBall(char dir) {	
+void moveBall(char dir) { // Move the menu ball up and down	
 	if (ballY + dir >= sizeof(ballMenuYPos) || ballY + dir < 0)
 		return;
 
@@ -82,7 +82,7 @@ void moveBall(char dir) {
 	drawMenuBall(ballXPos,ballMenuYPos[ballY]);
 }
 
-void showWon() {
+void showWon() { // Shown when the user wins the game
 	const char* highscoreString = "Good try! But the highscore is still held by:";
 	clrscr();
 	if (divider == 1) { // Chuck Norris mode		
@@ -118,7 +118,7 @@ void showWon() {
 	while (!getGameportButtons() && !readButtons() && !kbhit()); // Wait for button press
 }
 
-void showGameOver() {
+void showGameOver() { // Shown when the user lose
 	clrscr();
 	printAsciiXY(gameOverAscii[0],sizeof(gameOverAscii)/sizeof(gameOverAscii[0]),(xMin+xMax)/2-strlen_rom(gameOverAscii[0])/2,(yMin+yMax)/2-(sizeof(gameOverAscii)/sizeof(gameOverAscii[0]))/2-5);
 	moveCursor(DOWN,1);
@@ -192,7 +192,7 @@ void showGameOver() {
 	while (!getGameportButtons() && !readButtons() && !kbhit()); // Wait for button press
 }
 
-void initStartMenu(unsigned char newX1, unsigned char newY1, unsigned char newX2, unsigned char newY2) {
+void initStartMenu(unsigned char newX1, unsigned char newY1, unsigned char newX2, unsigned char newY2) { // Start up the screen shown at startup
 	xMin = newX1;
 	yMin = newY1;
 	xMax = newX2;
@@ -211,7 +211,7 @@ void initStartMenu(unsigned char newX1, unsigned char newY1, unsigned char newX2
 	timer = 0;
 }
 
-unsigned char startMenu() {
+unsigned char startMenu() { // Run the animation until a button is pressed
 	if (millis() - timer > 200) {
 		timer = millis();		
 
@@ -243,7 +243,7 @@ unsigned char startMenu() {
 	return 0;
 }
 
-void printMenu() {		
+void printMenu() { // Print the difficulty menu
 	printAsciiXY(menuAscii[0],sizeof(menuAscii)/sizeof(menuAscii[0]),(xMin+xMax)/2-strlen_rom(menuAscii[0])/2,(yMin+yMax)/2-15);
 
 	moveCursor(FORWARD,strlen_rom(menuAscii[0])/2-strlen_rom(chuckAscii1[0])/2+10);
@@ -265,7 +265,7 @@ void printMenu() {
 	drawMenuBall(ballXPos,ballMenuYPos[ballY]);
 }
 
-unsigned char updateMenu() {
+unsigned char updateMenu() { // This is run until the user selects a difficulty
 	int input;
 	unsigned char buttons, buttonsClick;
 
@@ -329,7 +329,7 @@ unsigned char updateMenu() {
 	return 0;
 }
 
-void calculateDifficulty() {	
+void calculateDifficulty() { // Calculate the difficulty based on the y-coordinates of the ball
 	if (ballY == 0) { // Easy
 		divider = 10;
 		strikerWidth = 30;
