@@ -1,0 +1,5 @@
+<map id="gameport.h" name="gameport.h">
+<area shape="rect" id="node2" href="$asciidisplay_8c.html" title="asciidisplay.c" alt="" coords="5,75,75,96"/>
+<area shape="rect" id="node3" href="$gameport_8c.html" title="gameport.c" alt="" coords="99,75,161,96"/>
+<area shape="rect" id="node4" href="$main_8c.html" title="main.c" alt="" coords="187,75,232,96"/>
+</map>

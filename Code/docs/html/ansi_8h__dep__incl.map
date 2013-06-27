@@ -1,0 +1,11 @@
+<map id="ansi.h" name="ansi.h">
+<area shape="rect" id="node2" href="$ansi_8c.html" title="ansi.c" alt="" coords="5,75,48,96"/>
+<area shape="rect" id="node3" href="$asciidisplay_8c.html" title="asciidisplay.c" alt="" coords="43,144,112,165"/>
+<area shape="rect" id="node4" href="$reflexball_8h.html" title="reflexball.h" alt="" coords="123,75,184,96"/>
+<area shape="rect" id="node8" href="$gameport_8c.html" title="gameport.c" alt="" coords="209,75,271,96"/>
+<area shape="rect" id="node9" href="$_l_e_d_8c.html" title="LED.c" alt="" coords="295,75,339,96"/>
+<area shape="rect" id="node7" href="$main_8c.html" title="main.c" alt="" coords="304,144,349,165"/>
+<area shape="rect" id="node10" href="$time_8c.html" title="time.c" alt="" coords="415,75,459,96"/>
+<area shape="rect" id="node5" href="$levels_8h.html" title="levels.h" alt="" coords="137,144,185,165"/>
+<area shape="rect" id="node6" href="$reflexball_8c.html" title="reflexball.c" alt="" coords="162,213,221,235"/>
+</map>
