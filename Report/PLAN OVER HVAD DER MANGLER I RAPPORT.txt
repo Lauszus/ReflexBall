@@ -2,7 +2,6 @@ PLAN OVER HVAD DER MANGLER I RAPPORT:
 
 Lav brugermanual											(Kristian)
 Lav blokdiagram over Hardware layer, application layer etc.
-Ret konklusion til
 
 Skriv verifikationsafsnit
 	Globale variabler
