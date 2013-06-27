@@ -62,13 +62,41 @@ Når der skiftes bane bliver boldhastigheden reset'et til starthastigheden ved d
 \section{Helhedsindtryk}
 
 \begin{itemize}
-\item \textbf{LED display med score, liv og levels} Skriv om videobuffer og om opdatering af LED i interrupt HER
+\item \textbf{LED display med score, liv og levels}. Udover at vise brugerens score, liv og nuværende level på skærmen, valgte vi også at bruge boardet indbyggede LED display til at  
+
+
+
+Skriv om videobuffer og om opdatering af LED i interrupt HER \\
+Forklar om fordelen ved pointers - den peger blot på en specifik adresse. Derfor tager det meget kort tid, da man blot skal forøge en variable i stedet for fx. at flytte en hele bufferen. Derfor kan vi således også gøre det i et interrupt uden at der opstår problemer.
+\\
+Sætter timer op til at interrupte hver 500us, den sørger derfor at multiplekse LED displayet, så hurtigt at det virker som om alle LED'er hele tiden er tændt.
+
+\begin{scriptsize}
+\begin{lstlisting}
+PGOUT = (PGOUT & (1 << 7)) | *(&videoBuffer[0][0] + digit*6 + column + index);
+PEOUT |= 0x1F; // Set all cathodes high
+PEOUT &= ~(1 << (4-column)); // Set one cathodes low decided by column
+\end{lstlisting}
+\end{scriptsize}
+
+Forklar også om LEDRunOnce funktion:
+
+\begin{scriptsize}
+\begin{lstlisting}
+void LEDRunOnce(char *firstString, char* secondString) {
+	LEDsetString(firstString);
+	runOnce = 1;
+	pSecondString = secondString;
+}
+\end{lstlisting}
+\end{scriptsize}
 \item Menu hvor man kan vælge sværhedsgrad
 \item Beskeder ved Game Over
 \item Besked hvis spillet vindes
-\item Implementering af ASCII-Art tekst og billeder til Menu, Game Over og Win
+\item Implementering af ASCII-Art tekst og billeder til Menu, Game Over og Win - henvis til brugermanual med et billede af ASCII art.
 \begin{itemize}
-\item HUSK at nævne Java-program til ASCII-Art strenge
+\item HUSK at nævne Java-program til ASCII-Art strenge - henvis til appendiks.
+\item Skal der forklares hvordan bolder bliver sat ud fra et array? Eller er den ikke en teknisk rapport?
 \end{itemize}
 
 \item Opdatere LED i interrupt
@@ -79,9 +107,9 @@ Som et delmål fandt vi hurtigt ud af vi ville have et DEXXA Steering Wheel slut
 
 \begin{itemize}
 \item Styring med intern hardware (knapper på microcontrolleren)
-\item Tilslutning af ekstern hardware (DEXXA Steering Wheel)
+\item Tilslutning af ekstern hardware (DEXXA Steering Wheel) - henvis til billede i brugermanualen.
 \begin{itemize}
-\item Gameport breakout board
+\item Gameport breakout board - henvis til billede i brugermanualen af boardet.
 
 \item Gameport driver
 
@@ -99,7 +127,7 @@ Som et delmål fandt vi hurtigt ud af vi ville have et DEXXA Steering Wheel slut
 \section{Rettelser og fintuning}
 
 \begin{itemize}
-\item \textbf{Bolden bevæger sig med samme hastighed i både x- og y-retning}. Vi havde et problem med at det på skærmen lignede at boldens hastighed variede meget afhængigt af om dens vektor var relativt vandret (lille absolut y-komposant) eller relativt lodret (lille x-komposant). Dette skyldes at monospace-karakteren er meget tæt på at være dobbelt så høj som den er bred. Vores løsningen på dette var at gøre boldens vektors x-komposant dobbelt så stor, ved at bitshifte den 1 til venstre. På den måde er bolden ikke længere en enhedsvektor med mindre dens y-komposant er nul.\\
+\item \textbf{Bolden bevæger sig med samme hastighed i både x- og y-retning}. Vi havde et problem med at det på skærmen lignede at boldens hastighed variede meget afhængigt af om dens vektor var relativt vandret (lille absolut y-komposant) eller relativt lodret (lille x-komposant). Dette skyldes at monospace-karakteren er meget tæt på at være dobbelt så høj som den er bred. Vores løsningen på dette var at gøre boldens vektors x-komposant dobbelt så stor, ved at bitshifte den 1 til venstre. På den måde er bolden ikke længere en enhedsvektor med mindre dens x-komposant er nul.\\
 Når bolden så rammer ind i noget bitshiftes \texttt{ball.vector.x} 1 til højre (divideres med to), for at gøre boldens vektor til enhedsvektor igen, sådan så der ikke opstår rod når boldens vektor roteres.
 
 \item \textbf{skift til Putty Terminal}. Som en del af de avancerede mål, skiftede vi fra Hyper Terminal over til Putty Terminal. Den eneste grund til dette er man i Putty Terminal kan lave meget større opløsning, sådan så spillet ser flottere ud og kan spilles som et fullscreen-spil. De eneste komplikationer der var forbundet med dette var at nogle få af ASCII-karaktererne blev tegnet på en anden måde i Putty end tiltænkt, selvom både Hyper og Putty terminalerne bruger charset 850. Løsningen på dette var bare at bruge nogle andre ASCII-karakterer.
