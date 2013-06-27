@@ -320,9 +320,21 @@ Når bolden er itereret (øverste venstre hjørne på Figuren) kaldes briklogikk
 \node [proc, join] 			(p18) {Reflekter Y};
 
 \node [proc, join] 			(p19) {drawBigBall \\ return};
+
+
+\node [placeholder, opacity=0] {};
+\node [placeholder, opacity=0] {};
+\node [placeholder, opacity=0] {};
+
 \node [proc, fill=gray!30] 			(e4) {Sidste brik i for-loop \\ går her til};
+\node [test] 				(t30) {dontDeflectX \& \\ dontDeflectY?};
+\node [proc] 			(e7) {Reflekter X \\ Reflekter Y};
+
 
 \node [proc, it, fill=gray!30, right=of e2]  (e3) {Næste brik i \\ for-loop};
+
+
+
 
 
 
@@ -540,6 +552,10 @@ Når bolden er itereret (øverste venstre hjørne på Figuren) kaldes briklogikk
 \node [coord, below = of t12] (ct12b)  {}; %\cmark{1}
 \node [coord, right = 18 mm of ct12b] (ct12br)  {}; %\cmark{1}
 
+\node [coord, right = 18 mm of t30] (ct30r)  {}; %\cmark{1}
+\node [coord, below = 10mm of e7] (ct30b)  {}; %\cmark{1}
+\node [coord, right = 18 mm of ct30b] (ct30br)  {}; %\cmark{1}
+
 % -------------------------------------------------
 % Finally, the twisty connectors. Again, we place the annotation
 % first, then draw the connector
@@ -562,8 +578,19 @@ Når bolden er itereret (øverste venstre hjørne på Figuren) kaldes briklogikk
 \path (t28.east) to node [very near start, yshift=1em] {$nej$} (ct28); 
   \draw [->] (t28.east)  --(ct28);
   
-\path (e4.north) to node [very near start, yshift=1em] {} (p19); 
-  \draw [->] (e4.north)  --(p19);
+\path (e4.south) to node [very near start, yshift=1em] {} (t30); 
+  \draw [->] (e4.south)  --(t30);
+  
+
+\path (t30.south) to node [very near start, xshift=1em, yshift=0.5em] {$ja$} (ct30b); 
+  \draw [->] (t30.south) -- (e7);
+
+\path (e7.south) to node [very near start, yshift=1em] {} (ct30b); 
+  \draw [->] (e7.south)  |- (ct30b) -| (ct30br) -| (cp18r);
+  
+\path (t30.east) to node [very near start, yshift=1em, xshift=-0.5em] {$nej$} (ct30r); 
+  \draw [->] (t30.east)  -- (ct30r); 
+  
   
 \path (t12.east) to node [very near start, yshift=1em] {$nej$} (ct12br); 
   \draw [->] (t12.east)  -| (ct12br) -| (e0);
