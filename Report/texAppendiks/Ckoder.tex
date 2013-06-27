@@ -1,37 +1,178 @@
-\chapter{C koder}
+\chapter{C kode}
 
 \section{ansi}
 \label{ansi}
 
 \underline{ansi.h}
 \begin{lstlisting}
-//keeps program running with while(true)-loop. On mouse click zooms in on mouse (x,y)-coordinates
-public static void zoom() {
-	while(true) {
-		if(StdDraw.mousePressed()) {
-			center[0] = StdDraw.mouseX();
-			center[1] = StdDraw.mouseY();
-			sideLength /= 2.0;
-			setupDraw();
-			drawMandelbrot();
-		}
-	}
-}
+#ifndef _ansi_h_
+#define _ansi_h_
+
+#define ESC 0x1B
+
+#define UP		'A'
+#define DOWN	'B'
+#define FORWARD	'C'
+#define BACK	'D'
+
+// Public
+void fgcolor(unsigned char foreground);
+void bgcolor(unsigned char background);
+void color(unsigned char foreground, unsigned char background);
+void resetbgcolor();
+void clrscr();
+void clreol();
+void gotoxy(unsigned char x, unsigned char y);
+void underline(char on);
+void blink(char on);
+void reverse(char on);
+unsigned char strlen(char* string);
+void drawTopBot(unsigned char x, unsigned char y, unsigned char width, unsigned char left, unsigned char right, unsigned char side);
+void drawSides(unsigned char x1, unsigned char y1, unsigned char x2, unsigned char y2, unsigned char side);
+void saveCursor();
+void getSavedCursor();
+void moveCursor(char dir, unsigned char n);
+
+// Private
+void graphicCommand(char command);
+
+#endif
 \end{lstlisting}
 
 \underline{ansi.c}
 \begin{lstlisting}
-//keeps program running with while(true)-loop. On mouse click zooms in on mouse (x,y)-coordinates
-public static void zoom() {
-	while(true) {
-		if(StdDraw.mousePressed()) {
-			center[0] = StdDraw.mouseX();
-			center[1] = StdDraw.mouseY();
-			sideLength /= 2.0;
-			setupDraw();
-			drawMandelbrot();
-		}
+#include <eZ8.h>             // special encore constants, macros and flash routines
+#include <sio.h>             // special encore serial i/o routines
+#include "ansi.h"
+
+void fgcolor(unsigned char foreground) {
+/*  Value      foreground     Value     foreground
+    ------------------------------------------------
+      0        Black            8       Dark Gray
+      1        Red              9       Light Red
+      2        Green           10       Light Green
+      3        Brown           11       Yellow
+      4        Blue            12       Light Blue
+      5        Purple          13       Light Purple
+      6        Cyan            14       Light Cyan
+      7        Light Gray      15       White
+*/
+  int type = 22;             // normal text
+	if (foreground > 7) {
+	  type = 1;                // bold text
+		foreground -= 8;
 	}
+  printf("%c[%d;%dm", ESC, type, foreground+30);
+}
+
+void bgcolor(unsigned char background) {
+/* IMPORTANT:   When you first use this function you cannot get back to true white background in HyperTerminal.
+   Why is that? Because ANSI does not support true white background (ANSI white is gray to most human eyes).
+                The designers of HyperTerminal, however, preferred black text on white background, which is why
+                the colors are initially like that, but when the background color is first changed there is no
+ 	              way comming back.
+   Hint:        Use resetbgcolor(); clrscr(); to force HyperTerminal into gray text on black background.
+
+    Value      Color      
+    ------------------
+      0        Black
+      1        Red
+      2        Green
+      3        Brown
+      4        Blue
+      5        Purple
+      6        Cyan
+      7        Gray
+*/
+  printf("%c[%dm", ESC, background+40);
+}
+
+void color(unsigned char foreground, unsigned char background) { // combination of fgcolor() and bgcolor() - uses less bandwidth
+  int type = 22;             // normal text
+	if (foreground > 7) {
+	  type = 1;                // bold text
+		foreground -= 8;
+	}
+  printf("%c[%d;%d;%dm", ESC, type, foreground+30, background+40);
+}
+
+void resetbgcolor() {
+  printf("%c[m", ESC); // Gray on black text, no underline, no blink, no reverse
+}
+
+void clrscr() {
+	printf("%c[2J", ESC);	
+}
+
+void clreol() {
+	printf("%c[K", ESC);	
+}
+
+void gotoxy(unsigned char x, unsigned char y) {
+	printf("%c[%d;%dH", ESC, y, x);
+}
+
+void graphicCommand(char command) {
+	printf("%c[%dm", ESC, command);
+}
+
+void underline(char on) {
+	char command = 4;
+	if (!on)
+		command += 20;
+	graphicCommand(command);
+}
+
+void blink(char on) {
+	char command = 5;
+	if (!on)
+		command += 20;
+	graphicCommand(command);	
+}
+
+void reverse(char on) {
+	char command = 7;
+	if (!on)
+		command += 20;
+	graphicCommand(command);
+}
+
+unsigned char strlen(char* string) {
+	unsigned char length = 0;
+	while(*string++ != '\0')
+		length++;
+	return length;
+}
+
+void drawTopBot(unsigned char x, unsigned char y, unsigned char width, unsigned char left, unsigned char right, unsigned char side) {
+	int i;
+	gotoxy(x,y);
+	printf("%c",left);
+	for (i=0;i<width;i++)
+		printf("%c",side);
+	printf("%c",right);
+}
+
+void drawSides(unsigned char x1, unsigned char y1, unsigned char x2, unsigned char y2, unsigned char side) {
+	int i, j;
+	for (i=y1+1;i<y2;i++) {
+		gotoxy(x1,i);
+		printf("%c",side);
+		gotoxy(x2,i);
+		printf("%c",side);
+	}
+}
+
+void saveCursor() {
+	printf("%c[s", ESC);
+}
+
+void getSavedCursor() {
+	printf("%c[u", ESC);
+}
+
+void moveCursor(char dir, unsigned char n) {
+	printf("%c[%d%c", ESC, n, dir);
 }
 \end{lstlisting}
 
@@ -40,67 +181,2679 @@ public static void zoom() {
 \label{ascii}
 
 \underline{ascii.h}
+\begin{lstlisting}
+#ifndef _ascii_h_
+#define _ascii_h_
+
+extern rom const char titleAscii1[11][127];
+extern rom const char titleAscii2[11][127];
+extern rom const char menuAscii[10][78];
+extern rom const char easyAscii[8][24];
+extern rom const char mediumAscii[6][38];
+extern rom const char hardAscii[6][25];
+extern rom const char chuckAscii1[9][66];
+extern rom const char chuckAscii2[9][66];
+extern rom const char wheelAscii[30][85];
+
+extern rom const char gameOverAscii[8][75];
+extern rom const char amigoAscii[5][61];
+extern rom const char driveAscii[5][79];
+extern rom const char havNoBallsAscii[5][135];
+extern rom const char openEyesAscii[5][100];
+extern rom const char patienceAscii[5][115];
+extern rom const char notPassAscii[5][89];
+extern rom const char thereIsNoBallAscii[5][127];
+extern rom const char deadAscii[5][94];
+
+extern rom const char ladyAscii[81][73];
+extern rom const char chuckNorrisAscii[50][89];
+extern rom const char congratulationsAscii[8][126];
+extern rom const char nowTryAscii[5][108];
+extern rom const char onlyChuckAscii[5][158];
+extern rom const char chuckNorrisTextAscii[5][63];
+
+#endif
+\end{lstlisting}
+
 \underline{ascii.c}
+\begin{lstlisting}
+#include "ascii.h"
+
+rom const char titleAscii1[11][127] = {
+	"                                                                               )                           (                ) ",
+	"                                                                            ( /(         (                 )\\ )          ( /( ", 
+	"                                                                           )\\) )(        ))\\       (      (()/(      (   )\\())",
+	"                                                                          ((_) ()\\    ((()(_)(   ( )\\      /(_))     )\\ ((_)\\ ",
+	"                                                                          (_()_((_)    )\\ __ )\\  )((_)    (__))     ((_)  ((_)",
+	"                                                                          /\"      \\    (_)\"\"\\())((_) |    |\"  |     |\"  \\/\"  |",
+	"__________        _____.__                __________        .__  .__     |:        |    /    \\_) ||  |    ||  |      \\   \\  / ",
+	"\\______   \\ _____/ ____\\  |   ____ ___  __\\______   \\_____  |  | |  |    |_____/   )   /\' /\\  \\  |:  |    |:  |       \\\\  \\/  ",
+	" |       _// __ \\   __\\|  | _/ __ \\\\  \\/  /|    |  _/\\__  \\ |  | |  |     //      /   //  __\'  \\  \\  |___  \\  |___    /   /   ",
+	" |    |   \\  ___/|  |  |  |_\\  ___/ >    < |    |   \\ / __ \\|  |_|  |__  |:  __   \\  /   /  \\\\  \\( \\_|:  \\( \\_|:  \\  /   /    ",
+	" |____|_  /\\___  >__|  |____/\\___  >__/\\_ \\|______  /(____  /____/____/  |__|  \\___)(___/    \\___)\\_______)\\_______)|___/     ",
+};
+
+rom const char titleAscii2[11][127] = {
+	"                                                                               (                           )                ( ",
+	"                                                                            ) \\)         )                 (/ (          ) \\) ",
+	"                                                                           (/( ()        ((/       )      ))(\\)      )   (/)((",
+	"                                                                          ))_( )(/    )))()_()   ) (/      \\)_((     (/ ))_(/ ",
+	"                                                                          )_)(_))_(    (/ __ (/  ())_(    )__((     ))_(  ))_(",
+	"                                                                          /\"      \\    )_(\"\"\\)(())_( |    |\"  |     |\"  \\/\"  |",
+	"__________        _____.__                __________        .__  .__     |:        |    /    \\_( ||  |    ||  |      \\   \\  / ",
+	"\\______   \\ _____/ ____\\  |   ____ ___  __\\______   \\_____  |  | |  |    |_____/   )   /\' /\\  \\  |:  |    |:  |       \\\\  \\/  ",
+	" |       _// __ \\   __\\|  | _/ __ \\\\  \\/  /|    |  _/\\__  \\ |  | |  |     //      /   //  __\'  \\  \\  |___  \\  |___    /   /   ",
+	" |    |   \\  ___/|  |  |  |_\\  ___/ >    < |    |   \\ / __ \\|  |_|  |__  |:  __   \\  /   /  \\\\  \\( \\_|:  \\( \\_|:  \\  /   /    ",
+	" |____|_  /\\___  >__|  |____/\\___  >__/\\_ \\|______  /(____  /____/____/  |__|  \\___)(___/    \\___)\\_______)\\_______)|___/     ",
+};
+
+rom const char menuAscii[10][78] = {
+	"                  /$$      /$$ /$$$$$$$$ /$$   /$$ /$$   /$$                 ",
+	"                 | $$$    /$$$| $$_____/| $$$ | $$| $$  | $$                 ",
+	"                 | $$$$  /$$$$| $$      | $$$$| $$| $$  | $$                 ",
+	"                 | $$ $$/$$ $$| $$$$$   | $$ $$ $$| $$  | $$                 ",
+	"                 | $$  $$$| $$| $$__/   | $$  $$$$| $$  | $$                 ",
+	"                 | $$\\  $ | $$| $$      | $$\\  $$$| $$  | $$                 ",
+	"                 | $$ \\/  | $$| $$$$$$$$| $$ \\  $$|  $$$$$$/                 ",
+	"                 |__/     |__/|________/|__/  \\__/ \\______/                  ",
+	" /$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$",
+	"|___________________________________________________________________________/",
+};
+
+rom const char easyAscii[8][24] = {
+	" ______                ",
+ 	"|  ____|               ",
+ 	"| |__   __ _ ___ _   _ ",
+ 	"|  __| / _` / __| | | |",
+ 	"| |___| (_| \\__ \\ |_| |",
+ 	"|______\\__,_|___/\\__, |",
+    "                  __/ |",
+    "                 |___/ ",
+};
+
+rom const char mediumAscii[6][38] = {
+	" __  __          _ _                 ",
+	"|  \\/  |        | (_)                ",
+	"| \\  / | ___  __| |_ _   _ _ __ ___  ",
+	"| |\\/| |/ _ \\/ _` | | | | | \'_ ` _ \\ ",
+	"| |  | |  __/ (_| | | |_| | | | | | |",
+	"|_|  |_|\\___|\\__,_|_|\\__,_|_| |_| |_|",
+};
+
+rom const char hardAscii[6][25] = {
+	" _    _               _ ",
+	"| |  | |             | |",
+	"| |__| | __ _ _ __ __| |",
+	"|  __  |/ _` | \'__/ _` |",
+	"| |  | | (_| | | | (_| |",
+	"|_|  |_|\\__,_|_|  \\__,_|",
+};
+
+rom const char chuckAscii1[9][66] = {
+	"   (       )                          )                          ",
+	"   )\\    ( /(                 )    ( /(     )    *               ",
+	" (((_)   )\\())         (   ( /(   ((_))\\ ( /(  (  `     (        ",
+	" )\\_____((_)\\    (     )\\ _)\\())  (_()(_))\\()) )\\))(    )\\    )  ",
+	"((/ ____| |()(   )\\  (((_) (_)\\   | \\ | |(_)\\ ((_)()\\  ((_)  /(  ",
+	" | |    | ((_) _ ((_))\\__| |((_)  |  \\| | ((_)(_()((_)__ _ _(_)) ",
+	" | |    | \'_ \\| | | |/ __| |/ /   | . ` |/ _ \\| \'__| \'__| / __/( ",
+	" | |____| | | | |_| | (__|   <    | |\\  | (_) | |  | |  | \\__ \\))",
+	"  \\_____|_| |_|\\__,_|\\___|_|\\_\\   |_| \\_|\\___/|_|  |_|  |_|___/  ",
+};
+
+rom const char chuckAscii2[9][66] = {
+	"   )       (                          (                          ",
+	"   (/    ) \\)                 (    ) \\)     )   *                ",
+	" )))_(   (\\)((         )   ) \\)   ))_((\\ ) \\)  )   `    )        ",
+	" (/_____))_(/    )     (/ _(/)((  )_)()_((/)(( (/(()    (/    (  ",
+	"))\\ ____| |)()   )/  )))_( )_(/   | \\ | |)_(/ ))_()(/  ))_(  \\)  ",
+	" | |    | ))_( _ ))_((/__| |))_(  |  \\| | ))_()_)())_(__ _ _)_(( ",
+	" | |    | \'_ \\| | | |/ __| |/ /   | . ` |/ _ \\| \'__| \'__| / __/) ",
+	" | |____| | | | |_| | (__|   <    | |\\  | (_) | |  | |  | \\__ \\((",
+	"  \\_____|_| |_|\\__,_|\\___|_|\\_\\   |_| \\_|\\___/|_|  |_|  |_|___/  ",
+};
+
+rom const char wheelAscii[30][85] = {
+	"     Left   ____-------         ------____    Right                                 ",
+	"        ___/                              \\___                                      ",
+	"     __/           /////////\\\\\\\\\\\\\\\\          \\__                                   ",
+	"    /         /////                 \\\\\\\\\\\\        \\                                 ",
+	"  <-        ///    /////////\\\\\\\\\\\\\\\\    \\\\\\        ->                               ",
+	"         //    ////                 \\\\\\\\    \\\\                                      ",
+	"       //  ////                          \\\\    \\\\                                   ",
+	"     //   //                               \\\\    \\\\                                 ",
+	"    /    /                                   \\\\    \\                                ",
+	"  //    /                                      \\    \\                               ",
+	" /     /                                        \\    \\                              ",
+	"|     /                 ________                \\     \\                             ",
+	"|     \\\\_________///////        \\\\\\\\\\\\_________//      |                            ",
+	"|                                                      |      //////\\\\\\\\\\\\          ",
+	"|         |----------|            |----------|         |    //            \\\\        ",
+	"|          \\   Enter (            )  Enter  /          |   /                \\      ^",
+	"|           \\\\       (            )       //           |  |                  | Up  |",
+	"|             \\\\_____|            |_____//             |  |                  |     |",
+	"|     _________                          _________     |   \\\\              //      |",
+	"|    |         \\\\\\                    ///         |    |     \\\\\\        ///         ",
+	" \\   \\            \\\\                //           /    /         \\\\    //            ",
+	" \\    \\             \\              /            /     /           |  |              ",
+	"  \\    \\\\            \\            /            /     /            |  |             |",
+	"   \\\\    \\            \\          /            /    //           __|  |__           |",
+	"     \\    \\\\           |        |           //    /          ///        \\\\\\   Down |",
+	"      \\\\    \\\\\\        |        |        ///    //          |              |       v",
+	"        \\\\     \\\\\\\\____|        |____////    ///             \\____________/         ",
+	"          \\\\\\                             ///                                       ",
+	"             \\\\\\\\\\\\                 //////                                          ",
+	"                   \\\\\\\\\\\\\\\\\\////////                                                ",
+};
+
+rom const char gameOverAscii[8][75] = {
+	"      _____          __  __ ______    ______      ________ _____  _       ",
+	"     / ____|   /\\   |  \\/  |  ____|  / __ \\ \\    / /  ____|  __ \\| |      ",
+	"    | |  __   /  \\  | \\  / | |__    | |  | \\ \\  / /| |__  | |__) | |      ",
+	"    | | |_ | / /\\ \\ | |\\/| |  __|   | |  | |\\ \\/ / |  __| |  _  /| |      ",
+	"    | |__| |/ ____ \\| |  | | |____  | |__| | \\  /  | |____| | \\ \\|_|      ",
+	"     \\_____/_/    \\_\\_|  |_|______|  \\____/   \\/   |______|_|  \\_(_)      ",
+	" ________________________________________________________________________ ",
+	"|________________________________________________________________________|",
+};
+
+rom const char amigoAscii[5][61] = {
+	" ___          _   _         _                  _          _ ",
+	"| _ ) __ _ __| | | |_  _ __| |__    __ _ _ __ (_)__ _ ___| |",
+	"| _ \\/ _` / _` | | | || / _| / /_  / _` | \'  \\| / _` / _ \\_|",
+	"|___/\\__,_\\__,_| |_|\\_,_\\__|_\\_( ) \\__,_|_|_|_|_\\__, \\___(_)",
+	"                                |/               |___/      ",
+};
+
+rom const char driveAscii[5][79] = {
+	"  ___                                                   _     _         _ ___ ",
+	" / __|__ _ _ _    _  _ ___ _  _   _____ _____ _ _    __| |_ _(_)_ _____| |__ \\",
+	"| (__/ _` | \' \\  | || / _ \\ || | / -_) V / -_) \' \\  / _` | \'_| \\ V / -_)_| /_/",
+	" \\___\\__,_|_||_|  \\_, \\___/\\_,_| \\___|\\_/\\___|_||_| \\__,_|_| |_|\\_/\\___(_)(_) ",
+	"                  |__/                                                        ",
+};
+
+rom const char havNoBallsAscii[5][135] = {
+	" ___                _        _   _    _                                            _                              _          _ _    _ ",
+	"| __|_ _____ _ _   (_)_ _   | |_| |_ (_)___  __ _ __ _ _ __  ___   _  _ ___ _  _  | |_  __ ___ _____   _ _  ___  | |__  __ _| | |__| |",
+	"| _|\\ V / -_) \' \\  | | \' \\  |  _| \' \\| (_-< / _` / _` | \'  \\/ -_) | || / _ \\ || | | \' \\/ _` \\ V / -_) | \' \\/ _ \\ | \'_ \\/ _` | | (_-<_|",
+	"|___|\\_/\\___|_||_| |_|_||_|  \\__|_||_|_/__/ \\__, \\__,_|_|_|_\\___|  \\_, \\___/\\_,_| |_||_\\__,_|\\_/\\___| |_||_\\___/ |_.__/\\__,_|_|_/__(_)",
+	"                                             |___/                  |__/                                                              ",
+};
+
+rom const char openEyesAscii[5][100] = {
+	"  ___                                                                      _     _   _           _ ",
+	" / _ \\ _ __  ___ _ _    _  _ ___ _  _ _ _   ___ _  _ ___ ___  _ _  _____ _| |_  | |_(_)_ __  ___| |",
+	"| (_) | \'_ \\/ -_) \' \\  | || / _ \\ || | \'_| / -_) || / -_|_-< | \' \\/ -_) \\ /  _| |  _| | \'  \\/ -_)_|",
+	" \\___/| .__/\\___|_||_|  \\_, \\___/\\_,_|_|   \\___|\\_, \\___/__/ |_||_\\___/_\\_\\\\__|  \\__|_|_|_|_\\___(_)",
+	"      |_|               |__/                    |__/                                               ",
+};
+
+rom const char patienceAscii[5][115] = {
+	" ___      _   _                                                                         _                       _ ",
+	"| _ \\__ _| |_(_)___ _ _  __ ___     _ __ _  _   _  _ ___ _  _ _ _  __ _   _ __  __ _ __| |__ ___ __ ____ _ _ _ | |",
+	"|  _/ _` |  _| / -_) \' \\/ _/ -_)_  | \'  \\ || | | || / _ \\ || | \' \\/ _` | | \'_ \\/ _` / _` / _` \\ V  V / _` | \' \\|_|",
+	"|_| \\__,_|\\__|_\\___|_||_\\__\\___( ) |_|_|_\\_, |  \\_, \\___/\\_,_|_||_\\__, | | .__/\\__,_\\__,_\\__,_|\\_/\\_/\\__,_|_||_(_)",
+	"                               |/        |__/   |__/              |___/  |_|                                      ",
+};
+
+rom const char notPassAscii[5][89] = {
+	" _____ _          _          _ _      _         _ _            _                      _ ",
+	"|_   _| |_  ___  | |__  __ _| | |  __| |_  __ _| | |  _ _  ___| |_   _ __  __ _ _____| |",
+	"  | | | \' \\/ -_) | \'_ \\/ _` | | | (_-< \' \\/ _` | | | | \' \\/ _ \\  _| | \'_ \\/ _` (_-<_-<_|",
+	"  |_| |_||_\\___| |_.__/\\__,_|_|_| /__/_||_\\__,_|_|_| |_||_\\___/\\__| | .__/\\__,_/__/__(_)",
+	"                                                                    |_|                 ",
+};
+
+rom const char thereIsNoBallAscii[5][127] = {
+	" ___          _ _          _   _          _            _   _        _   _                  _                 _          _ _ _ ",
+	"| _ \\___ __ _| (_)______  | |_| |_  ___  | |_ _ _ _  _| |_| |_     | |_| |_  ___ _ _ ___  (_)___  _ _  ___  | |__  __ _| | | |",
+	"|   / -_) _` | | |_ / -_) |  _| \' \\/ -_) |  _| \'_| || |  _| \' \\ _  |  _| \' \\/ -_) \'_/ -_) | (_-< | \' \\/ _ \\ | \'_ \\/ _` | | |_|",
+	"|_|_\\___\\__,_|_|_/__\\___|  \\__|_||_\\___|  \\__|_|  \\_,_|\\__|_||_( )  \\__|_||_\\___|_| \\___| |_/__/ |_||_\\___/ |_.__/\\__,_|_|_(_)",
+	"                                                               |/                                                             ",
+};
+
+rom const char deadAscii[5][94] = {
+	"__   __                            _             _                  __     _             _ _ ",
+	"\\ \\ / /__ _  _   __ _ _ _ ___   __| |___ __ _ __| |    _ __ _  _   / _|_ _(_)___ _ _  __| | |",
+	" \\ V / _ \\ || | / _` | \'_/ -_) / _` / -_) _` / _` |_  | \'  \\ || | |  _| \'_| / -_) \' \\/ _` |_|",
+	"  |_|\\___/\\_,_| \\__,_|_| \\___| \\__,_\\___\\__,_\\__,_( ) |_|_|_\\_, | |_| |_| |_\\___|_||_\\__,_(_)",
+	"                                                  |/        |__/                             ",
+};
+
+rom const char ladyAscii[81][73] = {
+	"                            . ...                                       ",
+	"                         .\'\'.\' .    \'.                                  ",
+	"                    . \'\' \".\'.:I:.\'..  \'.                                ",
+	"                  .\'.:.:..,,:II:\'.\'.\'.. \'.                              ",
+	"                .\':.\'.:.:I:.:II:\'.\'.\'.\'.. \'.                            ",
+	"              .\'.\'.\'.\'::.:.:.:I:\'.\'.\'.\'. .  \'                           ",
+	"             ..\'.\'.\'.:.:I::.:II:.\'..\'.\'..    .                          ",
+	"            ..\'.\'\':.:.::.:.::II::.\'.\'.\'.\'..   .                         ",
+	"           ..\'.\'.\'.:.::. .:::II:..\'.\'.\'.\'.\'.   .                        ",
+	"          .\':.\'\'.\':\'.\'.\'.:.:I:\'.\'.\'.\'.\'.. \'..  ..                       ",
+	"          \':. \'.\':\'. ..:.::.::.:.\'..\'  \':.\'.\'.. ..                      ",
+	"         .:.:.\':\'.   \'.:\':I:.:.. .\'.\'.  \': .\'.. . ..                    ",
+	"         \'..:.:\'.   .:.II:.:..   . .:.\'. \'.. \'. .  ..                   ",
+	"        .. :.:.\'.  .:.:I:.:. .  . ..:..:. :..\':. .  \'.                  ",
+	"       .:. :.:.   .:.:I:.:. .    . ..:I::. :: ::  .. ..                 ",
+	"       .. :\'.\'.:. .:.:I:\'.        ..:.:I:. :: ::.   . \'.                ",
+	"       \'..:. .:.. .:II:\'         ,,;IIIH.  ::. \':.      .               ",
+	"      .:.::\'.:::..:.AII;,      .::\",,  :I .::. \':.       .              ",
+	"      :..:\'.:II:.:I:  ,,;\'   \' .;:FBT\"X:: ..:.. \':.    . .              ",
+	"     .. :\':III:. :.:A\"PBF;.  . .P,IP;;\":: :I:..\'::. .    ..             ",
+	"     . .:.:II: A.\'.\';,PP:\" .  . ..\'..\' .: :.::. \':...  . ..             ",
+	"     . .: .:IIIH:.   \' \'.\' .  ... .    .:. :.:.. :...    .\'             ",
+	"     . .I.::I:IIA.        ..   ...    ..::.\'.\'.\'.: ..  . .              ",
+	"      .:II.\'.\':IA:.      ..    ..:.  . .:.: .\'\'.\'  ..  . .              ",
+	"     ..::I:,\'.\'::A:.  . .:\'-, .-.:..  .:.::AA.. ..:.\' .. .              ",
+	"      \':II:I:.  \':A:. ..:\'   \'\'.. . : ..:::AHI: ..:..\'.\'.               ",
+	"     .\':III.::.   \'II:.:.,,;;;:::::\". .:::AHV:: .::\'\' ..                ",
+	"     ..\":IIHI::. .  \"I:..\":;,,,,;;\". . .:AII:: :.:\'  . .                ",
+	"     . . IIHHI:..\'.\'.\'V::. \":;;;\"   ...:AIIV:\'.:.\'  .. .                ",
+	"      . . :IIHI:. .:.:.V:.   \' \' . ...:HI:\' .:: :. .  ..                ",
+	"      . .  \':IHII:: ::.IA..      .. .A .,,:::\' .:.    .                 ",
+	"      :.  ...\'I:I:.: .,AHHA, . .\'..AHIV::\' . .  :     ..                ",
+	"      :. \'.::::II:.I:.HIHHIHHHHHIHHIHV:\'..:. .I.\':. ..  \'.              ",
+	"   . . .. \'\':::I:\'.::IHHHHHHHHMHMHIHI. \'.\'.:IHI..  \'  \'  \'.             ",
+	"    \':... .  \'\'\" .::\'.HMHI:HHHHMHHIHI. :IIHHII:. . . .    .             ",
+	"     :.:.. . ..::.\' .IV\".:I:IIIHIHHIH. .:IHI::\'.\': \'..  .  .            ",
+	"   . .:.:: .. ::\'.\'.\'..\':.::I:I:IHHHIA.\'.II.:...:\' .\' ... . \'..         ",
+	"  \'..::::\' ...::\'.IIHII:: .:.:..:..:III:.\'::\' .\'    .    ..  . .        ",
+	"  \'::.:\' .\'\'     .. :IIHI:.:.. ..: . .:I:\"\' ...:.:.  ..    .. ..        ",
+	"     .:..::I:.  . . . .IHII:.:\'   .. ..\".::.:II:.:. .  ...   . ..       ",
+	"  .. . .::.:.,,...-::II:.:\'    . ...... . .. .:II:.::  ...  .. ..       ",
+	"   ..:.::.I .    . . .. .:. .... ...:.. . . ..:.::.   :..   . ..        ",
+	"    .\'.::I:.      . .. ..:.... . ..... .. . ..::. .. .I:. ..\' .         ",
+	"  .\'\':.: I.       . .. ..:.. .  . .. ..... .:. .:.. .:I.\'.\'\'..          ",
+	"  . .:::I:.       . . .. .:. .    .. ..  . ... .:.\'.\'I\'  .  ...         ",
+	"  . ::.:I:..     . . . ....:. . .   .... ..   .:...:.:.:. \'\'.\'\'         ",
+	"  \'.\'::\'I:.       . .. ....:. .     .. . ..  ..\'  .\'.:..:..    \'        ",
+	"        :. .     . .. .. .:.... .  .  .... ...   .  .:.:.:..    \'.      ",
+	"        :.      .  . . .. .:.... . . ........       .:.:.::. .    .     ",
+	"        :. .     . . . . .. .::..:  . ..:.. .        ::.:.:.. .    .    ",
+	"        :.. .    . . .  . .. ..:.:  .. .. .:. ..     \':::.::.:. .   .   ",
+	"        \':.. .  . . . .. .. ...::\' .. ..  . .:. .     V:I:::::.. .   :. ",
+	"         ::. .  . .. .. ... .:.::  .. .  . .. .. .     VI:I:::::..   \'\'B",
+	"          :.. .   . .. ..:.. ..I:... . .  . .. ... .    VII:I:I:::. .\'::",
+	"          \':.. . . . .. ..:..:.:I:.:. .  . .. . .:. .    VHIII:I::.:..\':",
+	"           ::..   . . .. ..:..:.HI:. .      . . .... .   :HHIHIII:I::..:",
+	"           \':. .  . .. .. ..:.:.:HI:.    . . .. ..... .   HHHHIHII:I::.\'",
+	"            :.. .  . . .. .:.:.:.HI:.      . . .. ... .   IHHHHIHHIHI:\' ",
+	"             :..  .  . . .. ..:..IH:.     . . .. .. ,,, . \'HHHHHHHHI:\'  ",
+	"             \':..   . . .. ..:.:.:HI..   .  . .. . :::::.  MIH:\"\"\"\'     ",
+	"              :. . .  . .. ..::.:.VI:.     . . .. .:::\'::. HIH          ",
+	"               :..  .  . .. .:.:.:.V:.    . . . ...::I\"A:. HHV          ",
+	"                :. .  .  . .. ..:.:.V:.     . . ....::I::\'.HV:          ",
+	"                 :. .  . . . .. .:..II:.  . . . ....\':::\' AV.\'          ",
+	"                  :.. . . .. ... .:..VI:. . . .. .:. ..:.AV\'.           ",
+	"                  \':.. . .  .. ..:.:.:HAI:.:...:.:.:.:.AII:.            ",
+	"                   I:. .  .. ... .:.:.VHHII:..:.:..:A:\'.:..             ",
+	"                   IA..  . . .. ..:.:.:VHHHHIHIHHIHI:\'.::.              ",
+	"                   \'HA:.  . . .. ..:.:.:HHHIHIHHHIHI:..:.               ",
+	"                    HIA: .  . . .. ...:.VHHHIHIIHI::.:...               ",
+	"                    HIHI:. .  .. ... .::.HHHIIHIIHI:::..                ",
+	"                    HII:.:.  .  .. ... .::VHHIHI:I::.:..                ",
+	"                    AI:..:..  .  . .. ..:.VHIII:I::.:. .                ",
+	"                   AI:. ..:..  .  . .. ..\' VHIII:I;... .                ",
+	"                  AI:. .  .:.. .  .  . ...  VHIII::... .                ",
+	"                .A:. .      :.. .  . .. .:.. VHII::..  .                ",
+	"               A:. . .       ::. .. .. . .:.. \"VHI::.. .                ",
+	"             .:.. .  .        :.. .:..... .::.. VHI:..                  ",
+	"            ... . .  .     . . :.:. ..:. . .::.. VI:..  .               ",
+	"           .. .. .  .    . . ...:... . .. . .:::. V:..  .               ",
+	"          \'.. ..  .   .  .. ..:::.... .:. . ..::.. V..  .               ",
+};
+
+rom const char congratulationsAscii[8][126] = {
+	"   _____                            _         _       _   _                  __     __          __          ______  _   _ _  ",
+	"  / ____|                          | |       | |     | | (_)                 \\ \\   / /          \\ \\        / / __ \\| \\ | | | ",
+	" | |     ___  _ __   __ _ _ __ __ _| |_ _   _| | __ _| |_ _  ___  _ __  ___   \\ \\_/ /__  _   _   \\ \\  /\\  / / |  | |  \\| | | ",
+	" | |    / _ \\| \'_ \\ / _` | \'__/ _` | __| | | | |/ _` | __| |/ _ \\| \'_ \\/ __|   \\   / _ \\| | | |   \\ \\/  \\/ /| |  | | . ` | | ",
+	" | |___| (_) | | | | (_| | | | (_| | |_| |_| | | (_| | |_| | (_) | | | \\__ \\    | | (_) | |_| |    \\  /\\  / | |__| | |\\  |_| ",
+	"  \\_____\\___/|_| |_|\\__, |_|  \\__,_|\\__|\\__,_|_|\\__,_|\\__|_|\\___/|_| |_|___/    |_|\\___/ \\__,_|     \\/  \\/   \\____/|_| \\_(_) ",
+	" __________________  __/ | _________________________________________________________________________________________________ ",
+	"|__________________ |___/ __________________________________________________________________________________________________|",
+};
+
+rom const char nowTryAscii[5][108] = {
+	" _  _              _               ___ _           _     _  _             _                    _       _ _ ",
+	"| \\| |_____ __ __ | |_ _ _ _  _   / __| |_ _  _ __| |__ | \\| |___ _ _ _ _(_)___  _ __  ___  __| |___  | | |",
+	"| .` / _ \\ V  V / |  _| \'_| || | | (__| \' \\ || / _| / / | .` / _ \\ \'_| \'_| (_-< | \'  \\/ _ \\/ _` / -_) |_|_|",
+	"|_|\\_\\___/\\_/\\_/   \\__|_|  \\_, |  \\___|_||_\\_,_\\__|_\\_\\ |_|\\_\\___/_| |_| |_/__/ |_|_|_\\___/\\__,_\\___| (_|_)",
+	"                           |__/                                                                            ",
+};
+
+rom const char chuckNorrisTextAscii[5][63] = {
+	"   ________               __      _   __                _     ",
+	"  / ____/ /_  __  _______/ /__   / | / /___  __________(_)____",
+	" / /   / __ \\/ / / / ___/ //_/  /  |/ / __ \\/ ___/ ___/ / ___/",
+	"/ /___/ / / / /_/ / /__/ ,<    / /|  / /_/ / /  / /  / (__  ) ",
+	"\\____/_/ /_/\\__,_/\\___/_/|_|  /_/ |_/\\____/_/  /_/  /_/____/  ",
+};
+
+rom const char chuckNorrisAscii[50][89] = {
+  "                                    MMMMMMMMMMM                                         ",
+  "                                 MMMMMMMMMMMMMMMMM                                      ",
+  "                             NMMMMMMMMMMMMMMMMMMMMMMMM                                  ",
+  "                           MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM                              ",
+  "                          MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMN                          ",
+  "                          MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM                         ",
+  "                         MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM                        ",
+  "                         MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMD                       ",
+  "                        DMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM                       ",
+  "                        MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM                       ",
+  "                        MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM                       ",
+  "                       MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM                      ",
+  "                       MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM                      ",
+  "                      MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMN                     ",
+  "                      MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMN         ",
+  "                     MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMN     ",
+  "                     MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMN   ",
+  "NM                  MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM  ",
+  "MMMMM              MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM ",
+  " MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM",
+  "  MMMMMMMMMMMMMMMMMMMMMMMMMM8MMMMMMMMMIMMMMM8,. ...........OMMMMMMMMMMMMMMMMMMMMMMMMMMMM",
+  "     MMMMMMMMMMMMMMMMMMMMMMM ..N. .....~MMMM...............:MMMMNMMMMMMMMMMMMMMMMMMMMMMM",
+  "       NMMMMMMMMMMMMMMMMMMMMM.....:..DMMMMMNZ Z.... .......M$MMMMMMMMMMMMMMMMMMMMMMMMMMM",
+  "           MMMMMMMMMMNMMMMMMM....... 7=MMMMMMO....Z .......MM7MMMMMMMMMMMMMMMMMMMMMMMMM ",
+  "              MMMMMMMMMMMMMMMMM  Z...MMMZ .. .,M..,........MMMMMMMMMMMMMMMMMMMMMMMMMMMM ",
+  "                  MMMMMM.......DOM ....N7..................MMMMMMMMMMMMMMMMMMMMMMMMMMM  ",
+  "                     MMM....... M. ... .  ... ..............M...$MMMMMMMMMMMMMMMMMMMM   ",
+  "                       ........... ........~. ..............M..=....+MMMMMMMMMMMMMM     ",
+  "                       ......+.NMI~........ . ..............M.,.I...MMMMMMMMMMMMMMN     ",
+  "                       ......$... ...... O..................,.....$MMMMMMMMMMMMN        ",
+  "                       .....M.......... M M.. .............. 8  .OMMMMMMMMMMMN          ",
+  "                        ..=7I,,.,,IMI...M.................. ..MMMMMMMMMMM               ",
+  "                        ....DMMMMMMMMMMMMMMMO..............D...MMMMMMMMM                ",
+  "                         .MMMMMMMMMMMMMMDDMM:,N..............DMMMMMMMMMMM               ",
+  "                         NMMMMMNMM8 . .... ...,~............  MMMMMMMMM                 ",
+  "                         MMMMM,:......::~..M8M8MM...............MMMMMM                  ",
+  "                         MMMM ... . .........,MM..............MMMMMO$                   ",
+  "                         MMMMM... =.=. .. . . MM ....... . ...MMMMMMM                   ",
+  "                          NMMMMMMMMMM?  ..O.?NM7 ....... ......MMMMMM                   ",
+  "                           NMMMMMMMMMMMMMMMMM........  $ . ...MMMNMMM                   ",
+  "                            MMMMMMMMMMMMMMM.........,, ......MMMMMMMM                   ",
+  "                             OMMMMMMMM8 , .. .. .,N.... ...:MMMMMMMMMMN                 ",
+  "                              MMMMMMMM?N. ...~MD.:MNI8MMMMMMMMMMMMMMMMMN                ",
+  "                         MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMN              ",
+  "                      NMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMN             ",
+  "                     MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMN        ",
+  "                  MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM     ",
+  "               MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM    ",
+  "              NMMMMMMMMMMMMNMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM  ",
+  "             MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM ",
+};
+
+rom const char onlyChuckAscii[5][158] = {
+	"   ___       _         ___ _           _     _  _             _             _            ___ _           _     _  _             _                    _     _ ",
+	"  / _ \\ _ _ | |_  _   / __| |_ _  _ __| |__ | \\| |___ _ _ _ _(_)___ __ __ _(_)_ _  ___  / __| |_ _  _ __| |__ | \\| |___ _ _ _ _(_)___  _ __  ___  __| |___| |",
+	" | (_) | \' \\| | || | | (__| \' \\ || / _| / / | .` / _ \\ \'_| \'_| (_-< \\ V  V / | \' \\(_-< | (__| \' \\ || / _| / / | .` / _ \\ \'_| \'_| (_-< | \'  \\/ _ \\/ _` / -_)_|",
+	"  \\___/|_||_|_|\\_, |  \\___|_||_\\_,_\\__|_\\_\\ |_|\\_\\___/_| |_| |_/__/  \\_/\\_/|_|_||_/__/  \\___|_||_\\_,_\\__|_\\_\\ |_|\\_\\___/_| |_| |_/__/ |_|_|_\\___/\\__,_\\___(_)",
+	"               |__/                                                                                                                                          ",
+};
+\end{lstlisting}
+
 
 \section{asciidisplay}
 \label{asciidisplay}
 
 \underline{asciidisplay.h}
+\begin{lstlisting}
+#ifndef _asciidisplay_h_
+#define _asciidisplay_h_
+
+extern unsigned char x1, y1, x2, y2;
+
+// Public
+unsigned char strlen_rom(rom const char *string);
+void printAscii(rom const char *str, unsigned char size);
+void printAsciiXY(rom const char *str, unsigned char size, unsigned char x, unsigned char y);
+void initStartMenu(unsigned char x1, unsigned char y1, unsigned char x2, unsigned char y2);
+unsigned char startMenu();
+void printMenu();
+unsigned char updateMenu();
+void showWon();
+void showGameOver();
+
+// Private
+void clearMenuBall(unsigned char x, unsigned char y);
+void drawMenuBall(unsigned char x, unsigned char y);
+void moveBall(char dir);
+void calculateDifficulty();
+
+#endif
+\end{lstlisting}
+
 \underline{asciidisplay.c}
+\begin{lstlisting}
+#include <eZ8.h>             // special encore constants, macros and flash routines
+#include <sio.h>             // special encore serial i/o routines
+#include "asciidisplay.h"
+#include "ansi.h"
+#include "LED.h"
+#include "time.h"
+#include "buttons.h"
+#include "gameport.h"
+#include "ascii.h"
+#include "reflexball.h"
+
+const unsigned char ballMenuYPos[4] = { 40, 48, 55, 64 };
+const unsigned char ballXPos = 85;
+unsigned char ballY, lastBallY;
+
+unsigned char menuState;
+unsigned long timer;
+unsigned char oldButtonsWheel, oldButtonsBoard;
+
+unsigned char xMin, yMin, xMax, yMax;
+
+const char *startString = "Press any key to continue";
+
+unsigned char strlen_rom(rom const char *string) {
+	unsigned char length = 0;
+	while ((char)*string++ != '\0')
+		length++;
+	return length;
+}
+
+void printAscii(rom const char *str, unsigned char size) {	
+	unsigned char i;
+
+	for (i=1;i<=size;i++) {
+		getSavedCursor();
+		moveCursor(DOWN,i);
+		while ((char)*str != '\0')
+			printf("%c",*str++);
+		str++;		
+	}
+	getSavedCursor();
+	moveCursor(DOWN,size);
+	saveCursor();
+}
+
+void printAsciiXY(rom const char *str, unsigned char size, unsigned char x, unsigned char y) {
+	unsigned char i, length = strlen_rom(str);	
+	for (i=0;i<size;i++) {
+		gotoxy(x,y+i);
+		while ((char)*str != '\0')
+			printf("%c",*str++);
+		str++;
+	}
+	moveCursor(BACK,length);
+}
+
+void clearMenuBall(unsigned char x, unsigned char y) {
+	gotoxy(x,y);
+	printf("    ");
+	gotoxy(x,y+1);
+	printf("    ");
+}
+
+void drawMenuBall(unsigned char x, unsigned char y) {
+	const unsigned char top = 238, bottom = 95, slash = '/', backSlash = '\\';
+
+	clearMenuBall(ballXPos,lastBallY);
+
+	lastBallY = y;
+
+	gotoxy(x,y);
+	printf("%c%c%c%c",slash,top,top,backSlash);
+	gotoxy(x,y+1);
+	printf("%c%c%c%c",backSlash,bottom,bottom,slash);
+}
+
+void moveBall(char dir) {	
+	if (ballY + dir >= sizeof(ballMenuYPos) || ballY + dir < 0)
+		return;
+
+	ballY += dir;
+	drawMenuBall(ballXPos,ballMenuYPos[ballY]);
+}
+
+void showWon() {
+	const char* highscoreString = "Good try! But the highscore is still held by:";
+	clrscr();
+	if (divider == 1) { // Chuck Norris mode		
+		printAsciiXY(chuckNorrisAscii[0],sizeof(chuckNorrisAscii)/sizeof(chuckNorrisAscii[0]),(xMin+xMax)/2-strlen_rom(chuckNorrisAscii[0])/2,(yMin+yMax)/2-(sizeof(chuckNorrisAscii)/sizeof(chuckNorrisAscii[0]))/2-10);
+		moveCursor(DOWN,1);
+		moveCursor(BACK,strlen_rom(onlyChuckAscii[0])/2-strlen_rom(chuckNorrisAscii[0])/2);
+		saveCursor();
+		printAscii(onlyChuckAscii[0],sizeof(onlyChuckAscii)/sizeof(onlyChuckAscii[0]));
+	} else {
+		gotoxy(0,0);
+		saveCursor();
+		printAscii(ladyAscii[0],sizeof(ladyAscii)/sizeof(ladyAscii[0]));
+
+		gotoxy((xMin+xMax)/2-strlen_rom(congratulationsAscii[0])/2+strlen_rom(ladyAscii[0])/2,20);		
+		saveCursor();
+		printAscii(congratulationsAscii[0],sizeof(congratulationsAscii)/sizeof(congratulationsAscii[0]));
+		moveCursor(DOWN,1);
+		moveCursor(FORWARD,strlen_rom(congratulationsAscii[0])/2-strlen_rom(nowTryAscii[0])/2);
+		saveCursor();
+		printAscii(nowTryAscii[0],sizeof(nowTryAscii)/sizeof(nowTryAscii[0]));
+		
+		moveCursor(DOWN,10);
+		moveCursor(FORWARD,strlen_rom(nowTryAscii[0])/2-strlen(highscoreString)/2);
+		blink(1);
+		printf("%s",highscoreString);
+		blink(0);
+		moveCursor(DOWN,1);
+		moveCursor(BACK,strlen(highscoreString)+strlen_rom(chuckNorrisTextAscii[0])/2-strlen(highscoreString)/2);
+		saveCursor();
+		printAscii(chuckNorrisTextAscii[0],sizeof(chuckNorrisTextAscii)/sizeof(chuckNorrisTextAscii[0]));
+	}
+
+	while (!getGameportButtons() && !readButtons() && !kbhit()); // Wait for button press
+}
+
+void showGameOver() {
+	clrscr();
+	printAsciiXY(gameOverAscii[0],sizeof(gameOverAscii)/sizeof(gameOverAscii[0]),(xMin+xMax)/2-strlen_rom(gameOverAscii[0])/2,(yMin+yMax)/2-(sizeof(gameOverAscii)/sizeof(gameOverAscii[0]))/2-5);
+	moveCursor(DOWN,1);
+	
+	switch (millis() & 0x7) { // Pseudo random number from 0-7
+		case 0:
+			if (strlen_rom(gameOverAscii[0]) > strlen_rom(amigoAscii[0]))
+				moveCursor(FORWARD,strlen_rom(gameOverAscii[0])/2-strlen_rom(amigoAscii[0])/2);
+			else
+				moveCursor(BACK,strlen_rom(amigoAscii[0])/2-strlen_rom(gameOverAscii[0])/2);
+			saveCursor();
+			printAscii(amigoAscii[0],sizeof(amigoAscii)/sizeof(amigoAscii[0]));
+			break;
+		case 1:
+			if (strlen_rom(gameOverAscii[0]) > strlen_rom(driveAscii[0]))
+				moveCursor(FORWARD,strlen_rom(gameOverAscii[0])/2-strlen_rom(driveAscii[0])/2);	
+			else
+				moveCursor(BACK,strlen_rom(driveAscii[0])/2-strlen_rom(gameOverAscii[0])/2);
+			saveCursor();
+			printAscii(driveAscii[0],sizeof(driveAscii)/sizeof(driveAscii[0])); // Center text below "Game Over!"
+			break;
+		case 2:
+			if (strlen_rom(gameOverAscii[0]) > strlen_rom(havNoBallsAscii[0]))
+				moveCursor(FORWARD,strlen_rom(gameOverAscii[0])/2-strlen_rom(havNoBallsAscii[0])/2);	
+			else
+				moveCursor(BACK,strlen_rom(havNoBallsAscii[0])/2-strlen_rom(gameOverAscii[0])/2);
+			saveCursor();
+			printAscii(havNoBallsAscii[0],sizeof(havNoBallsAscii)/sizeof(havNoBallsAscii[0])); // Center text below "Game Over!"
+			break;
+		case 3:
+			if (strlen_rom(gameOverAscii[0]) > strlen_rom(openEyesAscii[0]))
+				moveCursor(FORWARD,strlen_rom(gameOverAscii[0])/2-strlen_rom(openEyesAscii[0])/2);
+			else
+				moveCursor(BACK,strlen_rom(openEyesAscii[0])/2-strlen_rom(gameOverAscii[0])/2);
+			saveCursor();
+			printAscii(openEyesAscii[0],sizeof(openEyesAscii)/sizeof(openEyesAscii[0])); // Center text below "Game Over!"
+			break;
+		case 4:
+			if (strlen_rom(gameOverAscii[0]) > strlen_rom(patienceAscii[0]))
+				moveCursor(FORWARD,strlen_rom(gameOverAscii[0])/2-strlen_rom(patienceAscii[0])/2);	
+			else
+				moveCursor(BACK,strlen_rom(patienceAscii[0])/2-strlen_rom(gameOverAscii[0])/2);
+			saveCursor();
+			printAscii(patienceAscii[0],sizeof(patienceAscii)/sizeof(patienceAscii[0])); // Center text below "Game Over!"
+			break;
+		case 5:
+			if (strlen_rom(gameOverAscii[0]) > strlen_rom(notPassAscii[0]))
+				moveCursor(FORWARD,strlen_rom(gameOverAscii[0])/2-strlen_rom(notPassAscii[0])/2);	
+			else
+				moveCursor(BACK,strlen_rom(notPassAscii[0])/2-strlen_rom(gameOverAscii[0])/2);
+			saveCursor();
+			printAscii(notPassAscii[0],sizeof(notPassAscii)/sizeof(notPassAscii[0])); // Center text below "Game Over!"
+			break;
+		case 6:
+			if (strlen_rom(gameOverAscii[0]) > strlen_rom(thereIsNoBallAscii[0]))
+				moveCursor(FORWARD,strlen_rom(gameOverAscii[0])/2-strlen_rom(thereIsNoBallAscii[0])/2);	
+			else
+				moveCursor(BACK,strlen_rom(thereIsNoBallAscii[0])/2-strlen_rom(gameOverAscii[0])/2);
+			saveCursor();
+			printAscii(thereIsNoBallAscii[0],sizeof(thereIsNoBallAscii)/sizeof(thereIsNoBallAscii[0])); // Center text below "Game Over!"
+			break;
+		case 7:
+			if (strlen_rom(gameOverAscii[0]) > strlen_rom(deadAscii[0]))
+				moveCursor(FORWARD,strlen_rom(gameOverAscii[0])/2-strlen_rom(deadAscii[0])/2);	
+			else
+				moveCursor(BACK,strlen_rom(deadAscii[0])/2-strlen_rom(gameOverAscii[0])/2);
+			saveCursor();
+			printAscii(deadAscii[0],sizeof(deadAscii)/sizeof(deadAscii[0])); // Center text below "Game Over!"
+			break;
+	}
+	while (!getGameportButtons() && !readButtons() && !kbhit()); // Wait for button press
+}
+
+void initStartMenu(unsigned char newX1, unsigned char newY1, unsigned char newX2, unsigned char newY2) {
+	xMin = newX1;
+	yMin = newY1;
+	xMax = newX2;
+	yMax = newY2;
+	
+	blink(1);
+	gotoxy((xMin+xMax)/2-strlen(startString)/2,(yMin+yMax)/2-10);
+	printf("%s",startString);
+	blink(0);	
+
+	printAsciiXY(wheelAscii[0],sizeof(wheelAscii)/sizeof(wheelAscii[0]),(xMin+xMax)/2-strlen_rom(wheelAscii[0])/2,yMax-sizeof(wheelAscii)/sizeof(wheelAscii[0])-15);
+	
+	gotoxy((xMin+xMax)/2-strlen_rom(titleAscii1[0])/2,(yMin+yMax)/2-25);
+	saveCursor();
+	
+	timer = 0;
+}
+
+unsigned char startMenu() {
+	if (millis() - timer > 200) {
+		timer = millis();		
+
+		switch (menuState) {
+			case 0:
+				printAscii(titleAscii1[0],sizeof(titleAscii1)/sizeof(titleAscii1[0]));
+				moveCursor(UP,sizeof(titleAscii1)/sizeof(titleAscii1[0]));
+				saveCursor();
+				menuState = 1;
+				break;
+			 case 1:
+				printAscii(titleAscii2[0],sizeof(titleAscii2)/sizeof(titleAscii2[0]));
+				moveCursor(UP,sizeof(titleAscii2)/sizeof(titleAscii2[0]));
+				saveCursor();
+				menuState = 0;
+				break;
+		}
+	}
+
+	if (getGameportButtons()) {
+ 		oldButtonsWheel = getGameportButtons(); // Update oldButtons value, so it doesn't skip the next menu
+ 	    return 1;
+ 	} else if (readButtons()) {
+		oldButtonsWheel = readButtons(); // Update oldButtons value, so it doesn't skip the next menu
+ 	    return 1;
+	} else if (kbhit())
+		return 1;
+
+	return 0;
+}
+
+void printMenu() {		
+	printAsciiXY(menuAscii[0],sizeof(menuAscii)/sizeof(menuAscii[0]),(xMin+xMax)/2-strlen_rom(menuAscii[0])/2,(yMin+yMax)/2-15);
+
+	moveCursor(FORWARD,strlen_rom(menuAscii[0])/2-strlen_rom(chuckAscii1[0])/2+10);
+	moveCursor(DOWN,1);
+	saveCursor();
+
+	printAscii(easyAscii[0],sizeof(easyAscii)/sizeof(easyAscii[0]));
+	printAscii(mediumAscii[0],sizeof(mediumAscii)/sizeof(mediumAscii[0]));
+	moveCursor(DOWN,1);
+	saveCursor();
+	printAscii(hardAscii[0],sizeof(hardAscii)/sizeof(hardAscii[0]));
+	moveCursor(DOWN,1);
+	saveCursor();
+	
+	menuState = 0;
+	timer = 0;
+
+	ballY = lastBallY = 0;
+	drawMenuBall(ballXPos,ballMenuYPos[ballY]);
+}
+
+unsigned char updateMenu() {
+	int input;
+	unsigned char buttons, buttonsClick;
+
+	switch (menuState) {
+		case 0:
+			if (millis() - timer > 200) {
+				timer = millis();
+				printAscii(chuckAscii1[0],sizeof(chuckAscii1)/sizeof(chuckAscii1[0]));
+				moveCursor(UP,sizeof(chuckAscii1)/sizeof(chuckAscii1[0]));
+				saveCursor();
+				menuState = 1;
+			}
+			break;
+		 case 1:
+			if (millis() - timer > 200) {
+				timer = millis();
+				printAscii(chuckAscii2[0],sizeof(chuckAscii2)/sizeof(chuckAscii2[0]));
+				moveCursor(UP,sizeof(chuckAscii2)/sizeof(chuckAscii2[0]));
+				saveCursor();
+				menuState = 0;
+			}
+			break;
+	}
+	buttons = getGameportButtons();
+	if (buttons != oldButtonsWheel) {
+		buttonsClick = buttons & ~oldButtonsWheel; // Only look at the buttons that have changed
+		oldButtonsWheel = buttons;
+
+		if (buttonsClick & 0x1) // Gear forward
+			moveBall(-1);
+		else if (buttonsClick & 0x4) // Gear backward
+			moveBall(1);
+		else if (buttonsClick & 0xA) { // Either of the wheel buttons
+			calculateDifficulty();
+			return 1;
+		}
+	} else if (kbhit()) {
+		input = getch();
+		if (input == ' ') { // Space
+			calculateDifficulty();
+			return 1;
+		} else if (input == 65) // Up
+			moveBall(-1);
+		else if (input == 66) // Down
+			moveBall(1);
+	} else {
+		buttons = readButtons();
+		if (buttons != oldButtonsBoard) {
+			buttonsClick = buttons & ~oldButtonsBoard; // Only look at the buttons that have changed
+			oldButtonsBoard = buttons;
+
+			if (buttonsClick & 0x2) { // Center
+				calculateDifficulty();
+				return 1;
+			} else if (buttonsClick & 0x4) // Left
+				moveBall(-1);
+			else if (buttonsClick & 0x1) // Right
+				moveBall(1);
+		}
+	}
+	return 0;
+}
+
+void calculateDifficulty() {	
+	if (ballY == 0) { // Easy
+		divider = 10;
+		strikerWidth = 30;
+	} else if (ballY == 1) { // Medium
+		divider = 5;
+		strikerWidth = 20;
+	} else if (ballY == 2) { // Hard
+		divider = 2;
+		strikerWidth = 10;
+	} else { // Chuck Norris
+		divider = 1;
+		strikerWidth = 4;
+	}
+}
+\end{lstlisting}
+
 
 \section{buttons}
 \label{buttons}
 
 \underline{buttons.h}
+\begin{lstlisting}
+#ifndef _buttons_h_
+#define _buttons_h_
+
+// Public
+void initButtons();
+unsigned char readButtons();
+unsigned char readkey();
+
+#endif
+\end{lstlisting}
+
 \underline{buttons.c}
+\begin{lstlisting}
+#include <eZ8.h>             // special encore constants, macros and flash routines
+#include <sio.h>             // special encore serial i/o routines
+#include "buttons.h"
+#include "time.h"
+
+void initButtons() {
+	PDDD = (1 << 3);
+	PFDD = (1 << 6) | (1 << 7);
+}
+
+unsigned char readButtons() {
+	unsigned char inD, inF;
+	inD = (~PDIN >> 3) & 0x1;
+	inF = (~PFIN >> 6) & 0x3;
+	return ((inF >> 1) | ((inF & 0x1) << 1) | (inD << 2));
+}
+
+unsigned char readkey() { // Read button with debounce
+	unsigned char output = readButtons();
+	delay_ms(50); // Wait 50ms
+	output &= readButtons(); // Check if it is still high
+	return output;
+}
+\end{lstlisting}
+
 
 \section{charset}
 \label{charset}
 
 \underline{charset.h}
+\begin{lstlisting}
+/*************************************************
+ *
+ *  File Name: charset.h
+ *
+ *  Last modified:
+ *  Michael Thomsen     21/03/2005
+ *
+ * 	Change log: none
+ *************************************************/
+
+
+/*** Supported ASCII characters ***
+
+ASCII	CHAR	ASCII	CHAR	ASCII	CHAR	ASCII	CHAR	ASCII	CHAR	ASCII	CHAR
+ 0x20        0x30  0     0x40  @     0x50  P     0x60  `     0x70  p		
+ 0x21  !     0x31  1     0x41  A     0x51  Q     0x61  a     0x71  q		
+ 0x22  "     0x32  2     0x42  B     0x52  R     0x62  b     0x72  r
+ 0x23  #     0x33  3     0x43  C     0x53  S     0x63  c     0x73  s
+ 0x24  $     0x34  4     0x44  D     0x54  T     0x64  d     0x74  t
+ 0x25  %     0x35  5     0x45  E     0x55  U     0x65  e     0x75  u
+ 0x26  &     0x36  6     0x46  F     0x56  V     0x66  f     0x76  v
+ 0x27  '     0x37  7     0x47  G     0x57  W     0x67  g     0x77  w		
+ 0x28  (     0x38  8     0x48  H     0x58  X     0x68  h     0x78  x	
+ 0x29  )     0x39  9     0x49  I     0x59  Y     0x69  i     0x79  y
+ 0x2A  *     0x3A  :     0x4A  J     0x5A  Z     0x6A  j     0x7A  z
+ 0x2B  +     0x3B  ;     0x4B  K     0x5B  [     0x6B  k     0x7B  {
+ 0x2C  ,     0x3C  <     0x4C  L     0x5C  \     0x6C  l     0x7C  |
+ 0x2D  -     0x3D  =     0x4D  M     0x5D  ]     0x6D  m     0x7D  }
+ 0x2E  .     0x3E  >     0x4E  N     0x5E  ^     0x6E  n     0x7E  ~
+ 0x2F  /     0x3F  ?     0x4F  O     0x5F  _     0x6F  o
+ 
+0x91 æ
+0x9B ø
+0x86 å
+0x92 Æ
+0x9D Ø
+0x8F Å
+
+Note: 
+1. The ASCII character 0x20 is "SPACE" or a blank.
+2. The ASCII character 0x7F(DEL) is not supported by the matrix below.
+
+*/
+
+#ifndef _CHARSET_H_
+#define _CHARSET_H_
+
+const unsigned char rom character_data[95+9][5] = {
+  {0x00, 0x00, 0x00, 0x00, 0x00},
+  {0x00, 0x5F, 0x5F, 0x00, 0x00},
+  {0x00, 0x07, 0x00, 0x07, 0x00},
+  {0x14, 0x7F, 0x14, 0x7F, 0x14},
+  {0x24, 0x2A, 0x7F, 0x2A, 0x12},
+  {0x23, 0x13, 0x08, 0x64, 0x62},
+  {0x36, 0x49, 0x55, 0x22, 0x50},
+  {0x00, 0x05, 0x03, 0x00, 0x00},
+  {0x00, 0x1C, 0x22, 0x41, 0x00},
+  {0x00, 0x41, 0x22, 0x1C, 0x00},
+  {0x14, 0x08, 0x3E, 0x08, 0x14},
+  {0x08, 0x08, 0x3E, 0x08, 0x08},
+  {0x00, 0x50, 0x30, 0x00, 0x00},
+  {0x08, 0x08, 0x08, 0x08, 0x08},
+  {0x00, 0x60, 0x60, 0x00, 0x00},
+  {0x20, 0x10, 0x08, 0x04, 0x02},
+  {0x3E, 0x51, 0x49, 0x45, 0x3E},
+  {0x00, 0x42, 0x7F, 0x40, 0x00},
+  {0x42, 0x61, 0x51, 0x49, 0x46},
+  {0x22, 0x49, 0x49, 0x49, 0x36},
+  {0x18, 0x14, 0x12, 0x7F, 0x10},
+  {0x2F, 0x49, 0x49, 0x49, 0x31},
+  {0x3E, 0x49, 0x49, 0x49, 0x32},
+  {0x03, 0x01, 0x71, 0x09, 0x07},
+  {0x36, 0x49, 0x49, 0x49, 0x36},
+  {0x26, 0x49, 0x49, 0x49, 0x3E},
+  {0x00, 0x36, 0x36, 0x00, 0x00},
+  {0x00, 0x56, 0x36, 0x00, 0x00},
+  {0x08, 0x14, 0x22, 0x41, 0x00},
+  {0x14, 0x14, 0x14, 0x14, 0x14},
+  {0x00, 0x41, 0x22, 0x14, 0x08},
+  {0x02, 0x01, 0x51, 0x09, 0x06},
+  {0x32, 0x49, 0x79, 0x41, 0x3E},
+  {0x7C, 0x0A, 0x09, 0x0A, 0x7C},
+  {0x7F, 0x49, 0x49, 0x49, 0x36},
+  {0x3E, 0x41, 0x41, 0x41, 0x22},
+  {0x7F, 0x41, 0x41, 0x41, 0x3E},
+  {0x7F, 0x49, 0x49, 0x49, 0x41},
+  {0x7F, 0x09, 0x09, 0x09, 0x01},
+  {0x3E, 0x41, 0x49, 0x49, 0x7A},
+  {0x7F, 0x08, 0x08, 0x08, 0x7F},
+  {0x00, 0x41, 0x7F, 0x41, 0x00},
+  {0x30, 0x40, 0x40, 0x40, 0x3F},
+  {0x7F, 0x08, 0x14, 0x22, 0x41},
+  {0x7F, 0x40, 0x40, 0x40, 0x40},
+  {0x7F, 0x02, 0x0C, 0x02, 0x7F},
+  {0x7F, 0x02, 0x04, 0x08, 0x7F},
+  {0x3E, 0x41, 0x41, 0x41, 0x3E},
+  {0x7F, 0x09, 0x09, 0x09, 0x06},
+  {0x3E, 0x41, 0x51, 0x21, 0x5E},
+  {0x7F, 0x09, 0x09, 0x09, 0x76},
+  {0x26, 0x49, 0x49, 0x49, 0x32},
+  {0x01, 0x01, 0x7F, 0x01, 0x01},
+  {0x3F, 0x40, 0x40, 0x40, 0x3F},
+  {0x1F, 0x20, 0x40, 0x20, 0x1F},
+  {0x3F, 0x40, 0x38, 0x40, 0x3F},
+  {0x63, 0x14, 0x08, 0x14, 0x63},
+  {0x03, 0x04, 0x78, 0x04, 0x03},
+  {0x61, 0x51, 0x49, 0x45, 0x43},
+  {0x7F, 0x41, 0x41, 0x00, 0x00},
+  {0x02, 0x04, 0x08, 0x10, 0x20},
+  {0x00, 0x41, 0x41, 0x7F, 0x00},
+  {0x04, 0x02, 0x01, 0x02, 0x04},
+  {0x40, 0x40, 0x40, 0x40, 0x40},
+  {0x00, 0x01, 0x02, 0x04, 0x00},
+  {0x20, 0x54, 0x54, 0x54, 0x78},
+  {0x7F, 0x48, 0x44, 0x44, 0x38},
+  {0x38, 0x44, 0x44, 0x44, 0x20},
+  {0x38, 0x44, 0x44, 0x48, 0x7F},
+  {0x38, 0x54, 0x54, 0x54, 0x18},
+  {0x08, 0x7E, 0x09, 0x01, 0x02},
+  {0x0C, 0x52, 0x52, 0x52, 0x3E},
+  {0x7F, 0x08, 0x04, 0x04, 0x78},
+  {0x00, 0x44, 0x7D, 0x40, 0x00},
+  {0x20, 0x40, 0x44, 0x3D, 0x00},
+  {0x7F, 0x10, 0x28, 0x44, 0x00},
+  {0x00, 0x41, 0x7F, 0x40, 0x00},
+  {0x7C, 0x04, 0x18, 0x04, 0x78},
+  {0x7C, 0x08, 0x04, 0x04, 0x78},
+  {0x38, 0x44, 0x44, 0x44, 0x38},
+  {0x7C, 0x14, 0x14, 0x14, 0x08},
+  {0x08, 0x14, 0x14, 0x18, 0x7C},
+  {0x7C, 0x08, 0x04, 0x04, 0x08},
+  {0x48, 0x54, 0x54, 0x54, 0x20},
+  {0x04, 0x3F, 0x44, 0x40, 0x20},
+  {0x3C, 0x40, 0x40, 0x20, 0x7C},
+  {0x1C, 0x20, 0x40, 0x20, 0x1C},
+  {0x3C, 0x40, 0x38, 0x40, 0x3C},
+  {0x44, 0x28, 0x10, 0x28, 0x44},
+  {0x0C, 0x50, 0x50, 0x50, 0x3C},
+  {0x44, 0x64, 0x54, 0x4C, 0x44},
+  {0x00, 0x08, 0x36, 0x41, 0x00},
+  {0x00, 0x00, 0x7F, 0x00, 0x00},
+  {0x00, 0x41, 0x36, 0x08, 0x00},
+  {0x08, 0x04, 0x08, 0x10, 0x08},
+
+  // Some special characters we created
+  {0x24, 0x54, 0x78, 0x54, 0x58}, // æ
+  {0x38, 0x64, 0x54, 0x4C, 0x38}, // ø
+  {0x24, 0x54, 0x55, 0x54, 0x78}, // å
+  {0x7E, 0x09, 0x7F, 0x49, 0x49}, // Æ
+  {0x3C, 0x62, 0x5A, 0x46, 0x3C}, // Ø
+  {0x78, 0x14, 0x15, 0x14, 0x78}, // Å
+  {0X7F, 0x10, 0x20, 0x20, 0x1F}, // 
+  {0x20, 0x46, 0x40, 0x46, 0x20}, // :)
+  {0x1C, 0x3E, 0x7C, 0x3E, 0x1C} // <3
+};
+
+#endif /*! _ACHARSET_H_ */
+\end{lstlisting}
+
+\begin{lstlisting}
+/*************************************************
+ *
+ *  File Name: charset.h
+ *
+ *  Last modified:
+ *  Michael Thomsen     21/03/2005
+ *
+ * 	Change log: none
+ *************************************************/
+
+
+/*** Supported ASCII characters ***
+
+ASCII	CHAR	ASCII	CHAR	ASCII	CHAR	ASCII	CHAR	ASCII	CHAR	ASCII	CHAR
+ 0x20        0x30  0     0x40  @     0x50  P     0x60  `     0x70  p		
+ 0x21  !     0x31  1     0x41  A     0x51  Q     0x61  a     0x71  q		
+ 0x22  "     0x32  2     0x42  B     0x52  R     0x62  b     0x72  r
+ 0x23  #     0x33  3     0x43  C     0x53  S     0x63  c     0x73  s
+ 0x24  $     0x34  4     0x44  D     0x54  T     0x64  d     0x74  t
+ 0x25  %     0x35  5     0x45  E     0x55  U     0x65  e     0x75  u
+ 0x26  &     0x36  6     0x46  F     0x56  V     0x66  f     0x76  v
+ 0x27  '     0x37  7     0x47  G     0x57  W     0x67  g     0x77  w		
+ 0x28  (     0x38  8     0x48  H     0x58  X     0x68  h     0x78  x	
+ 0x29  )     0x39  9     0x49  I     0x59  Y     0x69  i     0x79  y
+ 0x2A  *     0x3A  :     0x4A  J     0x5A  Z     0x6A  j     0x7A  z
+ 0x2B  +     0x3B  ;     0x4B  K     0x5B  [     0x6B  k     0x7B  {
+ 0x2C  ,     0x3C  <     0x4C  L     0x5C  \     0x6C  l     0x7C  |
+ 0x2D  -     0x3D  =     0x4D  M     0x5D  ]     0x6D  m     0x7D  }
+ 0x2E  .     0x3E  >     0x4E  N     0x5E  ^     0x6E  n     0x7E  ~
+ 0x2F  /     0x3F  ?     0x4F  O     0x5F  _     0x6F  o
+ 
+
+Note: 
+1. The ASCII character 0x20 is "SPACE" or a blank.
+2. The ASCII character 0x7F(DEL) is not supported by the matrix below.
+
+*/
+
+#ifndef _CHARSET_H_
+#define _CHARSET_H_
+
+const unsigned char rom character_data[95+9][5] = {
+  {0x00, 0x00, 0x00, 0x00, 0x00},
+  {0x00, 0x5F, 0x5F, 0x00, 0x00},
+  {0x00, 0x07, 0x00, 0x07, 0x00},
+  {0x14, 0x7F, 0x14, 0x7F, 0x14},
+  {0x24, 0x2A, 0x7F, 0x2A, 0x12},
+  {0x23, 0x13, 0x08, 0x64, 0x62},
+  {0x36, 0x49, 0x55, 0x22, 0x50},
+  {0x00, 0x05, 0x03, 0x00, 0x00},
+  {0x00, 0x1C, 0x22, 0x41, 0x00},
+  {0x00, 0x41, 0x22, 0x1C, 0x00},
+  {0x14, 0x08, 0x3E, 0x08, 0x14},
+  {0x08, 0x08, 0x3E, 0x08, 0x08},
+  {0x00, 0x50, 0x30, 0x00, 0x00},
+  {0x08, 0x08, 0x08, 0x08, 0x08},
+  {0x00, 0x60, 0x60, 0x00, 0x00},
+  {0x20, 0x10, 0x08, 0x04, 0x02},
+  {0x3E, 0x51, 0x49, 0x45, 0x3E},
+  {0x00, 0x42, 0x7F, 0x40, 0x00},
+  {0x42, 0x61, 0x51, 0x49, 0x46},
+  {0x22, 0x49, 0x49, 0x49, 0x36},
+  {0x18, 0x14, 0x12, 0x7F, 0x10},
+  {0x2F, 0x49, 0x49, 0x49, 0x31},
+  {0x3E, 0x49, 0x49, 0x49, 0x32},
+  {0x03, 0x01, 0x71, 0x09, 0x07},
+  {0x36, 0x49, 0x49, 0x49, 0x36},
+  {0x26, 0x49, 0x49, 0x49, 0x3E},
+  {0x00, 0x36, 0x36, 0x00, 0x00},
+  {0x00, 0x56, 0x36, 0x00, 0x00},
+  {0x08, 0x14, 0x22, 0x41, 0x00},
+  {0x14, 0x14, 0x14, 0x14, 0x14},
+  {0x00, 0x41, 0x22, 0x14, 0x08},
+  {0x02, 0x01, 0x51, 0x09, 0x06},
+  {0x32, 0x49, 0x79, 0x41, 0x3E},
+  {0x7C, 0x0A, 0x09, 0x0A, 0x7C},
+  {0x7F, 0x49, 0x49, 0x49, 0x36},
+  {0x3E, 0x41, 0x41, 0x41, 0x22},
+  {0x7F, 0x41, 0x41, 0x41, 0x3E},
+  {0x7F, 0x49, 0x49, 0x49, 0x41},
+  {0x7F, 0x09, 0x09, 0x09, 0x01},
+  {0x3E, 0x41, 0x49, 0x49, 0x7A},
+  {0x7F, 0x08, 0x08, 0x08, 0x7F},
+  {0x00, 0x41, 0x7F, 0x41, 0x00},
+  {0x30, 0x40, 0x40, 0x40, 0x3F},
+  {0x7F, 0x08, 0x14, 0x22, 0x41},
+  {0x7F, 0x40, 0x40, 0x40, 0x40},
+  {0x7F, 0x02, 0x0C, 0x02, 0x7F},
+  {0x7F, 0x02, 0x04, 0x08, 0x7F},
+  {0x3E, 0x41, 0x41, 0x41, 0x3E},
+  {0x7F, 0x09, 0x09, 0x09, 0x06},
+  {0x3E, 0x41, 0x51, 0x21, 0x5E},
+  {0x7F, 0x09, 0x09, 0x09, 0x76},
+  {0x26, 0x49, 0x49, 0x49, 0x32},
+  {0x01, 0x01, 0x7F, 0x01, 0x01},
+  {0x3F, 0x40, 0x40, 0x40, 0x3F},
+  {0x1F, 0x20, 0x40, 0x20, 0x1F},
+  {0x3F, 0x40, 0x38, 0x40, 0x3F},
+  {0x63, 0x14, 0x08, 0x14, 0x63},
+  {0x03, 0x04, 0x78, 0x04, 0x03},
+  {0x61, 0x51, 0x49, 0x45, 0x43},
+  {0x7F, 0x41, 0x41, 0x00, 0x00},
+  {0x02, 0x04, 0x08, 0x10, 0x20},
+  {0x00, 0x41, 0x41, 0x7F, 0x00},
+  {0x04, 0x02, 0x01, 0x02, 0x04},
+  {0x40, 0x40, 0x40, 0x40, 0x40},
+  {0x00, 0x01, 0x02, 0x04, 0x00},
+  {0x20, 0x54, 0x54, 0x54, 0x78},
+  {0x7F, 0x48, 0x44, 0x44, 0x38},
+  {0x38, 0x44, 0x44, 0x44, 0x20},
+  {0x38, 0x44, 0x44, 0x48, 0x7F},
+  {0x38, 0x54, 0x54, 0x54, 0x18},
+  {0x08, 0x7E, 0x09, 0x01, 0x02},
+  {0x0C, 0x52, 0x52, 0x52, 0x3E},
+  {0x7F, 0x08, 0x04, 0x04, 0x78},
+  {0x00, 0x44, 0x7D, 0x40, 0x00},
+  {0x20, 0x40, 0x44, 0x3D, 0x00},
+  {0x7F, 0x10, 0x28, 0x44, 0x00},
+  {0x00, 0x41, 0x7F, 0x40, 0x00},
+  {0x7C, 0x04, 0x18, 0x04, 0x78},
+  {0x7C, 0x08, 0x04, 0x04, 0x78},
+  {0x38, 0x44, 0x44, 0x44, 0x38},
+  {0x7C, 0x14, 0x14, 0x14, 0x08},
+  {0x08, 0x14, 0x14, 0x18, 0x7C},
+  {0x7C, 0x08, 0x04, 0x04, 0x08},
+  {0x48, 0x54, 0x54, 0x54, 0x20},
+  {0x04, 0x3F, 0x44, 0x40, 0x20},
+  {0x3C, 0x40, 0x40, 0x20, 0x7C},
+  {0x1C, 0x20, 0x40, 0x20, 0x1C},
+  {0x3C, 0x40, 0x38, 0x40, 0x3C},
+  {0x44, 0x28, 0x10, 0x28, 0x44},
+  {0x0C, 0x50, 0x50, 0x50, 0x3C},
+  {0x44, 0x64, 0x54, 0x4C, 0x44},
+  {0x00, 0x08, 0x36, 0x41, 0x00},
+  {0x00, 0x00, 0x7F, 0x00, 0x00},
+  {0x00, 0x41, 0x36, 0x08, 0x00},
+  {0x08, 0x04, 0x08, 0x10, 0x08},
+
+
+#endif /*! _ACHARSET_H_ */
+\end{lstlisting}
+
 
 \section{gameport}
 \label{gameport}
 
 \underline{gameport.h}
+\begin{lstlisting}
+#ifndef _gameport_h_
+#define _gameport_h_
+
+// Public
+void initGameport();
+unsigned char getGameportButtons();
+char readSteeringWheel();
+
+// Private
+unsigned int readADC(unsigned char channel);
+
+#endif
+\end{lstlisting}
+
 \underline{gameport.c}
+\begin{lstlisting}
+#include <eZ8.h>             // special encore constants, macros and flash routines
+#include <sio.h>             // special encore serial i/o routines
+#include "gameport.h"
+#include "ansi.h"
+
+unsigned int readADC(unsigned char channel) {
+	unsigned char inHigh, inLow;
+	unsigned int ADC_data;
+
+	ADCCTL = 0x80 | 0x20 | (channel & 0x0F); // Enable ADC on the selected channel and use external voltage (3.3V) as VREF
+	while (ADCCTL & 0x80); // Wait for conversion to be completed
+	inHigh = ADCD_H; // ADC high byte
+	inLow = ADCD_L; // ADC low low byte
+	ADC_data = ((unsigned int)inHigh << 2)| inLow >> 6; // ADC output word
+
+	return ADC_data;
+}
+
+void initGameport() {
+	PBDD = (1 << 5) | (1 << 4) | (1 << 3) | (1 << 2); // Use PB2, PB3, PB4 and PB5 as digial inputs
+	PBAF = (1 << 1) | (1 << 0); // Use PB0 and PB1 for ADC conversion
+}
+
+unsigned char getGameportButtons() {
+	return (((~PBIN) & 0x3C) >> 2);
+}
+
+char readSteeringWheel() {
+	int val = readADC(1);
+
+	//gotoxy(50,10);
+	//printf("Val: %04d",val);
+
+	// The driving wheel is not linear therefor this table is needed
+	if (val > 1000)
+		return -6; // We will move it more aggressively to the side
+	else if (val > 796)
+		return -4;
+	else if (val > 712)
+		return -2;
+	else if (val > 610)
+		return -1;
+	else if (val > 570)
+		return 0;
+	else if (val > 500)
+		return 1;
+	else if (val > 466)
+		return 2;
+	else if (val > 440)
+		return 4;
+	else
+		return 6;
+}
+\end{lstlisting}
 
 \section{LED}
 \label{LED}
 
 \underline{LED.h}
+\begin{lstlisting}
+#ifndef _led_h_
+#define _led_h_
+
+#define PRE1	(0 << 3);
+#define PRE2	(1 << 3);
+#define PRE4	(2 << 3);
+#define PRE8	(3 << 3);
+#define PRE16	(4 << 3);
+#define PRE32	(5 << 3);
+#define PRE64	(6 << 3);
+#define PRE128	(7 << 3);
+
+#define SCROLL_SPEED	5
+
+// Public
+void initLED(); // Initialize the LED display
+void LEDsetString(char *string); // Used to scroll a string
+void LEDRunOnce(char *firstString, char* secondString); // Used to sroll the first string once and then show the second string afterwards	
+
+// Private
+void clockLed(unsigned char digit);
+unsigned char convertChar(char input);
+void moveVideoBuffer();
+void LEDupdate();
+void timer2int();
+
+#endif
+\end{lstlisting}
+
 \underline{LED.c}
+\begin{lstlisting}
+#include <eZ8.h>             // special encore constants, macros and flash routines
+#include <sio.h>             // special encore serial i/o routines
+#include "charset.h"
+#include "LED.h"
+#include "ansi.h"
+
+unsigned char digit = 0, column = 0, delayCounter = 0, index = 0, stringLength = 0;
+char videoBuffer[5][6];
+
+volatile char runOnce, *pSecondString; // runOnce is used scroll a text only once, the pointer will point to the second string that is shown after the scroll is complete
+char *pString; // Pointer to string in ram
+
+
+void clockLed(unsigned char digit) {
+	if (digit == 0) {
+		PEOUT &= ~(1 << 7);
+		PEOUT |= (1 << 7);
+	}
+	else if (digit == 1) {
+		PGOUT |= (1 << 7);
+		PGOUT &= ~(1 << 7);
+	}
+	else if (digit == 2) {
+		PEOUT &= ~(1 << 5);
+		PEOUT |= (1 << 5);
+	}
+	else if (digit == 3) {
+		PEOUT &= ~(1 << 6);
+		PEOUT |= (1 << 6);
+	}
+}
+
+unsigned char convertChar(char input) { // Convert to some of our own characters
+	unsigned char c;
+	if (input == '')
+		c = '~' + 1;
+	else if (input == '\oe')
+		c = '~' + 2;
+	else if (input == 'å')
+		c = '~' + 3;
+	else if (input == 'Æ')
+		c = '~' + 4;
+	else if (input == 'Ø')
+		c = '~' + 5;
+	else if (input == 'Å')
+		c = '~' + 6;
+	else if (input == '')
+		c = '~' + 7;
+	else if (input == '') // Smiley
+		c = '~' + 8;
+	else if (input == '') // <3
+		c = '~' + 9;
+	else
+		c = input;
+
+	return c;
+}
+
+void LEDsetString(char *string) {
+	unsigned char i, j;	
+
+	DI(); // Disbable all interrupts
+
+	runOnce = 0; // Reset flag
+	stringLength = strlen(string); // Calculate length of string
+	pString = string; // Set pointer to the start of the string
+
+	for (i=0; i < 5; i++) {
+		for (j=0;j<5;j++)			
+			videoBuffer[i][j] = character_data[convertChar(*pString)-0x20][j];
+		videoBuffer[i][5] = 0;
+
+		pString++;
+		if (*pString == '\0') {
+			pString -= stringLength;
+			break; // Break if we have reached the end of the string - this is due to the string being less than five characters wide
+		}
+	}
+	for (i = stringLength; i < 4; i++) {
+		for (j = 0; j < 5; j++)
+			videoBuffer[i][j] = character_data[' '-0x20][j]; // Fill out the rest of the string with spaces if the string is less than five characters
+	}
+
+	digit = column = delayCounter = index = 0; // Reset all values used for multiplexing
+
+	EI(); // Enable all interrupts
+}
+
+void LEDRunOnce(char *firstString, char* secondString) { // Used to sroll the first string once and then show the second string afterwards
+	LEDsetString(firstString);
+	runOnce = 1;
+	pSecondString = secondString; // We will save the location of the second string
+}
+
+void moveVideoBuffer() {
+	unsigned char i, j;
+
+	for (i=0; i < 5; i++) {
+		for (j=0;j<5;j++) {
+			if (i < 4)
+				videoBuffer[i][j] = videoBuffer[i+1][j]; // Shift all one to the left
+			else
+				videoBuffer[4][j] = character_data[convertChar(*pString)-0x20][j]; // Read the next character in the string
+		}
+	}
+	pString++;
+	if (*pString == '\0') { // Check if we have reached the end of the string
+		if (runOnce) { // This wil actually abort when it loads the last character in the 5th digit, so you have to put a space in end of the sentence
+			runOnce = 0;
+			LEDsetString(pSecondString);
+		} else
+			pString -= stringLength;
+	}
+}
+
+void LEDupdate() { // This function is called inside the interrupt
+	PGOUT = (PGOUT & (1 << 7)) | *(&videoBuffer[0][0] + digit*6 + column + index);
+	PEOUT |= 0x1F; // Set all cathodes high
+	PEOUT &= ~(1 << (4-column)); // Set one cathodes low decided by column
+	
+	clockLed(digit);
+	if (++digit == 4) {
+		digit = 0;
+		if (++column == 5) {
+			column = 0;
+			if (++delayCounter == SCROLL_SPEED && stringLength > 4) { // We don't have to scroll the text if there is less than five characters
+				delayCounter = 0;				
+				if (++index > 5) {
+					index = 0;
+					moveVideoBuffer();
+				}
+			}
+		}
+	}
+}
+
+#pragma interrupt
+void timer2int() {
+	LEDupdate();
+}
+
+void initLED() {
+	unsigned char i;
+	PEDD = 0; // All output
+	PGDD = 0; // All output
+	PEOUT = 0x1F; // Set clocks to low and cathodes to high
+	PGOUT = 0; // Set all low
+
+	for (i=0;i<4;i++) // Turn all off by default
+		clockLed(i);
+
+   	DI(); // Disable interrupt
+
+	T2CTL = 0; // TEN - disable timer
+	T2CTL |= PRE1; // PRES - Prescaler
+	T2CTL |= (1 << 0); // TMODE - continuous mode
+
+	T2H = 0;
+	T2L = 1;
+	
+	T2RH = 9216 >> 8; // Interrupt every 500us
+	T2RL = 9216 & 0xFF;
+
+	SET_VECTOR(TIMER2, timer2int); // Enter the timer0int function at each interrupt
+	
+	// Set timer2 priority to low
+	IRQ0ENH &= ~(1 << 7);
+	IRQ0ENL |= (1 << 7);
+
+	T2CTL |= (1 << 7); // TEN - enable timer
+
+	EI(); // Enable interrupt
+}
+\end{lstlisting}
+
 
 \section{levels}
 \label{levels}
 
 \underline{levels.h}
+\begin{lstlisting}
+#ifndef _levels_h_
+#define _levels_h_
+
+#include <eZ8.h>             // special encore constants, macros and flash routines
+#include "reflexball.h"
+
+// This array contains all the levels for the game
+unsigned char rom levels[6][BRICK_TABLE_HEIGHT][BRICK_TABLE_WIDTH] = {
+	{ // Bier
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1 },
+		{ 0, 3, 0, 2, 0, 3, 0, 2, 0, 3, 0, 2, 0, 3 },
+		{ 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1 },
+		{ 0, 3, 0, 2, 0, 3, 0, 2, 0, 3, 0, 2, 0, 3 },		
+		{ 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1 },
+		{ 0, 3, 0, 2, 0, 3, 0, 2, 0, 3, 0, 2, 0, 3 },
+		{ 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1 },		
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+	},
+	{ // Basic
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0 },
+		{ 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0 },
+		{ 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0 },
+		{ 0, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 0 },
+		{ 0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+	},	
+	{ // Cirkel
+		{ 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0 },
+		{ 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0 },
+		{ 0, 0, 1, 1, 0, 0, 2, 2, 0, 0, 1, 1, 0, 0 },
+		{ 0, 0, 1, 0, 0, 2, 2, 2, 2, 0, 0, 1, 0, 0 },
+		{ 0, 1, 0, 0, 2, 2, 0, 0, 2, 2, 0, 0, 1, 0 },
+		{ 0, 1, 0, 2, 2, 0, 0, 0, 0, 2, 2, 0, 1, 0 },
+		{ 0, 1, 0, 2, 0, 0, 4, 4, 0, 0, 2, 0, 1, 0 },
+		{ 0, 1, 0, 2, 0, 0, 4, 4, 0, 0, 2, 0, 1, 0 },
+		{ 0, 1, 0, 2, 2, 0, 0, 0, 0, 2, 2, 0, 1, 0 },
+		{ 0, 1, 0, 0, 2, 2, 0, 0, 2, 2, 0, 0, 1, 0 },
+		{ 0, 0, 1, 0, 0, 2, 2, 2, 2, 0, 0, 1, 0, 0 },
+		{ 0, 0, 1, 1, 0, 0, 2, 2, 0, 0, 1, 1, 0, 0 },
+		{ 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0 },
+		{ 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+	},
+	{ // Blokke
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
+		{ 1, 0, 2, 2, 0, 1, 1, 0, 2, 2, 0, 1, 1, 0 },
+		{ 2, 0, 1, 1, 0, 2, 2, 0, 1, 1, 0, 2, 2, 0 },
+		{ 1, 0, 2, 2, 0, 1, 1, 0, 2, 2, 0, 1, 1, 0 },
+		{ 2, 0, 1, 1, 0, 2, 2, 0, 1, 1, 0, 2, 2, 0 },
+		{ 1, 0, 2, 2, 0, 1, 1, 0, 2, 2, 0, 1, 1, 0 },
+		{ 2, 0, 1, 1, 0, 2, 2, 0, 1, 1, 0, 2, 2, 0 },
+		{ 1, 0, 2, 2, 0, 1, 1, 0, 2, 2, 0, 1, 1, 0 },
+		{ 2, 0, 1, 1, 0, 2, 2, 0, 1, 1, 0, 2, 2, 0 },
+		{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+	},
+	{ // Batman
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1 },
+		{ 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0 },
+		{ 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0 },
+		{ 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0 },
+		{ 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0 },
+		{ 0, 2, 2, 0, 0, 1, 1, 1, 1, 0, 0, 2, 2, 0 },
+		{ 0, 0, 2, 2, 0, 0, 1, 1, 0, 0, 2, 2, 0, 0 },
+		{ 0, 0, 0, 2, 2, 0, 0, 0, 0, 2, 2, 0, 0, 0 },
+		{ 0, 0, 0, 0, 2, 2, 0, 0, 2, 2, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 2, 2, 2, 2, 0, 0, 0, 0, 0 },
+		{ 0, 0, 1, 1, 0, 0, 2, 2, 0, 0, 1, 1, 0, 0 },
+		{ 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0 },
+		{ 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+	},	
+	{ // Usynlig
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+	},
+};
+
+#endif
+\end{lstlisting}
+
 
 \section{lut}
 \label{lut}
 
 \underline{lut.h}
+\begin{lstlisting}
+// =====================================================================
+//
+//	Exported by Cearn's excellut v1.0
+//	(comments, kudos, flames to daytshen@hotmail.com)
+//
+// =====================================================================
+
+#ifndef LUT_H
+#define LUT_H
+
+// === LUT SIZES ===
+#define SIN_SIZE 512
+
+// === LUT DECLARATIONS ===
+extern const signed short rom SIN[512];
+
+#endif	// LUT_H
+\end{lstlisting}
+
 \underline{lut.c}
+\begin{lstlisting}
+// =====================================================================
+//	  Look-Up Tables
+//		SIN: sin(x*pi/256)
+//
+//	Exported by Cearn's excellut v1.0
+//	(comments, kudos, flames to daytshen@hotmail.com)
+//
+// =====================================================================
+
+#include "lut.h"
+// -----------------------------------------------------------------------
+// SIN: a 512 long LUT of 16bit values in 2.14 format
+// sin(x*pi/256)
+const signed short rom SIN[512]=
+{
+	0x0000,0x00C9,0x0192,0x025B,0x0324,0x03ED,0x04B5,0x057E,
+	0x0646,0x070E,0x07D6,0x089D,0x0964,0x0A2B,0x0AF1,0x0BB7,
+	0x0C7C,0x0D41,0x0E06,0x0ECA,0x0F8D,0x1050,0x1112,0x11D3,
+	0x1294,0x1354,0x1413,0x14D2,0x1590,0x164C,0x1709,0x17C4,
+	0x187E,0x1937,0x19EF,0x1AA7,0x1B5D,0x1C12,0x1CC6,0x1D79,
+	0x1E2B,0x1EDC,0x1F8C,0x203A,0x20E7,0x2193,0x223D,0x22E7,
+	0x238E,0x2435,0x24DA,0x257E,0x2620,0x26C1,0x2760,0x27FE,
+	0x289A,0x2935,0x29CE,0x2A65,0x2AFB,0x2B8F,0x2C21,0x2CB2,
+
+	0x2D41,0x2DCF,0x2E5A,0x2EE4,0x2F6C,0x2FF2,0x3076,0x30F9,
+	0x3179,0x31F8,0x3274,0x32EF,0x3368,0x33DF,0x3453,0x34C6,
+	0x3537,0x35A5,0x3612,0x367D,0x36E5,0x374B,0x37B0,0x3812,
+	0x3871,0x38CF,0x392B,0x3984,0x39DB,0x3A30,0x3A82,0x3AD3,
+	0x3B21,0x3B6D,0x3BB6,0x3BFD,0x3C42,0x3C85,0x3CC5,0x3D03,
+	0x3D3F,0x3D78,0x3DAF,0x3DE3,0x3E15,0x3E45,0x3E72,0x3E9D,
+	0x3EC5,0x3EEB,0x3F0F,0x3F30,0x3F4F,0x3F6B,0x3F85,0x3F9C,
+	0x3FB1,0x3FC4,0x3FD4,0x3FE1,0x3FEC,0x3FF5,0x3FFB,0x3FFF,
+
+	0x4000,0x3FFF,0x3FFB,0x3FF5,0x3FEC,0x3FE1,0x3FD4,0x3FC4,
+	0x3FB1,0x3F9C,0x3F85,0x3F6B,0x3F4F,0x3F30,0x3F0F,0x3EEB,
+	0x3EC5,0x3E9D,0x3E72,0x3E45,0x3E15,0x3DE3,0x3DAF,0x3D78,
+	0x3D3F,0x3D03,0x3CC5,0x3C85,0x3C42,0x3BFD,0x3BB6,0x3B6D,
+	0x3B21,0x3AD3,0x3A82,0x3A30,0x39DB,0x3984,0x392B,0x38CF,
+	0x3871,0x3812,0x37B0,0x374B,0x36E5,0x367D,0x3612,0x35A5,
+	0x3537,0x34C6,0x3453,0x33DF,0x3368,0x32EF,0x3274,0x31F8,
+	0x3179,0x30F9,0x3076,0x2FF2,0x2F6C,0x2EE4,0x2E5A,0x2DCF,
+
+	0x2D41,0x2CB2,0x2C21,0x2B8F,0x2AFB,0x2A65,0x29CE,0x2935,
+	0x289A,0x27FE,0x2760,0x26C1,0x2620,0x257E,0x24DA,0x2435,
+	0x238E,0x22E7,0x223D,0x2193,0x20E7,0x203A,0x1F8C,0x1EDC,
+	0x1E2B,0x1D79,0x1CC6,0x1C12,0x1B5D,0x1AA7,0x19EF,0x1937,
+	0x187E,0x17C4,0x1709,0x164C,0x1590,0x14D2,0x1413,0x1354,
+	0x1294,0x11D3,0x1112,0x1050,0x0F8D,0x0ECA,0x0E06,0x0D41,
+	0x0C7C,0x0BB7,0x0AF1,0x0A2B,0x0964,0x089D,0x07D6,0x070E,
+	0x0646,0x057E,0x04B5,0x03ED,0x0324,0x025B,0x0192,0x00C9,
+
+	0x0000,0xFF37,0xFE6E,0xFDA5,0xFCDC,0xFC13,0xFB4B,0xFA82,
+	0xF9BA,0xF8F2,0xF82A,0xF763,0xF69C,0xF5D5,0xF50F,0xF449,
+	0xF384,0xF2BF,0xF1FA,0xF136,0xF073,0xEFB0,0xEEEE,0xEE2D,
+	0xED6C,0xECAC,0xEBED,0xEB2E,0xEA70,0xE9B4,0xE8F7,0xE83C,
+	0xE782,0xE6C9,0xE611,0xE559,0xE4A3,0xE3EE,0xE33A,0xE287,
+	0xE1D5,0xE124,0xE074,0xDFC6,0xDF19,0xDE6D,0xDDC3,0xDD19,
+	0xDC72,0xDBCB,0xDB26,0xDA82,0xD9E0,0xD93F,0xD8A0,0xD802,
+	0xD766,0xD6CB,0xD632,0xD59B,0xD505,0xD471,0xD3DF,0xD34E,
+
+	0xD2BF,0xD231,0xD1A6,0xD11C,0xD094,0xD00E,0xCF8A,0xCF07,
+	0xCE87,0xCE08,0xCD8C,0xCD11,0xCC98,0xCC21,0xCBAD,0xCB3A,
+	0xCAC9,0xCA5B,0xC9EE,0xC983,0xC91B,0xC8B5,0xC850,0xC7EE,
+	0xC78F,0xC731,0xC6D5,0xC67C,0xC625,0xC5D0,0xC57E,0xC52D,
+	0xC4DF,0xC493,0xC44A,0xC403,0xC3BE,0xC37B,0xC33B,0xC2FD,
+	0xC2C1,0xC288,0xC251,0xC21D,0xC1EB,0xC1BB,0xC18E,0xC163,
+	0xC13B,0xC115,0xC0F1,0xC0D0,0xC0B1,0xC095,0xC07B,0xC064,
+	0xC04F,0xC03C,0xC02C,0xC01F,0xC014,0xC00B,0xC005,0xC001,
+
+	0xC000,0xC001,0xC005,0xC00B,0xC014,0xC01F,0xC02C,0xC03C,
+	0xC04F,0xC064,0xC07B,0xC095,0xC0B1,0xC0D0,0xC0F1,0xC115,
+	0xC13B,0xC163,0xC18E,0xC1BB,0xC1EB,0xC21D,0xC251,0xC288,
+	0xC2C1,0xC2FD,0xC33B,0xC37B,0xC3BE,0xC403,0xC44A,0xC493,
+	0xC4DF,0xC52D,0xC57E,0xC5D0,0xC625,0xC67C,0xC6D5,0xC731,
+	0xC78F,0xC7EE,0xC850,0xC8B5,0xC91B,0xC983,0xC9EE,0xCA5B,
+	0xCAC9,0xCB3A,0xCBAD,0xCC21,0xCC98,0xCD11,0xCD8C,0xCE08,
+	0xCE87,0xCF07,0xCF8A,0xD00E,0xD094,0xD11C,0xD1A6,0xD231,
+
+	0xD2BF,0xD34E,0xD3DF,0xD471,0xD505,0xD59B,0xD632,0xD6CB,
+	0xD766,0xD802,0xD8A0,0xD93F,0xD9E0,0xDA82,0xDB26,0xDBCB,
+	0xDC72,0xDD19,0xDDC3,0xDE6D,0xDF19,0xDFC6,0xE074,0xE124,
+	0xE1D5,0xE287,0xE33A,0xE3EE,0xE4A3,0xE559,0xE611,0xE6C9,
+	0xE782,0xE83C,0xE8F7,0xE9B4,0xEA70,0xEB2E,0xEBED,0xECAC,
+	0xED6C,0xEE2D,0xEEEE,0xEFB0,0xF073,0xF136,0xF1FA,0xF2BF,
+	0xF384,0xF449,0xF50F,0xF5D5,0xF69C,0xF763,0xF82A,0xF8F2,
+	0xF9BA,0xFA82,0xFB4B,0xFC13,0xFCDC,0xFDA5,0xFE6E,0xFF37,
+};
+\end{lstlisting}
+
 
 \section{main}
 \label{main}
 
 \underline{main.c}
+\begin{lstlisting}
+#include <eZ8.h>             // special encore constants, macros and flash routines
+#include <sio.h>             // special encore serial i/o routines
+#include "reflexball.h"
+#include "ansi.h"
+#include "LED.h"
+#include "time.h"
+#include "buttons.h"
+#include "gameport.h"
+#include "asciidisplay.h"
+#include "ascii.h"
+
+unsigned long wheelTimer;
+
+void main() {
+	int input;
+	unsigned char buttons;
+	char wheel;
+
+	initTimers();
+	initLED();
+	initButtons();
+	initGameport();
+	init_uart(_UART0,_DEFFREQ,BAUD_115200);
+
+	color(2,0); // Green forground, black background
+
+Start:
+	clrscr();
+
+	LEDsetString("    ReflexBall RALLY!");
+
+	initStartMenu(3,1,224,82); // x1, y1, x2, y2
+	while(!startMenu()); // Wait for any key to be pressed
+	clrscr();
+	printMenu();
+	while(!updateMenu()); // Wait until difficulty is choosen
+
+	LEDsetString("    "); // Clear display
+	initReflexBall(3,15,224,82,1); // x1, y1, x2, y2, style
+
+	for(;;) {
+		buttons = getGameportButtons();		
+		
+		if (buttons & 0xE) // Gear backward or button press
+			startGame();
+		else if (millis() - wheelTimer > 20) { // We have to limit the update rate or it will move to fast
+			wheelTimer = millis();
+			wheel = readSteeringWheel();
+			if (wheel != 0)
+				moveStriker(wheel);
+		}
+		else { // The driving wheel overrules the other controls
+			buttons = readButtons();
+			if (buttons) {
+				if (buttons & 0x2) // Center
+					startGame();
+				else if (buttons & 0x4) // Left
+					moveStriker(-1);
+				else if (buttons & 0x1) // Right
+					moveStriker(1);
+			}
+			else if (kbhit()) {
+				input = getch();
+				if (input == ' ') // Space
+					startGame();
+				else if (input == 68) // Left
+					moveStriker(-2);
+				else if (input == 67) // Right
+					moveStriker(2);
+			}
+		}
+		updateGame();
+		if (restartGame)
+			goto Start; // Goto back to the start of the game
+	}
+}
+\end{lstlisting}
 
 \section{math}
 \label{math}
 
 \underline{math.h}
+\begin{lstlisting}
+#ifndef _math_h_
+#define _math_h_
+
+#define FIX14_SHIFT 14
+
+#define FIX14_MULT(a, b) ((a*b) >> FIX14_SHIFT)
+#define FIX14_DIV(a, b) (a << FIX14_SHIFT / b)
+
+typedef struct {
+	long x,y;
+} TVector;
+
+// Public
+long expand(long input);
+void printNumber(long input, unsigned char decimalBits, unsigned char decimal);
+void printFix(long input, unsigned char decimal);
+long sin(int val);
+long cos(int val);
+void initVector(TVector* v, long x, long y);
+void rotate(TVector* v, int val);
+void printVector(TVector* v);
+
+#endif
+\end{lstlisting}
+
 \underline{math.c}
+\begin{lstlisting}
+#include <eZ8.h>             // special encore constants, macros and flash routines
+#include <sio.h>             // special encore serial i/o routines
+#include "math.h"
+#include "lut.h"
+
+long expand(long input) {
+	return input << 2; // Convert an 18.14 to 16.16
+}
+
+void printNumber(long input,  unsigned char decimalBits, unsigned char decimal) {
+	int i;
+	unsigned long pow = 10, mask = 0xFFFFFFFF, result, output;
+
+	if ((input & 0x80000000) != 0) {
+		printf("-");
+		input = -input;
+	}
+
+	if (decimal > 5)
+		decimal = 5;
+
+	for (i=1;i<decimal;i++)
+		pow *= 10;
+
+	mask >>= (32 - decimalBits);
+	result = pow * (unsigned long)(input & mask);
+	output = result >> decimalBits;
+	output += (result >> (decimalBits-1)) & 0x1; // Round correctly
+
+	printf("%ld.%0*ld", input >> decimalBits, decimal, output);
+}
+
+void printFix(long input, unsigned char decimal) {
+	printNumber(input,FIX14_SHIFT,decimal);
+}
+
+long sin(int val) {
+	return SIN[val & 0x1FF];
+}
+
+long cos(int val) {
+	return sin(val + 128);
+}
+
+void initVector(TVector* v, long x, long y) {
+	v->x = x << FIX14_SHIFT;
+	v->y = y << FIX14_SHIFT;
+}
+
+void rotate(TVector* v, int val) {
+	long sinVal, cosVal, tempX;
+ 	sinVal = sin(val);
+	cosVal = cos(val);
+	tempX = v->x;
+
+	v->x = FIX14_MULT(v->x,cosVal) - FIX14_MULT(v->y,sinVal);
+	v->y = FIX14_MULT(tempX,sinVal) + FIX14_MULT(v->y,cosVal);
+}
+
+void printVector(TVector* v) {
+	printf("(");
+	printFix(v->x,4);
+	printf(",");
+	printFix(v->y,4);
+	printf(")\n");
+}
+\end{lstlisting}
+
 
 \section{reflexball}
 \label{reflexball}
 
 \underline{reflexball.h}
+\begin{lstlisting}
+#ifndef _reflexball_h_
+#define _reflexball_h_
+
+#include "ansi.h"
+#include "math.h"
+
+#define STRIKER_MAX_WIDTH	30 // This has to be even
+#define STRIKER_MAX_ANGLE	64 // 360 deg = 512
+#define NLIVES				3
+#define DEFAULT_DIFFICULTY	40
+#define UART_MAX_SPEED		20 // If it gets below this value, we will only draw it every second time or if it hits an object, this is because the UART can not send the characters fast enough
+#define MAX_DIFFICULTY		10 // If speed gets under this value the UART can no longer keep up
+#define BALL_WIDTH			4 // The modulus of this number should be even
+#define BALL_HEIGHT			2
+
+#define BRICK_TABLE_WIDTH	14
+#define BRICK_TABLE_HEIGHT	20
+
+
+typedef struct {
+	long x, y; // (x,y) is in the top left corner - these use the 18.14 format
+	unsigned char width, height;
+	TVector vector;
+} Ball;
+
+typedef struct {
+	unsigned char x, y, width;
+} Striker;
+
+typedef struct {
+	unsigned char x, y; // (x,y) is in the top left corner
+	unsigned char lives;
+	unsigned char width, height;
+} Brick;
+
+extern unsigned char divider; // This is the difficulty set in the beginning
+extern unsigned char strikerWidth; // This is the striker width determent from the selected difficulty
+extern unsigned char restartGame; // True if the user have won the game
+
+// Public
+void initReflexBall(unsigned char newX1, unsigned char newY1, unsigned char newX2, unsigned char newY2, char style);
+void startGame();
+void stopGame();
+void updateGame();
+void moveStriker(char dir);
+
+// Private
+void printLevel();
+void printLives();
+void printScore();
+void showScoreLED();
+void scrollLiveInGameLED();
+void scrollLevelUp();
+void scrollAll();
+void dead();
+unsigned char getTerminalCoordinate(long input);
+void gotoxyBall(long x, long y);
+void clearBigBall(long x, long y);
+void drawBigBall();
+void drawBrick(Brick *brick);
+void checkIteration(unsigned char x, unsigned char y);
+void setBallPos(unsigned char x, unsigned char y);
+void iterate();
+void drawStriker();
+void ballPosStriker();
+void initStriker(unsigned char x, unsigned y, unsigned char width);
+void initBricks(char clear);
+void initBall();
+void drawLevel();
+void levelUp();
+
+#endif
+\end{lstlisting}
+
 \underline{reflexball.c}
+\begin{lstlisting}
+#include <eZ8.h>             // special encore constants, macros and flash routines
+#include <sio.h>             // special encore serial i/o routines
+#include "reflexball.h"
+#include "time.h"
+#include "levels.h"
+#include "LED.h"
+#include "ascii.h"
+#include "asciidisplay.h"
+
+Ball ball;
+Striker striker;
+Brick bricks[BRICK_TABLE_HEIGHT][BRICK_TABLE_WIDTH];
+unsigned char strikerAngle[STRIKER_MAX_WIDTH/2-1+BALL_WIDTH/2-1];
+unsigned int bricksLives; // Stores the total number of lives of the bricks
+
+unsigned long gameTimer;
+unsigned char gameStarted = 0, alive;
+
+unsigned char x1, y1, x2, y2;
+
+unsigned int score, levelScore; // The total score and the score obtained in this level
+unsigned char divider; // This is the difficulty set in the beginning
+unsigned char strikerWidth; // This is the striker width determent from the selected difficulty
+
+unsigned char lives, level;
+volatile char runOnceBuf[50], ledBuf[50]; // We need this global buffer as the LED code creates a pointer to the memory location
+
+char drawCounter = 0;
+char drawCounterMax = 1;
+char drawBallNow;
+
+long lastX, lastY;
+
+unsigned char restartGame; // True if the user have won the game
+
+void printLevel() {
+	gotoxy(x2-35,y2);
+	printf("Level: %d", level+1);
+}
+void printLives() {
+	gotoxy(x2-25,y2);
+	printf("Lives: %d", lives);	
+}
+void printScore() {
+	gotoxy(x2-15,y2);
+	printf("Score: %04d$", score);
+}
+
+void showScoreLED() {
+	sprintf(ledBuf,"%04d",score);
+	LEDsetString(ledBuf);
+}
+void scrollLiveInGameLED() {
+	sprintf(ledBuf,"%04d",score);
+	sprintf(runOnceBuf,"%s$ Lives:%d£ %s ", ledBuf, lives, ledBuf); // We have to put a space behind as the LED routine aborts when it loaded the last character in the 5th digit
+	
+	LEDRunOnce(runOnceBuf,ledBuf);
+}
+void scrollLevelUp() {
+	sprintf(ledBuf,"%04d", score);
+	sprintf(runOnceBuf,"%s$ Level up!§ Level:%d Lives:%d£ %s ", ledBuf, level+1, lives, ledBuf); // We have to put a space behind as the LED routine aborts when it loaded the last character in the 5th digit
+	
+	LEDRunOnce(runOnceBuf,ledBuf);
+}
+void scrollAll() {
+	sprintf(ledBuf,"%04d",score);
+	sprintf(runOnceBuf,"%s$ Level:%d Lives:%d£ %s ", ledBuf, level+1, lives, ledBuf); // We have to put a space behind as the LED routine aborts when it loaded the last character in the 5th digit
+	
+	LEDRunOnce(runOnceBuf,ledBuf);
+}
+
+void dead() {
+	if(--lives == 0) {
+		delay_ms(1000); // Wait a bit before showing Game Over ASCII string
+		sprintf(ledBuf,"%04d$ Game Over! Score:", score);
+		LEDsetString(ledBuf);
+		showGameOver();
+		restartGame = 1;
+		return;
+	} else {
+		scrollLiveInGameLED();
+		printLives();
+	}
+
+	alive = 0;
+	stopGame();	
+}
+
+unsigned char getTerminalCoordinate(long input) {
+	unsigned char output = input >> FIX14_SHIFT;
+	output += (input >> (FIX14_SHIFT-1)) & 0x1; // Round correctly
+	return output;
+}
+
+void gotoxyBall(long x, long y) {
+	gotoxy(getTerminalCoordinate(x),getTerminalCoordinate(y));
+}
+
+void clearBigBall(long x, long y) {
+	gotoxyBall(x,y);
+	printf("    ");
+	gotoxyBall(x,y + ((long)1 << FIX14_SHIFT));
+	printf("    ");
+}
+
+void drawBigBall() {
+	const unsigned char top = 238, bottom = 95, slash = '/', backSlash = '\\';
+
+	if ((++drawCounter != drawCounterMax && !drawBallNow) || !alive) // Check if we should skip the draweing in this iteration or if the game is not running
+		return;
+	drawCounter = 0;
+	drawBallNow = 0;
+
+	clearBigBall(lastX,lastY);
+
+	lastX = ball.x;
+	lastY = ball.y;
+
+	gotoxyBall(ball.x,ball.y);
+	printf("%c%c%c%c",slash,top,top,backSlash);
+	gotoxyBall(ball.x,ball.y + ((long)1 << FIX14_SHIFT));
+	printf("%c%c%c%c",backSlash,bottom,bottom,slash);
+}
+
+void drawBrick(Brick *brick) {
+	unsigned char i, j, brickStyle;
+	for (i=0;i<brick->height;i++) {
+		gotoxy(brick->x,brick->y+i);
+		for (j=0;j<brick->width;j++) {
+			if (!brick->lives)
+				brickStyle = ' ';
+			else if (brick->lives == 1)
+				brickStyle = 176;
+			else if (brick->lives == 2)
+				brickStyle = 177;
+			else if (brick->lives == 3)
+				brickStyle = 178;
+			else if (brick->lives == 4)
+				brickStyle = 219;
+			else // Invisible
+				brickStyle = ' ';
+			printf("%c",brickStyle);			
+		}
+	}
+}
+
+void checkIteration(unsigned char x, unsigned char y) {
+	unsigned char i, j, dontDeflectX = 0, dontDeflectY = 0, deflectedX = 0, deflectedY = 0;
+	char distance; // Distance from center to ball position on striker
+	int angle;
+
+	if ((x > x1 && x+ball.width < x2 && y > y1 && y+ball.height-1 < y2-1) && gameStarted) {
+		for (i=0;i<BRICK_TABLE_HEIGHT;i++) {
+			for (j=0;j<BRICK_TABLE_WIDTH;j++) {
+				if (!bricks[i][j].lives) // Skip if lives == 0
+					continue;
+	
+				if (y-1 == bricks[i][j].y+bricks[i][j].height-1 || y+ball.height-1 == bricks[i][j].y-1 || x+ball.width-1 == bricks[i][j].x-1 || x-1 == bricks[i][j].x+bricks[i][j].width-1)
+					drawBallNow = 1; // Make sure it draws the ball in this iteration
+
+				// Check if the ball hit a brick
+				if (y <= bricks[i][j].y+bricks[i][j].height-1 && y+ball.height-1 >= bricks[i][j].y && x+ball.width-1 >= bricks[i][j].x && x <= bricks[i][j].x+bricks[i][j].width-1) {
+					score++;
+					levelScore++;
+					printScore();
+					showScoreLED();
+					
+					// Check if the ball hit the top or the bottom of the brick
+					if (y <= bricks[i][j].y+bricks[i][j].height-1 && y+ball.height-1 >= bricks[i][j].y) {												
+			  		    if (!deflectedY) {
+							if (x+ball.width-1 == bricks[i][j].x || x+ball.width-2 == bricks[i][j].x || x == bricks[i][j].x+bricks[i][j].width-1 || x == bricks[i][j].x+bricks[i][j].width-2) { // Left or right side
+								if (y+ball.height-1 >= bricks[i][j].y && y <= bricks[i][j].y) { // Top left or right corner on brick
+									if (i > 0 && bricks[i-1][j].lives) { // Make sure that there can actually be a brick above it
+										dontDeflectY = 1; // Don't deflect it
+										//gotoxy(x2-20,2);
+										//printf("Alive above! %04d",dontCounter++);
+									}
+								}
+								if (y <= bricks[i][j].y+bricks[i][j].height-1 && y+ball.height-1 >= bricks[i][j].y+bricks[i][j].height-1) { // Bottom left or right corner on brick
+									if (i+1 < BRICK_TABLE_HEIGHT && bricks[i+1][j].lives) { // Make sure that there can actually be a brick underneath it
+										dontDeflectY = 1; // Don't deflect it
+										//gotoxy(x2-20,2);
+										//printf("Alive below! %04d",dontCounter++);
+									}
+								}
+							} else if (y >= bricks[i][j].y && y+ball.height-1 <= bricks[i][j].y+bricks[i][j].height-1) // Check if we hit the brick directly from the side
+								dontDeflectY = 1;
+
+							if (y+ball.height-1 >= bricks[i][j].y && y <= bricks[i][j].y) { // Top of brick
+								if (ball.vector.y & 0x80000000) { // Negative
+									dontDeflectY = 1; // Don't deflect it
+									//gotoxy(x2-20,6);
+									//printf("Top negative! %04d",dontCounter++);
+								}
+							}
+							if (y <= bricks[i][j].y+bricks[i][j].height-1 && y+ball.height-1 >= bricks[i][j].y+bricks[i][j].height-1) { // Bottom of brick
+								//gotoxy(x2-20,6);
+								//printf("Bottom ");
+								if (!(ball.vector.y & 0x80000000)) { // Positive
+									dontDeflectY = 1; // Don't deflect it
+									//printf("positive! %04d",dontCounter++);
+								} /*else
+									printf("negative! %04d",dontCounter++);*/
+							}
+							
+							if (!dontDeflectY) {
+								deflectedY = 1;
+								ball.vector.y = -ball.vector.y;
+								ball.y += 2*ball.vector.y;
+							} /*else if (dontDeflectY) {
+								gotoxy(10,4);
+								printf("dontDeflectY: %d",dontCounter++);
+							}*/
+						}
+					}
+					// Check if the ball hit one of the sides of the brick
+					if (x+ball.width-1 == bricks[i][j].x || x+ball.width-2 == bricks[i][j].x || x == bricks[i][j].x+bricks[i][j].width-1 || x == bricks[i][j].x+bricks[i][j].width-2) {						
+						if (!deflectedX) {
+							if ((y+ball.height-1 >= bricks[i][j].y && y <= bricks[i][j].y) || (y <= bricks[i][j].y+bricks[i][j].height-1 && y+ball.height-1 >= bricks[i][j].y+bricks[i][j].height-1)) { // Top or bottom of brick
+								if (x+ball.width-1 == bricks[i][j].x || x+ball.width-2 == bricks[i][j].x) { // Top or bottom left side
+									if (j > 0 && bricks[i][j-1].lives) { // Check if there is one alive to the left of the brick
+										dontDeflectX = 1; // Don't deflect it
+										//gotoxy(x2-20,4);
+										//printf("Alive left! %04d",dontCounter++);
+									}
+								}
+								if (x == bricks[i][j].x+bricks[i][j].width-1 || x == bricks[i][j].x+bricks[i][j].width-2) { // Top or bottom right side
+									if (j+1 < BRICK_TABLE_WIDTH && bricks[i][j+1].lives) { // Check if there is one alive to the right of the brick
+										dontDeflectX = 1; // Don't deflect it
+										//gotoxy(x2-20,4);
+										//printf("Alive right! %04d",dontCounter++);
+									}
+								}
+							}
+							
+							if (x+ball.width-1 == bricks[i][j].x || x+ball.width-2 == bricks[i][j].x) { // Left side
+								if (ball.vector.x & 0x80000000) { // Negative
+									dontDeflectX = 1; // Don't deflect it
+									//gotoxy(x2-20,8);
+									//printf("Left negative! %04d",dontCounter++);
+								}
+							}
+							if (x == bricks[i][j].x+bricks[i][j].width-1 || x == bricks[i][j].x+bricks[i][j].width-2) { // Right side
+								if (!(ball.vector.x & 0x80000000)) { // Positive
+									dontDeflectX = 1; // Don't deflect it
+									//gotoxy(x2-20,8);
+									//printf("Right positive! %04d",dontCounter++);
+								}
+							}
+	
+							if (y != bricks[i][j].y) { // It hasn't hit the brick directly from the side
+								if (y < bricks[i][j].y) { // Top
+									if (!(ball.vector.y & 0x80000000) && !(i > 0 && bricks[i-1][j].lives)) { // Check if it is positive and make sure there is no brick above
+										dontDeflectX = 1; // Don't deflect it
+										//gotoxy(x2-20,14);
+										//printf("Top none above! %04d",dontCounter++);
+									}
+								} else { // Bottom
+									if (ball.vector.y & 0x80000000 && !(i+1 < BRICK_TABLE_HEIGHT && bricks[i+1][j].lives)) { // Check if it is negative and make sure there is no brick below
+										dontDeflectX = 1; // Don't deflect it
+										//gotoxy(x2-20,14);
+										//printf("Bottom none below! %04d",dontCounter++);
+									}
+								}								
+							}
+
+							if (!dontDeflectX) {
+								deflectedX = 1;
+								ball.vector.x = -ball.vector.x;
+								ball.x += 2*ball.vector.x;
+							} /*else if (dontDeflectX) {
+								gotoxy(10,2);
+								printf("dontDeflectX: %d",dontCounter++);
+							}*/
+						}						
+					}
+					bricks[i][j].lives--;
+					bricksLives--;				
+					drawBrick(&bricks[i][j]);
+					if (!bricksLives) {
+						levelUp();
+						return;
+					}
+					ball.vector.x >>= 1; // We need to set this back again before rotating
+					angle = (int)(millis() & 0x7) - 3; // Pseudo random number from -3 to 4
+					//gotoxy(x1+10,y2-10);
+					//printf("Angle: %02d", angle);
+					rotate(&ball.vector, angle); // Slightly rotate the ball from -3 to 4, to make the game more exciting
+					ball.vector.x <<= 1; // The x vector needs to be twice as large due to the y-axis being twice as high on the screen
+				}			
+			}
+		}
+	
+		if (dontDeflectX && dontDeflectY) {
+			//gotoxy(x2-20,12);
+			//printf("CornerHit: %d",dontCounter++);
+			ball.vector.y = -ball.vector.y;
+			ball.y += 2*ball.vector.y;
+			ball.vector.x = -ball.vector.x;
+			ball.x += 2*ball.vector.x;
+		}
+	}
+	else if (((y+ball.height-1 > striker.y) || (y+ball.height-1 == striker.y && (x+ball.width <= striker.x || x >= striker.x+striker.width))) && gameStarted) { // If you are below the striker then player must be dead	
+		drawBallNow = 1;
+		drawBigBall();
+		dead();
+		return;
+	}
+	else if (gameStarted) {
+		if (x <= x1 || x+ball.width >= x2) {
+			ball.vector.x = -ball.vector.x;
+			ball.x += 2*ball.vector.x;
+		}		
+		if ((y <= y1) || (y+ball.height-1 == striker.y && x+ball.width > striker.x && x < striker.x+striker.width)) {
+			if (y+ball.height-1 == striker.y) { // Check if we hit the striker
+				printScore();
+				showScoreLED();
+	
+				distance = x+ball.width-1 - striker.x;
+
+				if (distance < striker.width/2-1+BALL_WIDTH/2-1) // The ball hit the left side
+					angle = strikerAngle[(((striker.width/2-1)+(BALL_WIDTH/2-1))-1)-distance];
+				else if (distance > striker.width/2+1+BALL_WIDTH/2-1) // The ball hit the right side
+				 	angle = -(int)strikerAngle[distance-(((striker.width/2+1)+(BALL_WIDTH/2-1))+1)]; // IMPORTANT: remember to cast to int before the minus sign
+				else
+					angle = 0;
+
+				if (angle != 0) {
+					/*gotoxy(10,20);
+					printf("                  ");
+					gotoxy(10,20);
+					printf("Rotating: %d", angle);*/
+
+
+					ball.vector.x >>= 1; // We need to set this back again before rotating
+					rotate(&ball.vector,angle);
+
+					if (((ball.vector.y >> 12) & 0x7) == 0) { // Check if below 1/4 or approximately 15 degrees
+						/*gotoxy(10,16);
+						printf("BeforeY: ");
+						printFix(ball.vector.y,4);*/
+						ball.vector.y = 1 << 12; // 1/4
+						/*printf(" AfterY: ");
+						printFix(ball.vector.y,4);*/
+				
+						/*printf(" BeforeX: ");
+						printFix(ball.vector.x,4);*/
+						if (ball.vector.x & 0x80000000) // Negative
+							ball.vector.x = -(long)15864; // -(cos(arcsin(1/4)) << 14)
+						else
+							ball.vector.x = 15864; // cos(arcsin(1/4)) << 14
+						/*printf(" AfterX: ");
+						printFix(ball.vector.x,4);*/
+					}
+
+					ball.vector.x <<= 1; // The x vector needs to be twice as large due to the y-axis being twice as high on the screen
+				}
+				/*gotoxy(10,10);
+				printf("%02d %02d",distance,angle);*/
+			}
+			ball.vector.y = -ball.vector.y;
+			ball.y += 2*ball.vector.y;
+		}
+	}
+
+	if (x == x1+1 || x+ball.width == x2-1 || y == y1+1 || (y+ball.height-1 == striker.y-1 && x+ball.width > striker.x && x < striker.x+striker.width)) // Check if we are next to the sides, top or striker
+		drawBallNow = 1; // If so then draw the ball in this iteration
+
+	drawBigBall();	
+}
+
+void setBallPos(unsigned char x, unsigned char y) {
+	ball.x = (long)x << FIX14_SHIFT;
+	ball.y = (long)y << FIX14_SHIFT;
+}
+
+void iterate() {
+	if (alive && gameStarted) {
+		ball.x += ball.vector.x;
+		ball.y += ball.vector.y;
+	}
+	checkIteration(getTerminalCoordinate(ball.x),getTerminalCoordinate(ball.y));
+}
+
+void drawStriker() {
+	const unsigned char strikerStyle = 223;
+	unsigned char i;
+	gotoxy(striker.x,striker.y);
+	if (divider == 1) // Blink striker if Chuck Norris mode is on
+		blink(1);
+	for (i=0;i<striker.width;i++)
+		printf("%c",strikerStyle);
+	if (divider == 1)
+		blink(0);
+}
+
+void ballPosStriker() {
+	setBallPos(striker.x+striker.width/2-ball.width/2,striker.y-ball.height);
+	iterate();
+	drawStriker(); // Redraw striker in case the ball clears part of the stikers
+}
+
+void moveStriker(char dir) { // Take care of moving the striker left or right
+	char absDir = dir;
+	if (!lives) // If no lives left then return
+		return;	
+	if (dir < 0)
+		absDir = -dir;
+
+	if ((int)striker.x + dir <= x1)
+		striker.x = x1+1;
+	else if (striker.x+striker.width-1 + dir >= x2)
+		striker.x = x2-striker.width;
+	else
+		striker.x += dir;
+
+	if (dir < 0) // Left
+		gotoxy(striker.x+striker.width,striker.y);
+	else // Right
+		gotoxy(striker.x-dir,striker.y);
+
+	for (; absDir > 0; absDir--)
+		printf(" "); // Clear old char
+
+	drawStriker();
+
+	if (!gameStarted) {
+		ballPosStriker();
+		if (!alive)
+			startGame();
+	}
+}
+
+void initStriker(unsigned char x, unsigned y, unsigned char width) {
+	unsigned char i, dAngle, strikerZones;
+
+	if (width > STRIKER_MAX_WIDTH)
+		width = STRIKER_MAX_WIDTH;
+
+	strikerZones = width/2-1+BALL_WIDTH/2-1; // The striker is split up into zones to the left and right of the striker center
+
+	striker.x = x - width/2;
+	striker.y = y;
+	striker.width = width;
+	drawStriker();
+
+	dAngle = STRIKER_MAX_ANGLE/strikerZones; // Delta angle between striker characters
+
+	//gotoxy(10,8);
+	for (i = 1; i <= strikerZones; i++) {
+		strikerAngle[i-1] = dAngle*i; // Fill in the array - the longer distance from the center, the larger angle it will be reflected with
+		//printf("%d ", strikerAngle[i-1]);
+	}
+}
+
+void stopGame() {
+	gameStarted = 0;
+}
+
+void initBricks(char clear) {
+	unsigned char i, j;
+
+	bricksLives = 0; // Reset
+
+	for (i=0;i<BRICK_TABLE_HEIGHT;i++) {
+		for (j=0;j<BRICK_TABLE_WIDTH;j++) {
+			bricks[i][j].width = 14;
+			bricks[i][j].height = 2;
+
+			bricks[i][j].lives = levels[level][i][j];
+			bricksLives += bricks[i][j].lives;
+			bricks[i][j].x = x1+6 + (bricks[i][j].width+1)*j;
+			bricks[i][j].y = y1+3 + (bricks[i][j].height+1)*i;
+			if (bricks[i][j].lives || clear)
+				drawBrick(&bricks[i][j]);
+		}
+	}
+}
+
+void startGame() {
+	int startAngle;
+	if (!alive) {
+		alive = 1;
+		if (lives == 0) {						
+			score = 0;
+			levelScore = 0;
+			showScoreLED();
+			initReflexBall(x1,y1,x2,y2,1);
+
+			gameTimer = 0;
+			printLives();
+			printScore();			
+			printLevel();
+		}
+		ballPosStriker();		
+	} else if (!gameStarted) {
+		initVector(&ball.vector,1,0);
+		startAngle = (millis() & 0x7F) - 192; // Calculate a "random" angle from 0-127 (0-89.3 deg) and then subtract 192 (135 deg)
+
+		//gotoxy(10,6);
+		//printf("Start angle: %02d",(startAngle*360)/512);
+		
+		rotate(&ball.vector, startAngle);
+		
+		/*printf(" ");
+		printFix(ball.vector.x,4);
+		printf(" ");
+		printFix(ball.vector.y,4);*/
+
+		ball.vector.x <<= 1; // The x vector needs to be twice as large due to the y-axis being twice as high on the screen
+		gameTimer = 0;
+		gameStarted = 1;
+		updateGame();
+	}
+}
+
+void updateGame() {
+	int speed = DEFAULT_DIFFICULTY-levelScore/divider; // Calculate teh speed using the score obtained in the current level and the divider set in the start up menu
+	if (speed < MAX_DIFFICULTY || divider == 1) // Limit maximum speed and set maximum speed as default if Chuck Norris mode is enabled
+		speed = MAX_DIFFICULTY;
+		
+	if (speed < UART_MAX_SPEED) // If it gets below this value, we will only draw it every second time or if it hits an object, this is because the UART can not send the characters fast enough
+		drawCounterMax = 2;
+	else
+		drawCounterMax = 1;
+
+	if (millis() - gameTimer > speed && gameStarted) {
+		gameTimer = millis();
+		iterate();
+	}
+}
+
+void initBall() {
+	setBallPos(striker.x+striker.width/2-2,striker.y-2); // Initialize the ball position to the striker position, as ballPosStriker will clear this
+	ball.width = BALL_WIDTH; // This has to be even
+	ball.height = BALL_HEIGHT;
+	initVector(&ball.vector,0,0);
+}
+void drawLevel(char clear) {
+	unsigned char i;
+
+	gotoxy(striker.x,striker.y);
+	for (i=0;i<striker.width;i++)
+		printf(" "); // Clear old striker
+	initStriker((x2-x1)/2+x1,y2-1,strikerWidth); // The width of the striker should always be even
+
+	initBall(); // Initialize to striker position
+	
+	alive = 1;
+	gameStarted = 0;
+	ballPosStriker();
+
+	printLives();
+	printScore();	
+	printLevel();
+
+	gameTimer = 0;
+
+	initBricks(clear);
+}
+
+void levelUp() {
+	level++;	
+	if (level >= sizeof(levels)/sizeof(levels[0])) { // Check if the user won the game
+		showWon();
+		if (divider != 1) { // If not in Chuck Norris mode, then the user wins the game
+			restartGame = 1;
+			return;
+		}
+		initReflexBall(x1,y1,x2,y2,1);
+		return;
+	}	
+	lives += 2;
+	
+	levelScore = 0;
+	scrollLevelUp();
+	drawLevel(1);
+}
+
+void initReflexBall(unsigned char newX1, unsigned char newY1, unsigned char newX2, unsigned char newY2, char style) {
+	unsigned char leftTop, rightTop, leftBot, rightBot, verSide, horSide, leftCross, rightCross;
+
+	x1 = newX1;
+	y1 = newY1;
+	x2 = newX2;
+	y2 = newY2;
+
+	if (style) { // Bold
+		leftTop = 201;
+		rightTop = 187;
+		leftBot = 200;
+		rightBot = 188;
+		verSide = 186;
+		horSide = 205;
+		leftCross = 185;
+		rightCross = 204;
+	} else { // Normal
+		leftTop = 218;
+		rightTop = 191;
+		leftBot = 192;
+		rightBot = 217;
+		verSide = 179;
+		horSide = 196;
+		leftCross = 180;
+		rightCross = 195;
+	}
+
+	lastX = (long)((x1+x2)/2) << FIX14_SHIFT; // Sets the last ball coordinates just above striker, so it clears the ball correctly the first time
+	lastY = (long)(y2-1-BALL_HEIGHT) << FIX14_SHIFT;
+
+	clrscr(); // Clear the screen
+	
+	// Put the title in the top of the screen - this is done when animateTitle() is called inside updateGame()
+	printAsciiXY(titleAscii1[0],sizeof(titleAscii1)/sizeof(titleAscii1[0]),(x1+x2)/2-strlen_rom(titleAscii1[0])/2,y1/2-(sizeof(titleAscii1)/sizeof(titleAscii1[0]))/2);
+
+	drawSides(x1,y1,x2,y2,verSide);	
+	drawTopBot(x1,y1,x2-x1-1,leftTop,rightTop,horSide);
+	
+	restartGame = 0;
+	level = 0;
+	score = 0;
+	levelScore = 0;
+	lives = NLIVES;
+	drawLevel(0);
+	scrollAll();
+}
+\end{lstlisting}
+
 
 \section{time}
 \label{time}
 
 \underline{time.h}
+\begin{lstlisting}
+#ifndef _time_h_
+#define _time_h_
+
+#define PRE1	(0 << 3);
+#define PRE2	(1 << 3);
+#define PRE4	(2 << 3);
+#define PRE8	(3 << 3);
+#define PRE16	(4 << 3);
+#define PRE32	(5 << 3);
+#define PRE64	(6 << 3);
+#define PRE128	(7 << 3);
+
+#define PRIORITY_TIMER0 (1 << 5)
+#define PRIORITY_TIMER1 (1 << 6)
+#define PRIORITY_TIMER2 (1 << 7)
+
+// Public
+void initTimers();
+unsigned long millis();
+void delay_ms(unsigned long time);
+
+// Private
+void timer1int();
+
+#endif
+\end{lstlisting}
+
 \underline{time.c}
+\begin{lstlisting}
+#include <eZ8.h>             // special encore constants, macros and flash routines
+#include <sio.h>             // special encore serial i/o routines
+#include "time.h"
+#include "ansi.h"
+
+volatile unsigned long delayTimer, mscounter;
+
+void initTimers() {
+	DI(); // Disable interrupt
+
+	T1CTL = 0; // TEN - disable timer
+	T1CTL |= PRE1; // PRES - Prescaler
+	T1CTL |= (1 << 0); // TMODE - continuous mode
+
+	T1H = 0;
+	T1L = 1;
+	
+	T1RH = 18432 >> 8; // Interrupt every 1ms
+	T1RL = 18432 & 0xFF;
+
+	SET_VECTOR(TIMER1, timer1int); // Enter the timer1int function at each interrupt
+	
+	// Set timer1 priority to high
+	IRQ0ENH |= PRIORITY_TIMER1;
+	IRQ0ENL |= PRIORITY_TIMER1;
+	
+	delayTimer = 0;
+	mscounter = 0;
+
+	T1CTL |= (1 << 7); // TEN - enable timer
+
+	EI(); // Enable interrupt
+}
+
+unsigned long millis() {
+	return mscounter;
+}
+
+void delay_ms(unsigned long time) { // This is not that acurate, but good enough for our needs
+	delayTimer = time;
+	while(delayTimer);
+}
+
+#pragma interrupt
+void timer1int() {
+	delayTimer--;
+	mscounter++;
+}
+\end{lstlisting}
