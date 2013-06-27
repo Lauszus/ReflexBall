@@ -1,18 +1,66 @@
 \chapter{Verifikation}
 
+I dette afsnit vil vi kort gennemgå hvordan vi testede om de forskellige delmål var opfyldt. \\
 
 
-Skriv verifikationsafsnit
-	Hvordan vi har testet det hele
-	Globale variabler
-	
-	
-	
-	
-	
-Dette er vel egentlig diskussion?
-	Problemer med brikker og bold
-	Nåede ikke power-ups og power-downs
-	Fandt undervejs ud af vi ville inkludere ASCII-Art
-	Hvad vi nåede og hvad vi ikke nåede (se tidsplan2.png
-	
+\textbf{Delmål Basics}
+\begin{itemize}
+\item \textbf{Detektere tastatur-input }
+\\ Testet ved at udskrive inputtet på skærmen.
+\item \textbf{Tegne banen, Bevæge strikeren, Bevægelig bold}
+\\ Testet ved at se på skærmen om der skete det vi ønskede.
+
+\item \textbf{Bolden reflekteres af striker, loft og vægge}
+\\ Testet ved at prøve spillet.
+\item \textbf{Det skal detekteres når bolden er under strikeren (man er død)}
+\\ Testet ved at skrive tekst til skærmen og stoppe spillet når dette skete.
+\end{itemize}
+
+\textbf{Delmål advanced}
+\begin{itemize}
+\item \textbf{Liv-system, Pointsystem}
+\\ Testet ved at skrive variablen indeholdende antallet af liv på skærmen.
+
+\item \textbf{Ændring i boldhastighed i takt med ens score stiger}
+\\ Testet ved at skrive til skærmen samt at få hastigheden til at stige hurtigt så det var let at se hvornår det skete.
+
+\item \textbf{Internt 18.14 koordinatsystem}
+\\ Testet ved at omregne boldens koordinater fra 18.14 til decimaltal og skrive dem til skærmen.
+\item \textbf{Bolden skal starte i en tilfældig vinkel}
+\\ Testet ved at skrive vinklen på skærmen.
+\item \textbf{Striker-zoner}
+\\ Testet ved at skrive de forskellige zoner til skærmen når strikeren initialiseres. Maks-vinklen er skrevet ved at skrive før- og efter-vinkel til skærmen når maks-vinklen nås. 
+\item \textbf{Stor bold}
+\\ Kan ses på skærmen.
+\item \textbf{Forskellige sværhedsgrader}
+\\ Testet ved at se om striker-størrelse og hastighed svarer til sværhedsgraden.
+
+\end{itemize}	
+
+\textbf{Brikker}
+\begin{itemize}
+\item \textbf{Banen skal indeholde brikker}
+\\ Kan ses på skærmen.
+\item \textbf{Forskellige typer brikker}
+\\ Testet ved at ramme brikkerne så mange gange som de har liv og se at de forsvinder.
+\item \textbf{Der skal være forskellige levels med brikker i forskellige mønstre}
+\\ Testet ved at starte spillet i de forskellige baner. Overgangen mellem banerne er testet ved at gennemføre en bane. 
+\item \textbf{Når bolden rammer brikker og kanter skal den reflekteres på en logisk måde så fysikken i spillet ser realistisk ud}
+\\ Testet ved at spille spillet en masse hvor bolden både kørte med høj og lav hastighed. 
+\end{itemize}
+
+\textbf{Helhedsindtryk}
+\begin{itemize}
+\item \textbf{LED display med score, liv og levels}
+\\ Testet ved at se om det rigtige blev skrevet ud.
+\item \textbf{Menu, beskeder ved Game Over, besked hvis spillet vindes}
+\\ Game over er testet ved at blive tabe spillet. Besked når spillet vindes er testet ved kun at lave en bane i spillet og så klare den. 
+\end{itemize}
+
+\textbf{Hardware}
+\begin{itemize}
+\item \textbf{Styring med intern hardware (knapper på microcontrolleren)}
+\\ Testet ved at skrive input fra knappen til skærmen. 
+\item \textbf{Tilslutning af ekstern hardware (DEXXA Steering Wheel)}
+\\ Testet ved skrive input til skærmen. Inputtet bliver omregnet til en værdi der bestemmer hvor langt vi rykker strikeren. Denne omregning er også testet ved at skrive den til skærmen. Rattet er desuden testet ved at spille spillet med det som controller. 
+\end{itemize}

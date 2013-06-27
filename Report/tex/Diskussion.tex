@@ -5,7 +5,7 @@ Dette projekt valgte vi at dele op i en række delmål. Delmålene var delt op i
 
 \begin{figure}[h!]
 \centering
-\includegraphics[scale=0.4]{figs/Tidsplan2.png}
+\includegraphics[width=\linewidth]{figs/Tidsplan2.png}
 \caption{Øverst: Tidsplan over de forskellige delmål og hvornår de skulle være færdige. Nederst: Hvad vi rent faktisk lavede og hvornår}
 \label{fig:tidsplan2}
 \end{figure}
@@ -15,9 +15,9 @@ En stor del af arbejdet med brikkerne bestod af debugging og rettelser i koden. 
 
 Hvis vi skulle have implementeret powerups i spillet kunne det være gjort ved at tjekke om en brik døde hver gang man ramte en brik. Hvis den gjorde det, kunne vi f.eks. lade de sidste tre bit af millis() bestemme om man fik en powerup. Hvis de sidste tre bit gav f.eks. 0 kunne man få en powerup. På den måde ville det være tilfældigt om man fik en powerup, man ville have 1/8 sandsynlighed for at det skete. \\
 
-Den store udfordring med powerups er dog at implementere en masse forskellige sjove features de skulle have. En powerup kunne f.eks. give langsom hastighed, flere bolde, bredere striker, større/mindre bold, blinkende eller usynlig striker, blinkende level, flere brikker, mulighed for  at skyde eller mange andre ting. For at det skulle være en gennemført implementering af powerups skulle vi dog lave flere forskellige funktioner, og dette ville derfor blive et forholdsvis stort arbejde. Vi valgte derfor at fokusere på at lave et gennemført spil hvor der var tænkt over detaljerne.\\
+Den store udfordring med powerups er dog at implementere en masse forskellige sjove features de skulle have. En powerup kunne f.eks. give langsom hastighed, flere bolde, bredere striker, større/mindre bold, blinkende eller usynlig striker, blinkende level, flere brikker, mulighed for  at skyde eller mange andre ting. For at det skulle være en gennemført implementering af powerups skulle vi dog lave flere forskellige funktioner, og dette ville derfor blive et forholdsvis stort arbejde. Vi valgte derfor at fokusere på at lave et gennemført spil hvor detaljerne var i højsædet.\\
 
-
-SKRIV OM GLOBALE VARIABLE
-
-
+Vi forsøgte så vidt muligt at mindske antallet af globale variabler, da det hurtigt ville gøre koden meget uoverskuelig.\\
+I de enkelte .c filer har vi forsøgt at bruge så få globale variabler defineret i andre filer som muligt, da det specielt ville gøre det hele meget uoverskueligt. \\
+Det var dog svært helt at undgå globale variabler i takt med at koden blev mere og mere kompliceret. Specielt \nameref{reflexball}.c bruger en række globale variable. Vi mener dog ikke at de er brugt i unødvendigt, da de er nødvendige for at gemme information såsom brikken og strikerens position, antallet af liv brugeren har tilbage, tiden siden sidste iteration etc.
+Vi har dog bestræbt os på at kalde de forskellige variabler så sigende navne som muligt, så der forhåbentligt opstår så lidt forvirring som muligt. 
