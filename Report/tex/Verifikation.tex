@@ -183,6 +183,7 @@ Det der er vist på denne figur er, borset fra de omgivende brikker, samme situa
 %%%% NÆSTE KOLONNE
 \node [placeholder, opacity=0, right=of t0] (k0) {};
 
+\node [proc, it, fill=gray!30, right=of t1]  (e1) {Næste brik i \\ for-loop};
 
 \node [placeholder, opacity=0, right=of t4]  {};
 \node [test] 	(t6) {Bund, ven- \\ stre/højre?};
@@ -221,13 +222,16 @@ Det der er vist på denne figur er, borset fra de omgivende brikker, samme situa
 
 %%\node [test] (t19) {Højre side?};
 %%%%% NÆSTE KOLONNE
-\node [placeholder, opacity=0, right=of t12] (k1) {};
+%\node [placeholder, opacity=0, right=of t12] (k1) {};
+\node [proc, it, right=of t12] 			(k1) {Død};
+\node [proc, it, fill=yellow!30, right=of t13] (e0) {Herefter følger koden \\  i den gule boks nedenfor};
 \node [test, right=of t16] 	(t18) {Højre side?};
 \node [test] 				(t19) {Kommer fra \\ venstre?};
 \node [term]      			(p12) {dontDeflectX};
 
 \node [test, right=of t22] 	(t23) {Fra neden \& \\ frit under?};
 \node [term]    			(p14) {dontDeflectX};
+\node [proc, it, fill=yellow!30, right=of p15]  (e1) {brick.lives- - \\ Tegn brik \\ Drej random vinkel };
 
 %%%%% NÆSTE KOLONNE
 \node [test, right=of k1] 	(t25) {Under striker?};
@@ -239,7 +243,7 @@ Det der er vist på denne figur er, borset fra de omgivende brikker, samme situa
 \node [proc] 				(p17) {Roter afhængigt \\ af hvor man rammer};
 \node [proc, join] 			(p18) {Reflekter Y};
 \node [proc, join] 			(p19) {drawBigBall};
-
+\node [proc, it, fill=gray!30, right=of e1]  (e1) {Næste brik i \\ for-loop};
 
 
 
@@ -404,7 +408,9 @@ Det der er vist på denne figur er, borset fra de omgivende brikker, samme situa
 
 
 % Næste kolonne
-\node [coord, right = 62 mm of t0] (ct12)  {}; %\cmark{1}
+
+\node [coord, below = of t0] (ct0b)  {}; %\cmark{1}
+\node [coord, right = 62 mm of ct0b] (ct12)  {}; %\cmark{1}
 \node [coord, right = 62 mm of t2] (ct2r)  {}; %\cmark{1}
 \node [coord, right = 62 mm of t3] (ct3r)  {}; %\cmark{1}
 
@@ -434,49 +440,46 @@ Det der er vist på denne figur er, borset fra de omgivende brikker, samme situa
 \node [coord, right = 21 mm of cp13] (cp13r)  {}; %\cmark{1}
 
 \node [coord, below = of p14] (cp14)  {}; %\cmark{1}
+\node [coord, right = 21 mm of t23] (ct23)  {}; %\cmark{1}
+\node [coord, right = 22 mm of t20] (ct20)  {}; %\cmark{1}
 
+%Sidste kolonne
+\node [coord, right = 22 mm of t0] (ct0r)  {}; %\cmark{1}
+\node [coord, left = 18 mm of t27] (ct27)  {}; %\cmark{1}
+\node [coord, left = 16 mm of t29] (ct29)  {}; %\cmark{1}
+
+\node [coord, below = of p16] (cp16)  {}; %\cmark{1}
+\node [coord, below = 6mm of p17] (cp17)  {}; %\cmark{1}
+\node [coord, below = of p18] (cp18)  {}; %\cmark{1}
+\node [coord, left = 18 mm of cp16] (cp16l)  {}; %\cmark{1}
+\node [coord, left = 16 mm of cp17] (cp17l)  {}; %\cmark{1}
+\node [coord, right = 18 mm of cp18] (cp18r)  {}; %\cmark{1}
+
+\node [coord, right = 18 mm of t26] (ct26)  {}; %\cmark{1}
+\node [coord, right = 18 mm of t28] (ct28)  {}; %\cmark{1}
 
 % -------------------------------------------------
 % Finally, the twisty connectors. Again, we place the annotation
 % first, then draw the connector
 
-% Næste kolonne 
-
-\path (t14.east) to node [very near start, yshift=1em] {$nej$} (ct14); 
-  \draw [->] (t14.east) -- (ct14) |-(cp9) -| (t15);
+\path (t0.east) to node [very near start, yshift=1em] {$nej$} (ct0r); 
+  \draw [->] (t0.east) -- (ct0r) -| (t25);
   
-\path (t15.east) to node [very near start, yshift=1em] {$nej$} (ct15); 
-  \draw [->] (t15.east) -- (ct15) |-(cp10) -| (t16);
+\path (t25.west) to node [very near start, yshift=1em] {$ja$} (k1); 
+  \draw [->] (t25.west)  --(k1);
+
+\path (t27.west) to node [very near start, yshift=1em] {$nej$} (ct27); 
+  \draw [->] (t27.west)  --(ct27) |- (cp16l) -|(t28);
   
-\path (t13.east) to node [very near start, yshift=1em] {$nej$} (ct13); 
-  \draw [->] (t13.east) -- (ct13) |-(cp10r) ;
+\path (t29.west) to node [very near start, yshift=1em] {$nej$} (ct29); 
+  \draw [->] (t29.west)  --(ct29) |- (cp17l) -|(p18);
 
-\path (p11.south) to node [very near start, yshift=1em] {} (cp11); 
-  \draw [->] (p11.south) |- (cp11) -|(ck3) -| (t18) ;
+\path (t26.east) to node [very near start, yshift=1em] {$nej$} (ct26); 
+  \draw [->] (t26.east)  --(ct26) |- (cp18r) -|(p19);
   
-\path (t16.east) to node [very near start, yshift=1em] {$nej$} (ct16); 
-  \draw [->] (t16.east) -- (ct16);
-
-\path (t17.east) to node [very near start, yshift=1em] {$nej$} (ct17); 
-  \draw [->] (t17.east) -- (ct17);
-
-
-\path (p12.south) to node [near start, yshift=1em] {} (cp11b); 
-  \draw [->] (p12.south) |- (cp11b) -| (t20);
-  
-\path (t18.east) to node [very near start, yshift=1em] {$nej$} (ct18); 
-  \draw [->] (t18.east) -| (ct18) |- (cp11b) -|(t20) ; 
-
-\path (t19.east) to node [very near start, yshift=1em] {$nej$} (ct19); 
-  \draw [->] (t19.east) -- (ct19) ; 
-
-\path (t21.east) to node [very near start, yshift=1em] {$nej$} (t23); 
-  \draw [->] (t21.east) -| (t23) ; 
-  
-\path (t22.east) to node [very near start, yshift=1em] {$nej$} (cp13r); 
-  \draw [->] (t22.east) -| (cp13r) ; 
-
-%% Slut nedenfor er starten
+\path (t28.east) to node [very near start, yshift=1em] {$nej$} (ct28); 
+  \draw [->] (t28.east)  --(ct28);
+%% Slut..! nedenfor er starten
 
 
 \path (t1.east) to node [very near start, yshift=1em] {$nej$} (ct1); 
@@ -532,7 +535,52 @@ Det der er vist på denne figur er, borset fra de omgivende brikker, samme situa
 \path (t10.east) to node [very near start, yshift=1em] {$nej$} (ct10); 
   \draw [->] (t10.east) -| (ct10) |- (cp7);
   
+
+
+% Næste kolonne 
+
+\path (t14.east) to node [very near start, yshift=1em] {$nej$} (ct14); 
+  \draw [->] (t14.east) -- (ct14) |-(cp9) -| (t15);
   
+\path (t15.east) to node [very near start, yshift=1em] {$nej$} (ct15); 
+  \draw [->] (t15.east) -- (ct15) |-(cp10) -| (t16);
+  
+\path (t13.east) to node [very near start, yshift=1em] {$nej$} (ct13); 
+  \draw [->] (t13.east) -- (ct13) |-(cp10r) ;
+
+\path (p11.south) to node [very near start, yshift=1em] {} (cp11); 
+  \draw [->] (p11.south) |- (cp11) -|(ck3) -| (t18) ;
+  
+\path (t16.east) to node [very near start, yshift=1em] {$nej$} (ct16); 
+  \draw [->] (t16.east) -- (ct16);
+
+\path (t17.east) to node [very near start, yshift=1em] {$nej$} (ct17); 
+  \draw [->] (t17.east) -- (ct17);
+
+
+\path (p12.south) to node [near start, yshift=1em] {} (cp11b); 
+  \draw [->] (p12.south) |- (cp11b) -| (t20);
+  
+\path (t18.east) to node [very near start, yshift=1em] {$nej$} (ct18); 
+  \draw [->] (t18.east) -| (ct18) |- (cp11b) -|(t20) ; 
+
+\path (t19.east) to node [very near start, yshift=1em] {$nej$} (ct19); 
+  \draw [->] (t19.east) -- (ct19) ; 
+
+\path (t21.east) to node [very near start, yshift=1em] {$nej$} (t23); 
+  \draw [->] (t21.east) -| (t23) ; 
+  
+\path (t22.east) to node [very near start, yshift=1em] {$nej$} (cp13r); 
+  \draw [->] (t22.east) -| (cp13r) ; 
+  
+\path (p14.south) to node [near start, yshift=1em] {} (cp14); 
+  \draw [->] (p14.south) |- (cp14) -| (t24);
+
+\path (t20.east) to node [near start, yshift=1em] {$nej$} (ct20); 
+  \draw [->] (t20.east) -- (ct20) -| (ct23); 
+
+\path (t23.east) to node [very near start, yshift=1em] {$nej$} (ct23); 
+  \draw [->] (t23.east) -- (ct23) |- (cp14) ;   
 
 
 %\path (t1.east) to node [near start, yshift=1em] {$n$} (c1); 
