@@ -1,6 +1,6 @@
 #include "ascii.h"
 
-rom const char titleAscii1[11][127] = {
+rom const char titleAscii1[11][127] = { // "ReflexBall RALLY" animation 1
 	"                                                                               )                           (                ) ",
 	"                                                                            ( /(         (                 )\\ )          ( /( ", 
 	"                                                                           )\\) )(        ))\\       (      (()/(      (   )\\())",
@@ -14,7 +14,7 @@ rom const char titleAscii1[11][127] = {
 	" |____|_  /\\___  >__|  |____/\\___  >__/\\_ \\|______  /(____  /____/____/  |__|  \\___)(___/    \\___)\\_______)\\_______)|___/     ",
 };
 
-rom const char titleAscii2[11][127] = {
+rom const char titleAscii2[11][127] = { // "ReflexBall RALLY" animation 2
 	"                                                                               (                           )                ( ",
 	"                                                                            ) \\)         )                 (/ (          ) \\) ",
 	"                                                                           (/( ()        ((/       )      ))(\\)      )   (/)((",
@@ -28,7 +28,7 @@ rom const char titleAscii2[11][127] = {
 	" |____|_  /\\___  >__|  |____/\\___  >__/\\_ \\|______  /(____  /____/____/  |__|  \\___)(___/    \\___)\\_______)\\_______)|___/     ",
 };
 
-rom const char menuAscii[10][78] = {
+rom const char menuAscii[10][78] = { // Menu
 	"                  /$$      /$$ /$$$$$$$$ /$$   /$$ /$$   /$$                 ",
 	"                 | $$$    /$$$| $$_____/| $$$ | $$| $$  | $$                 ",
 	"                 | $$$$  /$$$$| $$      | $$$$| $$| $$  | $$                 ",
@@ -41,7 +41,7 @@ rom const char menuAscii[10][78] = {
 	"|___________________________________________________________________________/",
 };
 
-rom const char easyAscii[8][24] = {
+rom const char easyAscii[8][24] = { // Easy
 	" ______                ",
  	"|  ____|               ",
  	"| |__   __ _ ___ _   _ ",
@@ -52,7 +52,7 @@ rom const char easyAscii[8][24] = {
     "                 |___/ ",
 };
 
-rom const char mediumAscii[6][38] = {
+rom const char mediumAscii[6][38] = { // Medium
 	" __  __          _ _                 ",
 	"|  \\/  |        | (_)                ",
 	"| \\  / | ___  __| |_ _   _ _ __ ___  ",
@@ -61,7 +61,7 @@ rom const char mediumAscii[6][38] = {
 	"|_|  |_|\\___|\\__,_|_|\\__,_|_| |_| |_|",
 };
 
-rom const char hardAscii[6][25] = {
+rom const char hardAscii[6][25] = { // Hard
 	" _    _               _ ",
 	"| |  | |             | |",
 	"| |__| | __ _ _ __ __| |",
@@ -70,7 +70,7 @@ rom const char hardAscii[6][25] = {
 	"|_|  |_|\\__,_|_|  \\__,_|",
 };
 
-rom const char chuckAscii1[9][66] = {
+rom const char chuckAscii1[9][66] = { // "Chuck Norris" animation 1
 	"   (       )                          )                          ",
 	"   )\\    ( /(                 )    ( /(     )    *               ",
 	" (((_)   )\\())         (   ( /(   ((_))\\ ( /(  (  `     (        ",
@@ -82,7 +82,7 @@ rom const char chuckAscii1[9][66] = {
 	"  \\_____|_| |_|\\__,_|\\___|_|\\_\\   |_| \\_|\\___/|_|  |_|  |_|___/  ",
 };
 
-rom const char chuckAscii2[9][66] = {
+rom const char chuckAscii2[9][66] = { // "Chuck Norris" animation 2
 	"   )       (                          (                          ",
 	"   (/    ) \\)                 (    ) \\)     )   *                ",
 	" )))_(   (\\)((         )   ) \\)   ))_((\\ ) \\)  )   `    )        ",
@@ -94,7 +94,7 @@ rom const char chuckAscii2[9][66] = {
 	"  \\_____|_| |_|\\__,_|\\___|_|\\_\\   |_| \\_|\\___/|_|  |_|  |_|___/  ",
 };
 
-rom const char wheelAscii[30][85] = {
+rom const char wheelAscii[30][85] = { // Steering wheel
 	"     Left   ____-------         ------____    Right                                 ",
 	"        ___/                              \\___                                      ",
 	"     __/           /////////\\\\\\\\\\\\\\\\          \\__                                   ",
@@ -127,7 +127,7 @@ rom const char wheelAscii[30][85] = {
 	"                   \\\\\\\\\\\\\\\\\\////////                                                ",
 };
 
-rom const char gameOverAscii[8][75] = {
+rom const char gameOverAscii[8][75] = { // GAME OVER!
 	"      _____          __  __ ______    ______      ________ _____  _       ",
 	"     / ____|   /\\   |  \\/  |  ____|  / __ \\ \\    / /  ____|  __ \\| |      ",
 	"    | |  __   /  \\  | \\  / | |__    | |  | \\ \\  / /| |__  | |__) | |      ",
@@ -138,7 +138,7 @@ rom const char gameOverAscii[8][75] = {
 	"|________________________________________________________________________|",
 };
 
-rom const char amigoAscii[5][61] = {
+rom const char amigoAscii[5][61] = { // Bad luck, amigo!
 	" ___          _   _         _                  _          _ ",
 	"| _ ) __ _ __| | | |_  _ __| |__    __ _ _ __ (_)__ _ ___| |",
 	"| _ \\/ _` / _` | | | || / _| / /_  / _` | \'  \\| / _` / _ \\_|",
@@ -146,7 +146,7 @@ rom const char amigoAscii[5][61] = {
 	"                                |/               |___/      ",
 };
 
-rom const char driveAscii[5][79] = {
+rom const char driveAscii[5][79] = { // Can you even drive?
 	"  ___                                                   _     _         _ ___ ",
 	" / __|__ _ _ _    _  _ ___ _  _   _____ _____ _ _    __| |_ _(_)_ _____| |__ \\",
 	"| (__/ _` | \' \\  | || / _ \\ || | / -_) V / -_) \' \\  / _` | \'_| \\ V / -_)_| /_/",
@@ -154,7 +154,7 @@ rom const char driveAscii[5][79] = {
 	"                  |__/                                                        ",
 };
 
-rom const char havNoBallsAscii[5][135] = {
+rom const char havNoBallsAscii[5][135] = { // Even in this game you have no balls!
 	" ___                _        _   _    _                                            _                              _          _ _    _ ",
 	"| __|_ _____ _ _   (_)_ _   | |_| |_ (_)___  __ _ __ _ _ __  ___   _  _ ___ _  _  | |_  __ ___ _____   _ _  ___  | |__  __ _| | |__| |",
 	"| _|\\ V / -_) \' \\  | | \' \\  |  _| \' \\| (_-< / _` / _` | \'  \\/ -_) | || / _ \\ || | | \' \\/ _` \\ V / -_) | \' \\/ _ \\ | \'_ \\/ _` | | (_-<_|",
@@ -162,7 +162,7 @@ rom const char havNoBallsAscii[5][135] = {
 	"                                             |___/                  |__/                                                              ",
 };
 
-rom const char openEyesAscii[5][100] = {
+rom const char openEyesAscii[5][100] = { // Open your eyes next time!
 	"  ___                                                                      _     _   _           _ ",
 	" / _ \\ _ __  ___ _ _    _  _ ___ _  _ _ _   ___ _  _ ___ ___  _ _  _____ _| |_  | |_(_)_ __  ___| |",
 	"| (_) | \'_ \\/ -_) \' \\  | || / _ \\ || | \'_| / -_) || / -_|_-< | \' \\/ -_) \\ /  _| |  _| | \'  \\/ -_)_|",
@@ -170,7 +170,7 @@ rom const char openEyesAscii[5][100] = {
 	"      |_|               |__/                    |__/                                               ",
 };
 
-rom const char patienceAscii[5][115] = {
+rom const char patienceAscii[5][115] = { // Patience, my your padawan!
 	" ___      _   _                                                                         _                       _ ",
 	"| _ \\__ _| |_(_)___ _ _  __ ___     _ __ _  _   _  _ ___ _  _ _ _  __ _   _ __  __ _ __| |__ ___ __ ____ _ _ _ | |",
 	"|  _/ _` |  _| / -_) \' \\/ _/ -_)_  | \'  \\ || | | || / _ \\ || | \' \\/ _` | | \'_ \\/ _` / _` / _` \\ V  V / _` | \' \\|_|",
@@ -178,7 +178,7 @@ rom const char patienceAscii[5][115] = {
 	"                               |/        |__/   |__/              |___/  |_|                                      ",
 };
 
-rom const char notPassAscii[5][89] = {
+rom const char notPassAscii[5][89] = { // The ball shall not pass!
 	" _____ _          _          _ _      _         _ _            _                      _ ",
 	"|_   _| |_  ___  | |__  __ _| | |  __| |_  __ _| | |  _ _  ___| |_   _ __  __ _ _____| |",
 	"  | | | \' \\/ -_) | \'_ \\/ _` | | | (_-< \' \\/ _` | | | | \' \\/ _ \\  _| | \'_ \\/ _` (_-<_-<_|",
@@ -186,7 +186,7 @@ rom const char notPassAscii[5][89] = {
 	"                                                                    |_|                 ",
 };
 
-rom const char thereIsNoBallAscii[5][127] = {
+rom const char thereIsNoBallAscii[5][127] = { // Reaslize the truth, there is no ball!
 	" ___          _ _          _   _          _            _   _        _   _                  _                 _          _ _ _ ",
 	"| _ \\___ __ _| (_)______  | |_| |_  ___  | |_ _ _ _  _| |_| |_     | |_| |_  ___ _ _ ___  (_)___  _ _  ___  | |__  __ _| | | |",
 	"|   / -_) _` | | |_ / -_) |  _| \' \\/ -_) |  _| \'_| || |  _| \' \\ _  |  _| \' \\/ -_) \'_/ -_) | (_-< | \' \\/ _ \\ | \'_ \\/ _` | | |_|",
@@ -194,7 +194,7 @@ rom const char thereIsNoBallAscii[5][127] = {
 	"                                                               |/                                                             ",
 };
 
-rom const char deadAscii[5][94] = {
+rom const char deadAscii[5][94] = { // You are dead, my friend!
 	"__   __                            _             _                  __     _             _ _ ",
 	"\\ \\ / /__ _  _   __ _ _ _ ___   __| |___ __ _ __| |    _ __ _  _   / _|_ _(_)___ _ _  __| | |",
 	" \\ V / _ \\ || | / _` | \'_/ -_) / _` / -_) _` / _` |_  | \'  \\ || | |  _| \'_| / -_) \' \\/ _` |_|",
@@ -202,7 +202,7 @@ rom const char deadAscii[5][94] = {
 	"                                                  |/        |__/                             ",
 };
 
-rom const char ladyAscii[81][73] = {
+rom const char ladyAscii[81][73] = { // Sexy lady
 	"                            . ...                                       ",
 	"                         .\'\'.\' .    \'.                                  ",
 	"                    . \'\' \".\'.:I:.\'..  \'.                                ",
@@ -286,7 +286,7 @@ rom const char ladyAscii[81][73] = {
 	"          \'.. ..  .   .  .. ..:::.... .:. . ..::.. V..  .               ",
 };
 
-rom const char congratulationsAscii[8][126] = {
+rom const char congratulationsAscii[8][126] = { // Congratulations You WON!
 	"   _____                            _         _       _   _                  __     __          __          ______  _   _ _  ",
 	"  / ____|                          | |       | |     | | (_)                 \\ \\   / /          \\ \\        / / __ \\| \\ | | | ",
 	" | |     ___  _ __   __ _ _ __ __ _| |_ _   _| | __ _| |_ _  ___  _ __  ___   \\ \\_/ /__  _   _   \\ \\  /\\  / / |  | |  \\| | | ",
@@ -297,7 +297,7 @@ rom const char congratulationsAscii[8][126] = {
 	"|__________________ |___/ __________________________________________________________________________________________________|",
 };
 
-rom const char nowTryAscii[5][108] = {
+rom const char nowTryAscii[5][108] = { // Now try Chuck Norris mode!
 	" _  _              _               ___ _           _     _  _             _                    _       _ _ ",
 	"| \\| |_____ __ __ | |_ _ _ _  _   / __| |_ _  _ __| |__ | \\| |___ _ _ _ _(_)___  _ __  ___  __| |___  | | |",
 	"| .` / _ \\ V  V / |  _| \'_| || | | (__| \' \\ || / _| / / | .` / _ \\ \'_| \'_| (_-< | \'  \\/ _ \\/ _` / -_) |_|_|",
@@ -305,7 +305,7 @@ rom const char nowTryAscii[5][108] = {
 	"                           |__/                                                                            ",
 };
 
-rom const char chuckNorrisTextAscii[5][63] = {
+rom const char chuckNorrisTextAscii[5][63] = { // Chuck Norris
 	"   ________               __      _   __                _     ",
 	"  / ____/ /_  __  _______/ /__   / | / /___  __________(_)____",
 	" / /   / __ \\/ / / / ___/ //_/  /  |/ / __ \\/ ___/ ___/ / ___/",
@@ -313,7 +313,7 @@ rom const char chuckNorrisTextAscii[5][63] = {
 	"\\____/_/ /_/\\__,_/\\___/_/|_|  /_/ |_/\\____/_/  /_/  /_/____/  ",
 };
 
-rom const char chuckNorrisAscii[50][89] = {
+rom const char chuckNorrisAscii[50][89] = { // Chuck Norris image
   "                                    MMMMMMMMMMM                                         ",
   "                                 MMMMMMMMMMMMMMMMM                                      ",
   "                             NMMMMMMMMMMMMMMMMMMMMMMMM                                  ",
@@ -366,7 +366,7 @@ rom const char chuckNorrisAscii[50][89] = {
   "             MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM ",
 };
 
-rom const char onlyChuckAscii[5][158] = {
+rom const char onlyChuckAscii[5][158] = { // Only Chuck Norris wins Chuck Norris mode!
 	"   ___       _         ___ _           _     _  _             _             _            ___ _           _     _  _             _                    _     _ ",
 	"  / _ \\ _ _ | |_  _   / __| |_ _  _ __| |__ | \\| |___ _ _ _ _(_)___ __ __ _(_)_ _  ___  / __| |_ _  _ __| |__ | \\| |___ _ _ _ _(_)___  _ __  ___  __| |___| |",
 	" | (_) | \' \\| | || | | (__| \' \\ || / _| / / | .` / _ \\ \'_| \'_| (_-< \\ V  V / | \' \\(_-< | (__| \' \\ || / _| / / | .` / _ \\ \'_| \'_| (_-< | \'  \\/ _ \\/ _` / -_)_|",
