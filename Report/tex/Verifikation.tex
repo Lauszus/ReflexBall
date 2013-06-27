@@ -11,29 +11,29 @@ Formålet med at implementere brikker i spillet var at give gameplayet en helt n
 \label{fig:brikker}
 \end{figure}
 %\begin{itemize}
-\item \textbf{Baner gemt i et array i ROM'en.} Vi har valgt at hardcode brikkernes bredde og højde for at spare plads når vi gemmer banerne i ROM'en. På denne måde kan en bane i ROM'en gemmes i arrayet\\ \texttt{unsigned char rom levels[4][BRICK\_TABLE\_HEIGHT][BRICK\_TABLE\_WIDTH]}. Dette arrray er et tredimensionalt array af chars der er gemt i ROM'en. Det indeholder fire "lag" der hver indeholder de todimensionale data til en bane. Værdien af hver char er antallet af liv den tilsvarende brik får. Når banen initialiseres, løbes dette array og arrayet \texttt{bricks[][]} igennem og brikkerne i \texttt{bricks[][]} får det antal liv der står i \texttt{levels[][][]} arrayet. Den dynamiske hukommelse i mikroprocessoren indeholder således kun et array af brikker der svarer til den aktuelle bane. Et eksempel på hvordan en bane er gemt i arrayet \texttt{levels[n][][]} er vist nedenfor. 
-\begin{lstlisting}
-	{
-		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-		{ 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0 },
-		{ 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0 },
-		{ 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0 },
-		{ 0, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 0 },
-		{ 0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0 },
-		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-	},
+\item \textbf{Baner gemt i et array i ROM'en.} Vi har valgt at hardcode brikkernes bredde og højde for at spare plads når vi gemmer banerne i ROM'en. På denne måde kan en bane i ROM'en gemmes i arrayet\\ \texttt{unsigned char rom levels[6][BRICK\_TABLE\_HEIGHT][BRICK\_TABLE\_WIDTH]}. Dette arrray er et tredimensionalt array af chars der er gemt i ROM'en. Det indeholder 6 "lag" der hver indeholder de todimensionale data til en bane. Værdien af hver char er antallet af liv den tilsvarende brik får. Når banen initialiseres, løbes dette array og arrayet \texttt{bricks[BRICK\_TABLE\_HEIGHT][BRICK\_TABLE\_WIDTH]} igennem og brikkerne i \texttt{bricks} får det antal liv der står i \texttt{levels} arrayet. Den dynamiske hukommelse i mikroprocessoren indeholder således kun et array af brikker der svarer til den aktuelle bane. Et eksempel på hvordan en bane er gemt i arrayet \texttt{levels} er vist nedenfor.
+\begin{lstlisting}[frame=single]
+{
+    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+    { 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0 },
+    { 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0 },
+    { 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0 },
+    { 0, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 0 },
+    { 0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0 },
+    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+},
 \end{lstlisting}
 Banen der svarer til det ovenstående array, er vist på Figur \ref{fig:level1}. 
 
@@ -151,7 +151,7 @@ Det der er vist på denne figur er, borset fra de omgivende brikker, samme situa
 % No join for exits from test nodes - connections have more complex
 % requirements
 % We continue until all the blocks are positioned
-\node [proc, fill=grey] (p1) {For(alle brikker)};
+\node [proc, fill=gray!30] (p1) {For(alle brikker)};
 \node [test, join]	(t1)	{Ramt brik?};
 \node [term]    	(p2) 	{score++};
 \node [test, join]	(t2) 	{Top/bund?};
@@ -172,7 +172,7 @@ Det der er vist på denne figur er, borset fra de omgivende brikker, samme situa
 \node [term]		(p6)	  {dontDeflectY};
 
 
-\node [test, join]	(t11)		{dontDeflectY?};\\
+\node [test, join]	(t11)		{dontDeflectY?};
 \node [proc, it] 	(p8) 		{Reflekter Y};
 
 
@@ -183,6 +183,7 @@ Det der er vist på denne figur er, borset fra de omgivende brikker, samme situa
 %%%% NÆSTE KOLONNE
 \node [placeholder, opacity=0, right=of t0] (k0) {};
 
+\node [proc, it, fill=gray!30, right=of t1]  (e1) {Næste brik i \\ for-loop};
 
 \node [placeholder, opacity=0, right=of t4]  {};
 \node [test] 	(t6) {Bund, ven- \\ stre/højre?};
@@ -194,7 +195,8 @@ Det der er vist på denne figur er, borset fra de omgivende brikker, samme situa
 
 
 %%%% NÆSTE KOLONNE
-\node [test, right=of k0] 	(t12) {Side? \& !xDeflected};
+\node [placeholder, opacity=0, right=of k0]  {};
+\node [test] 	(t12) {Side? \& !xDeflected};
 \node [test] 				(t13) {Top/bund?};
 \node [test] 				(t14) {Venstre \& \\ brik til venstre?};
 %\node [test] (t14) {Levende brik til venstre?};
@@ -203,13 +205,14 @@ Det der er vist på denne figur er, borset fra de omgivende brikker, samme situa
 %\node [test] (t16) {Levende brik til højre?};
 \node [term]      			(p10)  {dontDeflectX};
 
-
+\node [placeholder, opacity=0]  (k3) {};
 \node [test, join] 	(t16) {Venstre side?};
 \node [test] 		(t17) {Kommer fra \\ højre?};
 \node [term]      	(p11) {dontDeflectX};
 % Tre til højre for som er under i hieraki
 
-\node [test] 	(t20) {Fra siden, \\ ml. top og bund?};
+\node [placeholder, opacity=0]  {};
+\node [test] 	(t20) {Fra siden, \\ ml. top \\ og bund?};
 \node [test] 		(t21) {Top?};
 \node [test] 		(t22) {Fra oven \& \\ frit over?};
 \node [term]      	(p13) {dontDeflectX};
@@ -219,13 +222,16 @@ Det der er vist på denne figur er, borset fra de omgivende brikker, samme situa
 
 %%\node [test] (t19) {Højre side?};
 %%%%% NÆSTE KOLONNE
-\node [placeholder, opacity=0, right=of t12] (k1) {};
+%\node [placeholder, opacity=0, right=of t12] (k1) {};
+\node [proc, it, right=of t12] 			(k1) {Død};
+\node [proc, it, fill=yellow!30, right=of t13] (e0) {Herefter følger koden \\  i den gule boks nedenfor};
 \node [test, right=of t16] 	(t18) {Højre side?};
 \node [test] 				(t19) {Kommer fra \\ venstre?};
 \node [term]      			(p12) {dontDeflectX};
 
 \node [test, right=of t22] 	(t23) {Fra neden \& \\ frit under?};
 \node [term]    			(p14) {dontDeflectX};
+\node [proc, it, fill=yellow!30, right=of p15]  (e1) {brick.lives- - \\ Tegn brik \\ Drej random vinkel };
 
 %%%%% NÆSTE KOLONNE
 \node [test, right=of k1] 	(t25) {Under striker?};
@@ -237,7 +243,7 @@ Det der er vist på denne figur er, borset fra de omgivende brikker, samme situa
 \node [proc] 				(p17) {Roter afhængigt \\ af hvor man rammer};
 \node [proc, join] 			(p18) {Reflekter Y};
 \node [proc, join] 			(p19) {drawBigBall};
-
+\node [proc, it, fill=gray!30, right=of e1]  (e1) {Næste brik i \\ for-loop};
 
 
 
@@ -377,19 +383,204 @@ Det der er vist på denne figur er, borset fra de omgivende brikker, samme situa
 % The coordinates
 
 \node [coord, right = 20mm of p1] (cp1)  {}; %\cmark{1}
-\node [coord, right = 20mm of t1] (ct1)  {}; %\cmark{1}     
+\node [coord, right = 20mm of t1] (ct1)  {}; %\cmark{1}
+\node [coord, right = 20mm of t4] (ct4)  {}; %\cmark{1} 
+\node [coord, below = of p3] (cp3)  {}; %\cmark{1}
+\node [coord, right = 20mm of t5] (ct5)  {}; %\cmark{1}
+
+\node [coord, right = 18mm of t8] (ct8)  {}; %\cmark{1}
+\node [coord, below = of p5] (cp5)  {}; %\cmark{1}
+\node [coord, right = 22mm of p5] (cp5r)  {}; %\cmark{1}
+\node [coord, right = 22mm of t9] (ct9)  {}; %\cmark{1}
+
+\node [coord, right = 22mm of t11] (ct11)  {}; %\cmark{1}
+\node [coord, below = 20 mm of ct11] (cp8)  {}; %\cmark{1}
+\node [coord, right = 40 mm of cp8] (cp8r)  {}; %\cmark{1}
+
+
+
+% Næste kolonne (mellemrække)
+\node [coord, below = of p4] (cp4)  {}; %\cmark{1}
+\node [coord, right = 20mm of t6] (ct6)  {}; %\cmark{1}
+\node [coord, right = 20mm of t7] (ct7)  {}; %\cmark{1}
+\node [coord, right = 18mm of t10] (ct10)  {}; %\cmark{1}
+\node [coord, below = of p7] (cp7)  {}; %\cmark{1}
+
+
+% Næste kolonne
+
+\node [coord, below = of t0] (ct0b)  {}; %\cmark{1}
+\node [coord, right = 62 mm of ct0b] (ct12)  {}; %\cmark{1}
+\node [coord, right = 62 mm of t2] (ct2r)  {}; %\cmark{1}
+\node [coord, right = 62 mm of t3] (ct3r)  {}; %\cmark{1}
+
+
+\node [coord, right = 23 mm of t13] (ct13)  {}; %\cmark{1}
+
+
+\node [coord, right = 20 mm of t14] (ct14)  {}; %\cmark{1}
+\node [coord, below = of p9] (cp9)  {}; %\cmark{1}
+
+\node [coord, right = 20 mm of t15] (ct15)  {}; %\cmark{1}
+\node [coord, below = of p10] (cp10)  {}; %\cmark{1}
+\node [coord, right = 20 mm of cp10] (cp10r)  {}; %\cmark{1}
+
+\node [coord, below = of p11] (cp11)  {}; %\cmark{1}
+\node [coord, below = of cp11] (cp11b)  {}; %\cmark{1}
+
+\node [coord, below = of k3] (ck3b)  {}; %\cmark{1}
+\node [coord, right = 22 mm of ck3b] (ck3)  {}; %\cmark{1}
+\node [coord, right = 22 mm of t16] (ct16)  {}; %\cmark{1}
+\node [coord, right = 22 mm of t17] (ct17)  {}; %\cmark{1}
+
+\node [coord, right = 20 mm of t18] (ct18)  {}; %\cmark{1}
+\node [coord, right = 20 mm of t19] (ct19)  {}; %\cmark{1}
+
+\node [coord, below = of p13] (cp13)  {}; %\cmark{1}
+\node [coord, right = 21 mm of cp13] (cp13r)  {}; %\cmark{1}
+
+\node [coord, below = of p14] (cp14)  {}; %\cmark{1}
+\node [coord, right = 21 mm of t23] (ct23)  {}; %\cmark{1}
+\node [coord, right = 22 mm of t20] (ct20)  {}; %\cmark{1}
+
+%Sidste kolonne
+\node [coord, right = 22 mm of t0] (ct0r)  {}; %\cmark{1}
+\node [coord, left = 18 mm of t27] (ct27)  {}; %\cmark{1}
+\node [coord, left = 16 mm of t29] (ct29)  {}; %\cmark{1}
+
+\node [coord, below = of p16] (cp16)  {}; %\cmark{1}
+\node [coord, below = 6mm of p17] (cp17)  {}; %\cmark{1}
+\node [coord, below = of p18] (cp18)  {}; %\cmark{1}
+\node [coord, left = 18 mm of cp16] (cp16l)  {}; %\cmark{1}
+\node [coord, left = 16 mm of cp17] (cp17l)  {}; %\cmark{1}
+\node [coord, right = 18 mm of cp18] (cp18r)  {}; %\cmark{1}
+
+\node [coord, right = 18 mm of t26] (ct26)  {}; %\cmark{1}
+\node [coord, right = 18 mm of t28] (ct28)  {}; %\cmark{1}
 
 % -------------------------------------------------
 % Finally, the twisty connectors. Again, we place the annotation
 % first, then draw the connector
 
+\path (t0.east) to node [very near start, yshift=1em] {$nej$} (ct0r); 
+  \draw [->] (t0.east) -- (ct0r) -| (t25);
+  
+\path (t25.west) to node [very near start, yshift=1em] {$ja$} (k1); 
+  \draw [->] (t25.west)  --(k1);
+
+\path (t27.west) to node [very near start, yshift=1em] {$nej$} (ct27); 
+  \draw [->] (t27.west)  --(ct27) |- (cp16l) -|(t28);
+  
+\path (t29.west) to node [very near start, yshift=1em] {$nej$} (ct29); 
+  \draw [->] (t29.west)  --(ct29) |- (cp17l) -|(p18);
+
+\path (t26.east) to node [very near start, yshift=1em] {$nej$} (ct26); 
+  \draw [->] (t26.east)  --(ct26) |- (cp18r) -|(p19);
+  
+\path (t28.east) to node [very near start, yshift=1em] {$nej$} (ct28); 
+  \draw [->] (t28.east)  --(ct28);
+%% Slut..! nedenfor er starten
+
 
 \path (t1.east) to node [very near start, yshift=1em] {$nej$} (ct1); 
   \draw [->] (t1.east) -| (cp1) --(p1);
   
+\path (t2.east) to node [very near start, yshift=1em] {$nej$} (ct2r); 
+  \draw [->] (t2.east) -- (ct2r);
+
+\path (t3.east) to node [very near start, yshift=1em] {$nej$} (ct3r); 
+  \draw [->] (t3.east) -- (ct3r); 
+  
 \path (t4.east) to node [very near start, yshift=1em] {$nej$} (t6); 
   \draw [->] (t4.east) -| (t6);
 
+\path (p3.south) to node [very near start, yshift=1em] {} (cp3); 
+  \draw [->] (p3.south) |- (cp3) -| (ct4);
+
+\path (t5.east) to node [very near start, yshift=1em] {$nej$} (ct5); 
+  \draw [->] (t5.east) -- (ct5);
+
+\path (t8.east) to node [very near start, yshift=1em] {$nej$} (ct8); 
+  \draw [->] (t8.east) -| (ct8) |- (cp5) -| (t9);
+
+\path (t9.east) to node [very near start, yshift=1em] {$nej$} (ct9); 
+  \draw [->] (t9.east) -| (ct9) |- (cp5r) -| (t10) ;
+
+\path (t11.east) to node [very near start, yshift=1em] {$nej$} (ct11); 
+  \draw [->] (t11.east) -- (ct11) -| (cp8); 
+  
+\path (p8.south) to node [very near start, yshift=1em] {} (cp8); 
+  \draw [->] (p8.south) |- (cp8) -- (cp8r) |- (ct12) -| (t12); 
+
+
+  
+  
+  
+% Næste kolonne (mellemkolonne)  
+\path (p4.south) to node [very near start, yshift=1em] {} (cp4); 
+  \draw [->] (p4.south) -| (cp4) -| (t8);
+  
+\path (t6.east) to node [very near start, yshift=1em] {$nej$} (ct6); 
+  \draw [->] (t6.east) -| (ct6) |- (cp4);
+
+\path (t7.east) to node [very near start, yshift=1em] {$nej$} (ct7); 
+  \draw [->] (t7.east) -- (ct7);
+  
+\path (t7.east) to node [very near start, yshift=1em] {$nej$} (ct7); 
+  \draw [->] (t7.east) -- (ct7);
+
+\path (p7.south) to node [very near start, yshift=1em] {} (cp7); 
+  \draw [->] (p7.south) |- (cp7) -| (t11);
+
+\path (t10.east) to node [very near start, yshift=1em] {$nej$} (ct10); 
+  \draw [->] (t10.east) -| (ct10) |- (cp7);
+  
+
+
+% Næste kolonne 
+
+\path (t14.east) to node [very near start, yshift=1em] {$nej$} (ct14); 
+  \draw [->] (t14.east) -- (ct14) |-(cp9) -| (t15);
+  
+\path (t15.east) to node [very near start, yshift=1em] {$nej$} (ct15); 
+  \draw [->] (t15.east) -- (ct15) |-(cp10) -| (t16);
+  
+\path (t13.east) to node [very near start, yshift=1em] {$nej$} (ct13); 
+  \draw [->] (t13.east) -- (ct13) |-(cp10r) ;
+
+\path (p11.south) to node [very near start, yshift=1em] {} (cp11); 
+  \draw [->] (p11.south) |- (cp11) -|(ck3) -| (t18) ;
+  
+\path (t16.east) to node [very near start, yshift=1em] {$nej$} (ct16); 
+  \draw [->] (t16.east) -- (ct16);
+
+\path (t17.east) to node [very near start, yshift=1em] {$nej$} (ct17); 
+  \draw [->] (t17.east) -- (ct17);
+
+
+\path (p12.south) to node [near start, yshift=1em] {} (cp11b); 
+  \draw [->] (p12.south) |- (cp11b) -| (t20);
+  
+\path (t18.east) to node [very near start, yshift=1em] {$nej$} (ct18); 
+  \draw [->] (t18.east) -| (ct18) |- (cp11b) -|(t20) ; 
+
+\path (t19.east) to node [very near start, yshift=1em] {$nej$} (ct19); 
+  \draw [->] (t19.east) -- (ct19) ; 
+
+\path (t21.east) to node [very near start, yshift=1em] {$nej$} (t23); 
+  \draw [->] (t21.east) -| (t23) ; 
+  
+\path (t22.east) to node [very near start, yshift=1em] {$nej$} (cp13r); 
+  \draw [->] (t22.east) -| (cp13r) ; 
+  
+\path (p14.south) to node [near start, yshift=1em] {} (cp14); 
+  \draw [->] (p14.south) |- (cp14) -| (t24);
+
+\path (t20.east) to node [near start, yshift=1em] {$nej$} (ct20); 
+  \draw [->] (t20.east) -- (ct20) -| (ct23); 
+
+\path (t23.east) to node [very near start, yshift=1em] {$nej$} (ct23); 
+  \draw [->] (t23.east) -- (ct23) |- (cp14) ;   
 
 
 %\path (t1.east) to node [near start, yshift=1em] {$n$} (c1); 
