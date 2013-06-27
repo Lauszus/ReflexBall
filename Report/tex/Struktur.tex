@@ -976,3 +976,110 @@ Som i professionelle computerspil, har vi sørget for at implementere en mindre 
 
 Som nævnt i afsnit \textbf{3.2} havde vi lidt problemer med at uarten ikke altid kunne tegne bolden hurtigt nok, efter vi lavede bolden til at fylde 4x2 monospace-karakterer. Vi oplevede at hvis delayet mellem aftegningerne af bolden blev for lille, så kunne man risikere ofte ikke at kunne se bolden, da vores kode jo er lavet på den måde at bolden først slettes, derefter bevæger sig og så tegnes igen. Altså uarten kunne ikke nå at gennemføre hele processen med det resultat at boldene kun slettedes og ikke blev tegnet ordentligt op igen. Desuden opleve vi flere gange at terminalen frøs, hvis vi prøvede at tegne bolden for hurtigt.\\
 Som en løsning på dette justerede vi hastigheden sådan så når der er under 20ms delayet mellem aftegningerne af bolden, så tegnes den kun hver anden gang. Dette letter arbejdet for uarten nok til at det bolden ser ordentlig ud hele tiden. Vi eksperimenterede også med kun at tegne bolden hver 3 gang, men det ser for forstyrrende ud for øjet, så vi fjernede det igen.\\
+
+
+\section{Blokdiagram}
+
+
+
+
+De tre lag vores program er opdelt i, er vist på Figur \ref{fig:blockdiagram}. Application Layer er de funktioner der er specifikke for vores program. Application Interface Layer indeholder generelle funktioner og Hardware Abstraction Layer indeholder de funktioner der er specifikke for vores hardware. Skulle man derfor implementere et andet program på samme mikroprocessor kunne man genbruge funktionerne fra Hardware Abstraction Layer og fra Application Layer. Skulle man derimod lave samme spil på en anden processorarkitektur kunne man genbruge funktionerne i Application Layer og Application Interface Layer. Skulle man lave et nyt program på en ny arkitektur kunne man kun genbruge funktionerne fra Application Interface Layer. \\
+Vi har delt funktionerne op så Hardware Abstraction Layer indeholder de funktioner der skriver til og læser fra hardwaren. Det er funktionerne der har med LED-displayet, timerne, knapperne og gameporten at gøre. I Application Interface Layer har vi funktionerne der har med matematikken (vektorrotation) at gøre samt funktionerne der skriver til terminalen. I Application Layer har vi funktionerne der styrer selve spillet, samt vores levels, menuer og ASCII-art. 
+
+\begin{center}
+
+\begin{figure}
+
+
+
+\begin{tikzpicture}[%
+    >=triangle 60,              % Nice arrows; your taste may be different
+    start chain=going below,    % General flow is top-to-bottom
+    node distance=10mm and 60mm, % Global setup of box spacing
+    every join/.style={norm},   % Default linetype for connecting boxes
+    scale=1.5, every node/.style={scale=1.5}
+    ]
+% ------------------------------------------------- 
+% A few box styles 
+
+% <on chain> *and* <on grid> reduce the need for manual relative
+% positioning of nodes
+\tikzset{
+  base/.style={draw, on chain, on grid, align=center, minimum height=2ex},
+  proc/.style={base, rectangle, fill=blue!30, font={\tiny}},
+  test/.style={base, diamond, aspect=2.2, fill=orange!40, font={\tiny}},
+  term/.style={proc, rounded corners,fill=green!30,},
+  placeholder/.style={base, on chain, text width=6em, fill=white, font={\tiny}},
+  % coord node style is used for placing corners of connecting lines
+  coord/.style={coordinate, on chain, on grid, node distance=4mm and 4mm},
+  % nmark node style is used for coordinate debugging marks
+  nmark/.style={draw, cyan, circle, font={\sffamily\bfseries}},
+  % -------------------------------------------------
+  % Connector line styles for different parts of the diagram
+  norm/.style={->, draw},
+  free/.style={->, draw},
+  cong/.style={->, draw},
+  it/.style={font={\tiny}}
+}
+
+
+
+
+\node [proc, fill=green!30] (p0) {\textbf{Application Layer}\\
+	
+	main.c \\
+	reflecball.c, reflexball.h \\
+	menu.c \\
+	levels.h \\
+	ascii.c, ascii.h \\
+	asciidisplay.c, asciidisplay.h 
+};
+\node [proc, fill=gray!30] (p1) {\textbf{Application Interface Layer}\\
+	ansi.c, ansi.h\\
+	lut.c, lut.h\\
+	math.c, math.h
+};
+\node [proc, fill=blue!30] (p2) {\textbf{Hardware Abstraction Layer}\\
+	gameport.c, gameport.h \\
+	LED.c, LED.h \\
+	charset.h \\
+	time.c, time.h \\
+	buttons.c, buttons.h 
+};
+
+
+% Næste række (mellemrække)
+\path (p0.south) to node [near start, xshift=1em] {} (p1);
+  \draw [<->] (p0.south) -- (p1);
+
+\path (p1.south) to node [near start, xshift=1em] {} (p2);
+  \draw [<->] (p1.south) -- (p2);
+
+
+
+
+
+
+
+\end{tikzpicture}
+\caption{Blokdiagram over de tre lag i koden}
+\label{fig:blockdiagram}
+\end{figure}
+
+\end{center}
+
+For at få en fornemmelse for strukturen af koden, kan man også se på hvilke filer de forskellige filer inkluderer. På Figur \ref{fig:main_incl} er det vist hvilke filer der er inkluderet af main.c. Filerne ez8.h og sio.h er to filer der f.eks. indeholder mikroprocessorens funktioner til at skrive tekst til terminalen. De er specifikke for Zilog 6403-mikroprocessoren. Vi har inkluderet dem i alle dokumenter. Ud over disse filer inkluderer main.c filer fra alle tre lag i vores softwarearkitektur. For at få et bedre overblik af hvordan filerne inkluderer hinanden har vi på Figur \ref{fig:reflecball} vist hvilke filer der er inkluderet af reflexball.c. Et fuldt overblik over hvilke filer der linker til hinanden m.m. kan findes på \url{http://lauszus.github.io/ReflexBall/files.html} \\
+
+\begin{figure}[h!]
+\centering
+\includegraphics[scale=0.6]{figs/main_incl.png}
+\caption{Her er det vist hvilke funktioner main.c inkluderer}
+\label{fig:main_incl}
+\end{figure}
+
+\begin{figure}[h!]
+\centering
+\includegraphics[scale=0.8]{figs/reflexball_incl.png}
+\caption{Her er det vist hvilke funktioner reflexball.c inkluderer}
+\label{fig:reflexball_incl}
+\end{figure}
