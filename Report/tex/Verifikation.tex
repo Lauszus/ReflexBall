@@ -94,9 +94,9 @@ Det der er vist på denne figur er, borset fra de omgivende brikker, samme situa
 % Author: Brent Longborough
 % =================================================
 % Set up a few colours
-\colorlet{lcfree}{Green3}
-\colorlet{lcnorm}{Blue3}
-\colorlet{lccong}{Red3}
+%\colorlet{lcfree}{Green3}
+%\colorlet{lcnorm}{Blue3}
+%\colorlet{lccong}{Red3}
 % -------------------------------------------------
 % Set up a new layer for the debugging marks, and make sure it is on
 % top
@@ -128,9 +128,9 @@ Det der er vist på denne figur er, borset fra de omgivende brikker, samme situa
 % positioning of nodes
 \tikzset{
   base/.style={draw, on chain, on grid, align=center, minimum height=2ex},
-  proc/.style={base, rectangle, fill=blue!20, font={\tiny}},
-  test/.style={base, diamond, aspect=2.2, fill=orange!20, font={\tiny}},
-  term/.style={proc, rounded corners,fill=green!20, font={\tiny}},
+  proc/.style={base, rectangle, fill=blue!30, font={\tiny}},
+  test/.style={base, diamond, aspect=2.2, fill=orange!40, font={\tiny}},
+  term/.style={proc, rounded corners,fill=green!30, font={\tiny}},
   placeholder/.style={base, on chain, text width=6em, fill=white, font={\tiny}},
   % coord node style is used for placing corners of connecting lines
   coord/.style={coordinate, on chain, on grid, node distance=4mm and 4mm},
@@ -138,9 +138,9 @@ Det der er vist på denne figur er, borset fra de omgivende brikker, samme situa
   nmark/.style={draw, cyan, circle, font={\sffamily\bfseries}},
   % -------------------------------------------------
   % Connector line styles for different parts of the diagram
-  norm/.style={->, draw, lcnorm},
-  free/.style={->, draw, lcfree},
-  cong/.style={->, draw, lccong},
+  norm/.style={->, draw},
+  free/.style={->, draw},
+  cong/.style={->, draw},
   it/.style={font={\tiny}}
 }
 % -------------------------------------------------
@@ -151,7 +151,7 @@ Det der er vist på denne figur er, borset fra de omgivende brikker, samme situa
 % No join for exits from test nodes - connections have more complex
 % requirements
 % We continue until all the blocks are positioned
-\node [proc, fill=lcfree!25,] (p1) {For(alle brikker)};
+\node [proc, fill=grey] (p1) {For(alle brikker)};
 \node [test, join]	(t1)	{Ramt brik?};
 \node [term]    	(p2) 	{score++};
 \node [test, join]	(t2) 	{Top/bund?};
@@ -160,11 +160,11 @@ Det der er vist på denne figur er, borset fra de omgivende brikker, samme situa
 \node [test] 		(t5)	{Brik over?};
 \node [term]  		(p3)    {dontDeflectY};
 
-\node [placeholder, color=white, frame=none, fill=white] ;
-\node [placeholder, color=white, frame=none, fill=white] ;
-\node [placeholder, color=white, frame=none, fill=white] ;
-\node [placeholder, color=white, frame=none, fill=white] ;
-\node [placeholder, color=white, frame=none, fill=white] ;
+\node [placeholder, opacity=0] {};
+\node [placeholder, opacity=0] {};
+\node [placeholder, opacity=0] {};
+\node [placeholder, opacity=0] {};
+\node [placeholder, opacity=0] {};
 
 \node [test]		(t8)  {Ramt midt \\ i brikken?};
 \node [term]  		(p5)  {dontDeflectY};
@@ -181,10 +181,10 @@ Det der er vist på denne figur er, borset fra de omgivende brikker, samme situa
 % between columns has already been defined, so we don't need to
 % specify it.
 %%%% NÆSTE KOLONNE
-\node [placeholder, color=white, frame=none, fill=white, right=of t0] (k0) {kan den have tekst?};
+\node [placeholder, opacity=0, right=of t0] (k0) {};
 
 
-\node [placeholder, color=white, frame=none, fill=white, right=of t4]  {kan den have tekst?};
+\node [placeholder, opacity=0, right=of t4]  {};
 \node [test] 	(t6) {Bund, ven- \\ stre/højre?};
 \node [test]				(t7) {Brik under?};
 \node [term]      	  		(p4) {dontDeflectY};
@@ -219,7 +219,7 @@ Det der er vist på denne figur er, borset fra de omgivende brikker, samme situa
 
 %%\node [test] (t19) {Højre side?};
 %%%%% NÆSTE KOLONNE
-\node [placeholder, color=white, frame=none, right=of t12] (k1) {kan den have tekst?};
+\node [placeholder, opacity=0, right=of t12] (k1) {};
 \node [test, right=of t16] 	(t18) {Højre side?};
 \node [test] 				(t19) {Kommer fra \\ venstre?};
 \node [term]      			(p12) {dontDeflectX};
@@ -262,100 +262,100 @@ Det der er vist på denne figur er, borset fra de omgivende brikker, samme situa
 % draw a path with a (consistently positioned) annotation node, then
 % we draw the arrow itself.
 \path (t0.south) to node [near start, xshift=1em] {$ja$} (p1);
-  \draw [->,lcnorm] (t0.south) -- (p1);
+  \draw [->] (t0.south) -- (p1);
  
 \path (t1.south) to node [near start, xshift=1em] {$ja$} (p2);
-  \draw [->,lcnorm] (t1.south) -- (p2);
+  \draw [->] (t1.south) -- (p2);
   
 \path (t2.south) to node [near start, xshift=1em] {$ja$} (t3);
-  \draw [->,lcnorm] (t2.south) -- (t3);  
+  \draw [->] (t2.south) -- (t3);  
 
 \path (t3.south) to node [near start, xshift=1em] {$nej$} (t4);
-  \draw [->,lcnorm] (t3.south) -- (t4);
+  \draw [->] (t3.south) -- (t4);
   
 \path (t4.south) to node [near start, xshift=1em] {$ja$} (t5);
-  \draw [->,lcnorm] (t4.south) -- (t5);
+  \draw [->] (t4.south) -- (t5);
 
 \path (t5.south) to node [near start, xshift=1em] {$ja$} (p3);
-  \draw [->,lcnorm] (t5.south) -- (p3); 
+  \draw [->] (t5.south) -- (p3); 
 
 \path (t8.south) to node [near start, xshift=1em] {$ja$} (p5);
-  \draw [->,lcnorm] (t8.south) -- (p5);
+  \draw [->] (t8.south) -- (p5);
   
 \path (t9.south) to node [near start, xshift=1em] {$ja$} (p6);
-  \draw [->,lcnorm] (t9.south) -- (p6); 
+  \draw [->] (t9.south) -- (p6); 
   
 \path (t11.south) to node [near start, xshift=1em] {$nej$} (p8);
-  \draw [->,lcnorm] (t11.south) -- (p8);
+  \draw [->] (t11.south) -- (p8);
   
 %%Næste række (mellemrække)
 \path (t6.south) to node [near start, xshift=1em] {$ja$} (t7);
-  \draw [->,lcnorm] (t6.south) -- (t7);
+  \draw [->] (t6.south) -- (t7);
  
 \path (t7.south) to node [near start, xshift=1em] {$ja$} (p4);
-  \draw [->,lcnorm] (t7.south) -- (p4);
+  \draw [->] (t7.south) -- (p4);
   
 \path (t10.south) to node [near start, xshift=1em] {$ja$} (p7);
-  \draw [->,lcnorm] (t10.south) -- (p7);
+  \draw [->] (t10.south) -- (p7);
 
 %%Næste række
 \path (t12.south) to node [near start, xshift=1em] {$ja$} (t13);
-  \draw [->,lcnorm] (t12.south) -- (t13); 
+  \draw [->] (t12.south) -- (t13); 
   
 \path (t13.south) to node [near start, xshift=1em] {$ja$} (t14);
-  \draw [->,lcnorm] (t13.south) -- (t14);
+  \draw [->] (t13.south) -- (t14);
 
 \path (t14.south) to node [near start, xshift=1em] {$ja$} (p9);
-  \draw [->,lcnorm] (t14.south) -- (p9); 
+  \draw [->] (t14.south) -- (p9); 
 
 \path (t15.south) to node [near start, xshift=1em] {$ja$} (p10);
-  \draw [->,lcnorm] (t15.south) -- (p10); 
+  \draw [->] (t15.south) -- (p10); 
 
 \path (t16.south) to node [near start, xshift=1em] {$ja$} (t17);
-  \draw [->,lcnorm] (t16.south) -- (t17); 
+  \draw [->] (t16.south) -- (t17); 
 
 \path (t17.south) to node [near start, xshift=1em] {$ja$} (p11);
-  \draw [->,lcnorm] (t17.south) -- (p11);
+  \draw [->] (t17.south) -- (p11);
 
 \path (t20.south) to node [near start, xshift=1em] {$ja$} (t21);
-  \draw [->,lcnorm] (t20.south) -- (t21);
+  \draw [->] (t20.south) -- (t21);
   
 \path (t21.south) to node [near start, xshift=1em] {$ja$} (t22);
-  \draw [->,lcnorm] (t21.south) -- (t22);  
+  \draw [->] (t21.south) -- (t22);  
 
 \path (t22.south) to node [near start, xshift=1em] {$ja$} (p13);
-  \draw [->,lcnorm] (t22.south) -- (p13);
+  \draw [->] (t22.south) -- (p13);
 
 \path (t24.south) to node [near start, xshift=1em] {$nej$} (p15);
-  \draw [->,lcnorm] (t24.south) -- (p15);
+  \draw [->] (t24.south) -- (p15);
   
 
 % Næste række (mellemrække)
 \path (t18.south) to node [near start, xshift=1em] {$ja$} (t19);
-  \draw [->,lcnorm] (t18.south) -- (t19);
+  \draw [->] (t18.south) -- (t19);
 
 \path (t19.south) to node [near start, xshift=1em] {$ja$} (p12);
-  \draw [->,lcnorm] (t19.south) -- (p12);
+  \draw [->] (t19.south) -- (p12);
 
 \path (t23.south) to node [near start, xshift=1em] {$ja$} (p14);
-  \draw [->,lcnorm] (t23.south) -- (p14);
+  \draw [->] (t23.south) -- (p14);
 
 
 % Næste række
 \path (t25.south) to node [near start, xshift=1em] {$nej$} (t26);
-  \draw [->,lcnorm] (t25.south) -- (t26);
+  \draw [->] (t25.south) -- (t26);
 
 \path (t26.south) to node [near start, xshift=1em] {$ja$} (t27);
-  \draw [->,lcnorm] (t26.south) -- (t27);
+  \draw [->] (t26.south) -- (t27);
   
 \path (t27.south) to node [near start, xshift=1em] {$ja$} (p16);
-  \draw [->,lcnorm] (t27.south) -- (p16);
+  \draw [->] (t27.south) -- (p16);
   
 \path (t28.south) to node [near start, xshift=1em] {$ja$} (t29);
-  \draw [->,lcnorm] (t28.south) -- (t29);
+  \draw [->] (t28.south) -- (t29);
   
 \path (t29.south) to node [near start, xshift=1em] {$ja$} (p17);
-  \draw [->,lcnorm] (t29.south) -- (p17);
+  \draw [->] (t29.south) -- (p17);
 
 
 
@@ -385,7 +385,12 @@ Det der er vist på denne figur er, borset fra de omgivende brikker, samme situa
 
 
 \path (t1.east) to node [very near start, yshift=1em] {$nej$} (ct1); 
-  \draw [->,lcnorm] (t1.east) -| (cp1) --(p1);
+  \draw [->] (t1.east) -| (cp1) --(p1);
+  
+\path (t4.east) to node [very near start, yshift=1em] {$nej$} (t6); 
+  \draw [->] (t4.east) -| (t6);
+
+
 
 %\path (t1.east) to node [near start, yshift=1em] {$n$} (c1); 
 %  \draw [o->,lcfree] (t1.east) -- (c1) |- (p4);
