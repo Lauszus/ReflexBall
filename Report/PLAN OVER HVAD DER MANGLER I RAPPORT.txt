@@ -1,7 +1,8 @@
 PLAN OVER HVAD DER MANGLER I RAPPORT:
 
-Mangler:	
-	Lav blokdiagram over Hardware layer, application layer etc.2
+Mangler:
+	Evt. R6
+	
 
 Done:
 	Lav brugermanual											(Kristian)
@@ -15,3 +16,4 @@ Done:
 	Fandt undervejs ud af vi ville inkludere ASCII-Art
 	Hvad vi nåede og hvad vi ikke nåede (se tidsplan2.png
 	Hvordan vi har testet det hele
+	Lav blokdiagram over Hardware layer, application layer etc.2
