@@ -126,7 +126,7 @@ For lettest at kunne holde styr på brikkerne har vi lavet en struct, \texttt{Br
 
 Vi har valgt at hardcode brikkernes bredde og højde for at spare plads når vi gemmer banerne i ROM'en. På denne måde kan en bane i ROM'en gemmes i arrayet\\ \texttt{unsigned char rom levels[6][BRICK\_TABLE\_HEIGHT][BRICK\_TABLE\_WIDTH]}. Dette arrray er et tredimensionalt array af chars der er gemt i ROM'en. Det indeholder 6 "lag" der hver indeholder de todimensionale data til en bane. Værdien af hver char er antallet af liv den tilsvarende brik får. Når banen initialiseres, løbes dette array og arrayet\\ \texttt{bricks[BRICK\_TABLE\_HEIGHT][BRICK\_TABLE\_WIDTH]} igennem og brikkerne i \texttt{bricks} får det antal liv der står i \texttt{levels} arrayet. Den dynamiske hukommelse i mikroprocessoren indeholder således kun et array af brikker der svarer til den aktuelle bane. Et eksempel på hvordan en bane er gemt i arrayet \texttt{levels} er vist nedenfor.
 
-\begin{lstlisting}
+\begin{lstlisting}[frame=single,basicstyle=\tiny]
 { 
 	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
 	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
@@ -154,7 +154,7 @@ Banen der svarer til det ovenstående array, er vist på Figur \ref{fig:level1}.
 
 \begin{figure}[h!]
 \centering
-\includegraphics[scale=0.25]{figs/screenshots/level1.png}
+\includegraphics[scale=0.20]{figs/screenshots/level1.png}
 \caption{Level 1 i spillet}
 \label{fig:level1}
 \end{figure}
@@ -994,7 +994,7 @@ Vi har delt funktionerne op så Hardware Abstraction Layer indeholder de funktio
     start chain=going below,    % General flow is top-to-bottom
     node distance=10mm and 60mm, % Global setup of box spacing
     every join/.style={norm},   % Default linetype for connecting boxes
-    scale=1.5, every node/.style={scale=1.5}
+    scale=1.2, every node/.style={scale=1.2}
     ]
 % ------------------------------------------------- 
 % A few box styles 
@@ -1018,9 +1018,6 @@ Vi har delt funktionerne op så Hardware Abstraction Layer indeholder de funktio
   cong/.style={->, draw},
   it/.style={font={\tiny}}
 }
-
-
-
 
 \node [proc, fill=green!30] (p0) {\textbf{Application Layer}\\
 	
@@ -1074,6 +1071,7 @@ For at få en fornemmelse for strukturen af koden, kan man også se på hvilke f
 \label{fig:reflexball_incl}
 \end{figure}
 
+\newpage
 \section{Generelt flowchart}
 
 På figur \ref{fig:mainFlow} ses et overordnet flowchart for vores kode. Det beskriver den overordnede virkemåde af koden uden at gå helt i dybten, da det ellers ville blive for stort og kompliceret.\\
@@ -1111,7 +1109,7 @@ Et flowchart over briklogikken kan ses i figur \ref{fig:brickFlow}.
     start chain=going below,    % General flow is top-to-bottom
     node distance=4mm and 40mm, % Global setup of box spacing
     every join/.style={norm},   % Default linetype for connecting boxes
-    scale=0.8, every node/.style={scale=0.9}
+    scale=0.8, every node/.style={scale=0.8}
     ]
 % ------------------------------------------------- 
 % A few box styles 

@@ -1,3 +1,4 @@
+\newpage
 \chapter{Brugermanual}
 
 I dette afsnit vil vi beskrive en simpel brugermanual til spillet. Vi vil fokusere på den primære styringsmetode vha. rattet og gearstangen. Spillet kan dog også spillet vha. computerens keyboard eller knapperne på microcontrolleren.
@@ -35,7 +36,7 @@ Hvis brugeren skyder alle brikkerne i stykker avancerer brugeren til næste leve
 
 Et overblik over alle de 6 levels i spillet kan ses på figurerne nedenfor. Bemærk at der i level 6 er en hel udfyldt række af usynlige brikker, der først bliver synlige når man har ramt dem én gang. Disse brikker har 5 liv og er derfor væsentligt sværere at slå i stykker. Se \nameref{levels} i appendiks \ref{C kode}. \\
 
-\begin{figure}[h!]
+\begin{figure}[H]
 \begin{minipage}[b]{0.32\textwidth}
 \includegraphics[width=\linewidth]{figs/screenshots/level1.png}
 \caption{Level 1}
@@ -67,10 +68,11 @@ Et overblik over alle de 6 levels i spillet kan ses på figurerne nedenfor. Bem�
 \label{fig:level6}
 \end{minipage}\hfill
 \end{figure}
-\newpage
+
+
 Hvis man taber spillet vises "Game Over!" skrevet med ASCII art, samt 1 tilfældig ud af 8 forskellige undertitler (som ikke nødvendigvis altid er hverken lige politisk korrekte eller venlige). Figur \ref{fig:gameover_2} viser et screenshot af dette. Bliver man Game Over vil LED displayet blive ved med at scrolle "Game Over" efterfulgt af ens score, indtil man klikker på en vilkårlig tast. Når dette gøres, kommer man tilbage til startmenuen.\\
 
-\begin{figure}[h!]
+\begin{figure}[H]
 \centering
 \includegraphics[scale=0.25]{figs/screenshots/gameover_crop.png}
 \caption{Eksempel på screenshot game over tekst}
@@ -79,7 +81,7 @@ Hvis man taber spillet vises "Game Over!" skrevet med ASCII art, samt 1 tilfæld
 
 Hvis man vinder spillet på Easy, Medium eller Hard vises et screenshot magen til figur \ref{fig:won_normal_2} som belønning for det hårde slid. Hvis man derimod skulle vinde spillet på sværhedsgraden Chuck Norris (hvis dette overhovedet kan lade sig gøre), fås en sølle belønning, da et ASCII-Art billede af Chuck Norris med underteksten "Only Chuck Norris wins Chuck Norris mode!" vises kort (se figur \ref{fig:won_chuck}), efterfulgt af at spillet vil starte forfra i level 1 på Chuck Norris mode.\\
 
-\begin{figure}[h!]
+\begin{figure}[H]
 \begin{minipage}[b]{0.49\textwidth}
 \includegraphics[width=\linewidth]{figs/screenshots/won_normal.png}
 \caption{Screenshot ved gennemførsel af spillet}
