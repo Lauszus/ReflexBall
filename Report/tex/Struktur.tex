@@ -986,10 +986,8 @@ De tre lag vores program er opdelt i, er vist på Figur \ref{fig:blockdiagram}. 
 Vi har delt funktionerne op så Hardware Abstraction Layer indeholder de funktioner der skriver til og læser fra hardwaren. Det er funktionerne der har med LED-displayet, timerne, knapperne og gameporten at gøre. I Application Interface Layer har vi funktionerne der har med matematikken (vektorrotation) at gøre samt funktionerne der skriver til terminalen. I Application Layer har vi funktionerne der styrer selve spillet, samt vores levels, menuer og ASCII-art. 
 
 \begin{center}
-
-\begin{figure} [H]
+\begin{figure}[H]
 \centering
-
 
 \begin{tikzpicture}[%
     >=triangle 60,              % Nice arrows; your taste may be different
@@ -1054,17 +1052,10 @@ Vi har delt funktionerne op så Hardware Abstraction Layer indeholder de funktio
 \path (p1.south) to node [near start, xshift=1em] {} (p2);
   \draw [<->] (p1.south) -- (p2);
 
-
-
-
-
-
-
 \end{tikzpicture}
 \caption{Blokdiagram over de tre lag i koden}
 \label{fig:blockdiagram}
 \end{figure}
-
 \end{center}
 
 For at få en fornemmelse for strukturen af koden, kan man også se på hvilke filer de forskellige filer inkluderer. På Figur \ref{fig:main_incl} er det vist hvilke filer der er inkluderet af main.c. Filerne ez8.h og sio.h er to filer der f.eks. indeholder mikroprocessorens funktioner til at skrive tekst til terminalen. De er specifikke for Zilog 6403-mikroprocessoren. Ud over disse filer inkluderer main.c filer fra alle tre lag i vores softwarearkitektur. For at få et bedre overblik af hvordan filerne inkluderer hinanden har vi på Figur \ref{fig:reflexball_incl} vist hvilke filer der er inkluderet af reflexball.c. Et fuldt overblik over hvilke filer der linker til hinanden m.m. kan findes på \url{http://lauszus.github.io/ReflexBall/files.html}.
