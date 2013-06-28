@@ -1,10 +1,9 @@
 PLAN OVER HVAD DER MANGLER I RAPPORT:
 
 Mangler:
-	Evt. R6
-	
 
 Done:
+	R6
 	Lav brugermanual											(Kristian)
 	Beskriv bold-bounce ordentligt i Basics						(Tobias)
 	Beskriv vektor-rotation i Advanced							(Tobias)
