@@ -126,7 +126,7 @@ For lettest at kunne holde styr på brikkerne har vi lavet en struct, \texttt{Br
 
 Vi har valgt at hardcode brikkernes bredde og højde for at spare plads når vi gemmer banerne i ROM'en. På denne måde kan en bane i ROM'en gemmes i arrayet\\ \texttt{unsigned char rom levels[6][BRICK\_TABLE\_HEIGHT][BRICK\_TABLE\_WIDTH]}. Dette arrray er et tredimensionalt array af chars der er gemt i ROM'en. Det indeholder 6 "lag" der hver indeholder de todimensionale data til en bane. Værdien af hver char er antallet af liv den tilsvarende brik får. Når banen initialiseres, løbes dette array og arrayet\\ \texttt{bricks[BRICK\_TABLE\_HEIGHT][BRICK\_TABLE\_WIDTH]} igennem og brikkerne i \texttt{bricks} får det antal liv der står i \texttt{levels} arrayet. Den dynamiske hukommelse i mikroprocessoren indeholder således kun et array af brikker der svarer til den aktuelle bane. Et eksempel på hvordan en bane er gemt i arrayet \texttt{levels} er vist nedenfor.
 
-\begin{lstlisting}[frame=single,basicstyle=\tiny]
+\begin{lstlisting}[frame=single,basicstyle=\tiny,firstnumber=9]
 { 
 	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
 	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
@@ -804,7 +804,7 @@ Da funktionen bliver kaldt inde i et interrupt er det nødvendigt at sikre sig a
 
 Koden til opdaterings-funktionen kan ses nedenfor.
 
-\begin{lstlisting}[frame=single]
+\begin{lstlisting}[frame=single,firstnumber=117]
 PGOUT = (PGOUT & (1 << 7)) | *(&videoBuffer[0][0] + digit*6 + column + index);
 PEOUT |= 0x1F; // Set all cathodes high
 PEOUT &= ~(1 << (4-column)); // Set one cathodes low decided by column
@@ -832,9 +832,8 @@ Udover at kunne scolle den samme tekst havde vi også brug for at kunne scrolle 
 Funktionen \texttt{LEDRunOnce()} kan ses nedenfor.
 \newpage
 
-\begin{lstlisting}[frame=single]
-// Used to sroll the first string once and then show the second string afterwards
-void LEDRunOnce(char *firstString, char* secondString) {
+\begin{lstlisting}[frame=single,firstnumber=89]
+void LEDRunOnce(char *firstString, char* secondString) { // Used to sroll the first string once and then show the second string afterwards
 	LEDsetString(firstString);
 	runOnce = 1;
 	pSecondString = secondString; // We will save the location of the second string
@@ -845,7 +844,7 @@ Den virker på den måde at den sætter den første streng på normal vis, den s
 
 Et udsnit af funktionen \texttt{moveVideoBuffer()} kan ses nedenfor.
 
-\begin{lstlisting}[frame=single,firstnumber=12]
+\begin{lstlisting}[frame=single,firstnumber=106]
 pString++;
 if (*pString == '\0') { // Check if we have reached the end of the string
   if (runOnce) { // This wil actually abort when it loads the last character in the 5th digit, so you have to put a space in end of the sentence
@@ -884,7 +883,7 @@ For at kunne vælge en tilfældig tekst benytter vi os af at funktionen \texttt{
 
 Det udsnit af funktionen \texttt{showGameOver()} der læser \texttt{millis()} kan ses nedenfor.
 
-\begin{lstlisting}[frame=single,firstnumber=6]
+\begin{lstlisting}[frame=single,firstnumber=35]
 switch (millis() & 0x7) { // Pseudo random number from 0-7
 \end{lstlisting}
 
@@ -919,7 +918,7 @@ Rattet og pedalerne fungerer en smule anderledes i det de er forbundet til et 10
 
 Koden til at læse en analog indgang kan ses nedenfor.
 
-\begin{lstlisting}[frame=single]
+\begin{lstlisting}[frame=single,firstnumber=6]
 unsigned int readADC(unsigned char channel) { // Read a specific analog channel
   unsigned char inHigh, inLow;
   unsigned int ADC_data;
