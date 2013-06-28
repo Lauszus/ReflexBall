@@ -1073,3 +1073,299 @@ For at få en fornemmelse for strukturen af koden, kan man også se på hvilke f
 \caption{Her er det vist hvilke funktioner reflexball.c inkluderer}
 \label{fig:reflexball_incl}
 \end{figure}
+
+\section{Generelt flowchart}
+
+
+%\newpage
+
+% Flowcharting techniques for easy maintenance
+% Author: Brent Longborough
+% =================================================
+% Set up a few colours
+%\colorlet{lcfree}{Green3}
+%\colorlet{lcnorm}{Blue3}
+%\colorlet{lccong}{Red3}
+% -------------------------------------------------
+% Set up a new layer for the debugging marks, and make sure it is on
+% top
+\pgfdeclarelayer{marx}
+\pgfsetlayers{main,marx}
+% A macro for marking coordinates (specific to the coordinate naming
+% scheme used here). Swap the following 2 definitions to deactivate
+% marks.
+\providecommand{\cmark}[2][]{%
+  \begin{pgfonlayer}{marx}
+    \node [nmark] at (c#2#1) {#2};
+  \end{pgfonlayer}{marx}
+  } 
+\providecommand{\cmark}[2][]{\relax} 
+% -------------------------------------------------
+% Start the picture
+\begin{center}
+%\newgeometry{top=5cm, bottom=1cm, left=1cm, right=1cm}
+\begin{figure}
+
+
+
+\begin{tikzpicture}[%
+    >=triangle 60,              % Nice arrows; your taste may be different
+    start chain=going below,    % General flow is top-to-bottom
+    node distance=4mm and 40mm, % Global setup of box spacing
+    every join/.style={norm},   % Default linetype for connecting boxes
+    scale=0.8, every node/.style={scale=0.9}
+    ]
+% ------------------------------------------------- 
+% A few box styles 
+
+% <on chain> *and* <on grid> reduce the need for manual relative
+% positioning of nodes
+\tikzset{
+  base/.style={draw, on chain, on grid, align=center, minimum height=2ex},
+  proc/.style={base, rectangle, fill=blue!30, font={\tiny}},
+  test/.style={base, diamond, aspect=2.2, fill=orange!40, font={\tiny}},
+  term/.style={proc, rounded corners,fill=green!30, font={\tiny}},
+  placeholder/.style={base, on chain, text width=6em, fill=white, font={\tiny}},
+  % coord node style is used for placing corners of connecting lines
+  coord/.style={coordinate, on chain, on grid, node distance=4mm and 4mm},
+  % nmark node style is used for coordinate debugging marks
+  nmark/.style={draw, cyan, circle, font={\sffamily\bfseries}},
+  % -------------------------------------------------
+  % Connector line styles for different parts of the diagram
+  norm/.style={->, draw},
+  free/.style={->, draw},
+  cong/.style={->, draw},
+  it/.style={font={\tiny}}
+}
+% -------------------------------------------------
+% Start by placing the nodes
+\node [proc, it] (p0) {Iterate ball};
+\node [test, join] (t0) {Indenfor bane?};
+
+% No join for exits from test nodes - connections have more complex
+% requirements
+% We continue until all the blocks are positioned
+\node [proc, fill=gray!30] (p1) {For(alle brikker)};
+\node [test, join]	(t1)	{Ramt brik?};
+\node [term]    	(p2) 	{score++};
+\node [test, join]	(t2) 	{Top/bund?};
+\node [test] 		(t3)	{DeflectedY?};
+\node [test] 		(t4) 	{Top, ven- \\ stre/højre?};
+\node [test] 		(t5)	{Brik over?};
+\node [term]  		(p3)    {dontDeflectY};
+
+\node [placeholder, opacity=0] {};
+\node [placeholder, opacity=0] {};
+\node [placeholder, opacity=0] {};
+\node [placeholder, opacity=0] {};
+\node [placeholder, opacity=0] {};
+
+\node [test]		(t8)  {Ramt midt \\ i brikken?};
+\node [term]  		(p5)  {dontDeflectY};
+\node [test, join]	(t9)  {Top fra neden?};
+\node [term]		(p6)	  {dontDeflectY};
+
+
+\node [test, join]	(t11)		{dontDeflectY?};
+\node [proc, it] 	(p8) 		{Reflekter Y};
+
+
+% We position the next block explicitly as the first block in the
+% second column.  The chain 'comes along with us'. The distance
+% between columns has already been defined, so we don't need to
+% specify it.
+%%%% NÆSTE KOLONNE
+\node [placeholder, opacity=0, right=of t0] (k0) {};
+
+\node [proc, it, fill=gray!30, right=of t1]  (e1) {Næste brik i \\ for-loop};
+
+\node [placeholder, opacity=0, right=of t4]  {};
+\node [test] 	(t6) {Bund, ven- \\ stre/højre?};
+\node [test]				(t7) {Brik under?};
+\node [term]      	  		(p4) {dontDeflectY};
+
+\node [test, right=of t9] 	(t10)  	{Bund fra oven?};
+\node [term]      			(p7)	{dontDeflectY};
+
+
+
+
+
+
+
+
+
+
+% -------------------------------------------------
+% Now we place the coordinate nodes for the connectors with angles, or
+% with annotations. We also mark them for debugging.
+%\node [coord, right=of t1] (c1)  {}; %\cmark{1}   
+%\node [coord, right=of t3] (c3)  {}; %\cmark{3}   
+%\node [coord, right=of t6] (c6)  {}; %\cmark{6}   
+%\node [coord, right=of t7] (c7)  {}; %\cmark{7}   
+%\node [coord, left=of t4]  (c4)  {}; %\cmark{4}   
+%\node [coord, right=of t4] (c4r) {}; %\cmark[r]{4}
+%\node [coord, left=of t7]  (c5)  {}; %\cmark{5} 
+
+% -------------------------------------------------
+
+% -------------------------------------------------
+% All the other connections come out of tests and need annotating
+% First, the straight north-south connections. In each case, we first
+% draw a path with a (consistently positioned) annotation node, then
+% we draw the arrow itself.
+\path (t0.south) to node [near start, xshift=1em] {$ja$} (p1);
+  \draw [->] (t0.south) -- (p1);
+ 
+\path (t1.south) to node [near start, xshift=1em] {$ja$} (p2);
+  \draw [->] (t1.south) -- (p2);
+  
+\path (t2.south) to node [near start, xshift=1em] {$ja$} (t3);
+  \draw [->] (t2.south) -- (t3);  
+
+\path (t3.south) to node [near start, xshift=1em] {$nej$} (t4);
+  \draw [->] (t3.south) -- (t4);
+  
+\path (t4.south) to node [near start, xshift=1em] {$ja$} (t5);
+  \draw [->] (t4.south) -- (t5);
+
+\path (t5.south) to node [near start, xshift=1em] {$ja$} (p3);
+  \draw [->] (t5.south) -- (p3); 
+
+\path (t8.south) to node [near start, xshift=1em] {$ja$} (p5);
+  \draw [->] (t8.south) -- (p5);
+  
+\path (t9.south) to node [near start, xshift=1em] {$ja$} (p6);
+  \draw [->] (t9.south) -- (p6); 
+  
+\path (t11.south) to node [near start, xshift=1em] {$nej$} (p8);
+  \draw [->] (t11.south) -- (p8);
+  
+%%Næste række (mellemrække)
+\path (t6.south) to node [near start, xshift=1em] {$ja$} (t7);
+  \draw [->] (t6.south) -- (t7);
+ 
+\path (t7.south) to node [near start, xshift=1em] {$ja$} (p4);
+  \draw [->] (t7.south) -- (p4);
+  
+\path (t10.south) to node [near start, xshift=1em] {$ja$} (p7);
+  \draw [->] (t10.south) -- (p7);
+
+
+
+% ------------------------------------------------- 
+% Now the straight east-west connections. To provide consistent
+% positioning of the test exit annotations, we have positioned
+% coordinates for the vertical part of the connectors. The annotation
+% text is positioned on a path to the coordinate, and then the whole
+% connector is drawn to its destination box.
+%\path (t3.east) to node [near start, yshift=1em] {$n$} (c3); 
+%  \draw [o->,lccong] (t3.east) -- (p8);
+%\path (t4.east) to node [yshift=-1em] {$k \leq 0$} (c4r); 
+%  \draw [o->,lcnorm] (t4.east) -- (p9);
+
+% -------------------------------------------------
+% The coordinates
+
+\node [coord, right = 20mm of p1] (cp1)  {}; %\cmark{1}
+\node [coord, right = 20mm of t1] (ct1)  {}; %\cmark{1}
+\node [coord, right = 20mm of t4] (ct4)  {}; %\cmark{1} 
+\node [coord, below = of p3] (cp3)  {}; %\cmark{1}
+\node [coord, right = 20mm of t5] (ct5)  {}; %\cmark{1}
+
+\node [coord, right = 18mm of t8] (ct8)  {}; %\cmark{1}
+\node [coord, below = of p5] (cp5)  {}; %\cmark{1}
+\node [coord, right = 22mm of p5] (cp5r)  {}; %\cmark{1}
+\node [coord, right = 22mm of t9] (ct9)  {}; %\cmark{1}
+
+\node [coord, right = 22mm of t11] (ct11)  {}; %\cmark{1}
+\node [coord, below = 20 mm of ct11] (cp8)  {}; %\cmark{1}
+\node [coord, right = 40 mm of cp8] (cp8r)  {}; %\cmark{1}
+
+
+
+% Næste kolonne (mellemrække)
+\node [coord, below = of p4] (cp4)  {}; %\cmark{1}
+\node [coord, right = 20mm of t6] (ct6)  {}; %\cmark{1}
+\node [coord, right = 20mm of t7] (ct7)  {}; %\cmark{1}
+\node [coord, right = 18mm of t10] (ct10)  {}; %\cmark{1}
+\node [coord, below = of p7] (cp7)  {}; %\cmark{1}
+
+
+
+
+% -------------------------------------------------
+% Finally, the twisty connectors. Again, we place the annotation
+% first, then draw the connector
+
+
+
+\path (t1.east) to node [very near start, yshift=1em] {$nej$} (e1); 
+  \draw [->] (t1.east) -- (e1) ;
+  
+%\path (e1.north) to node [very near start, yshift=1em] {} (p1); 
+%  \draw [->] (e1.north) -- (p1) ;
+
+\path (t2.east) to node [very near start, yshift=1em] {$nej$} (ct2r); 
+  \draw [->] (t2.east) -- (ct2r);
+
+\path (t3.east) to node [very near start, yshift=1em] {$nej$} (ct3r); 
+  \draw [->] (t3.east) -- (ct3r); 
+  
+\path (t4.east) to node [very near start, yshift=1em] {$nej$} (t6); 
+  \draw [->] (t4.east) -| (t6);
+
+\path (p3.south) to node [very near start, yshift=1em] {} (cp3); 
+  \draw [->] (p3.south) |- (cp3) -| (ct4);
+
+\path (t5.east) to node [very near start, yshift=1em] {$nej$} (ct5); 
+  \draw [->] (t5.east) -- (ct5);
+
+\path (t8.east) to node [very near start, yshift=1em] {$nej$} (ct8); 
+  \draw [->] (t8.east) -| (ct8) |- (cp5) -| (t9);
+
+\path (t9.east) to node [very near start, yshift=1em] {$nej$} (ct9); 
+  \draw [->] (t9.east) -| (ct9) |- (cp5r) -| (t10) ;
+
+\path (t11.east) to node [very near start, yshift=1em] {$nej$} (ct11); 
+  \draw [->] (t11.east) -- (ct11) -| (cp8); 
+  
+\path (p8.south) to node [very near start, yshift=1em] {} (cp8); 
+  \draw [->] (p8.south) |- (cp8) -- (cp8r) |- (ct12) -| (t12); 
+
+
+  
+  
+  
+% Næste kolonne (mellemkolonne)  
+\path (p4.south) to node [very near start, yshift=1em] {} (cp4); 
+  \draw [->] (p4.south) -| (cp4) -| (t8);
+  
+\path (t6.east) to node [very near start, yshift=1em] {$nej$} (ct6); 
+  \draw [->] (t6.east) -| (ct6) |- (cp4);
+
+\path (t7.east) to node [very near start, yshift=1em] {$nej$} (ct7); 
+  \draw [->] (t7.east) -- (ct7);
+  
+\path (t7.east) to node [very near start, yshift=1em] {$nej$} (ct7); 
+  \draw [->] (t7.east) -- (ct7);
+
+\path (p7.south) to node [very near start, yshift=1em] {} (cp7); 
+  \draw [->] (p7.south) |- (cp7) -| (t11);
+
+\path (t10.east) to node [very near start, yshift=1em] {$nej$} (ct10); 
+  \draw [->] (t10.east) -| (ct10) |- (cp7);
+  
+
+
+
+
+
+\end{tikzpicture}
+\caption{Flowchart for briklogikken der styrer interaktionen mellem brikkerne og bolden}
+\label{fig:brickFlow}
+\end{figure}
+%\restoregeometry
+\end{center}
+
+
